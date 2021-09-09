@@ -1,0 +1,14 @@
+
+bostrom_simulation/.idea/
+
+.DS_Store
+
+bostrom_simulation/utils/__pycache__/
+
+bostrom_simulation/.ipynb_checkpoints/
+
+.idea/
+
+.ipynb_checkpoints/
+
+__pycache__/
