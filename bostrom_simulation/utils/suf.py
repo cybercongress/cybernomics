@@ -1,3 +1,6 @@
+import math
+
+
 def s_I_r(params, substep, state_history, previous_state, policy_input):
     I_r = previous_state['I_r'] + policy_input['IRC']
     if I_r > params['inflationMax']:
@@ -59,9 +62,22 @@ def s_mr_v(params, substep, state_history, previous_state, policy_input):
 
 
 def s_cl(params, substep, state_history, previous_state, policy_input):
-    cl = previous_state['CL'] + policy_input['delta_CL']
+    agents = previous_state['agents_amount']
+    cl = 9 * math.pow(agents, 0.7) + policy_input['delta_CL']
     return 'CL', cl
+
 
 def s_m_v_t(params, substep, state_history, previous_state, policy_input):
     m_v_t = policy_input['delta_m_v_t']
     return 'maxVestingTime', m_v_t
+
+
+def s_agents_amount(params, substep, state_history, previous_state, policy_input):
+    agents_amount = previous_state['agents_amount'] + policy_input['delta_agents_amount']
+    return 'agents_amount', agents_amount
+
+
+def s_capitalization(params, substep, state_history, previous_state, policy_input):
+    cap_per_user = params['capitalization_per_user'] * math.pow(params['start_agents_count'], 0.7) * math.pow(previous_state['agents_amount'], -0.7)
+    cap = cap_per_user * previous_state['agents_amount']
+    return 'cap_in_eth', cap
