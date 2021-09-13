@@ -23,6 +23,8 @@ def p_provision(params, substep, state_history, previous_state):
 
 
 def p_claim(params, substep, state_history, previous_state):
+    if previous_state['timestep'] < params['gift_activation']:
+        delta_f = 0
     delta_f = (5.6 * 10**14) / (3 * params['unitsPerYear'])
     if previous_state['F'] <= 0:
         delta_f = 0
@@ -30,7 +32,7 @@ def p_claim(params, substep, state_history, previous_state):
 
 
 def p_vest(params, substep, state_history, previous_state):
-    investmint = previous_state['T']/((params['unitsPerYear']/12) * params['vestingSpeed'])
+    investmint = previous_state['T']/((params['unitsPerYear']/12) * params['vestingSpeed']) * params['boot_bonded']
     return {'delta_L': math.floor(investmint)}
 
 
@@ -55,30 +57,19 @@ def p_mr_v(params, substep, state_history, previous_state):
 
 
 def p_cl(params, substep, state_history, previous_state):
-    if previous_state['timestep'] % (params['unitsPerYear']/365) == 0:
-        # years = 10 * params['unitsPerYear']
-        # ratio = 45 / years
-        # util_rate = (5 + ratio) * previous_state['timestep']
-        # util_rate *= 0.01
-        #
-        # x = util_rate * previous_state['V']
-        x = previous_state['V'] * params['cyberlinks_util']
-        if x > 7_000_000:
-            x = 7_000_000
-    else:
-        x = 0
-    return {'delta_CL': math.floor(x)}
+    x = params['extra_links'] + params['guaranted_links']
+    return {'delta_CL': x}
 
 
 def p_a(params, substep, state_history, previous_state):
     tokens = math.floor(previous_state['d_l'] / 2)
-    d_a = math.floor((tokens / params['initPrice']) * (previous_state['maxVestingTime']/params['baseVestingTime']) * (previous_state['MRa'] / 100))
+    d_a = math.floor((tokens / params['base_vesting_resource']) * (previous_state['maxVestingTime']/params['baseVestingTime']) * (previous_state['MRa'] / 100))
     return {'delta_a': math.floor(d_a)}
 
 
 def p_v(params, substep, state_history, previous_state):
     tokens = math.floor(previous_state['d_l'] / 2)
-    d_v = math.floor((tokens / params['initPrice']) * (previous_state['maxVestingTime']/params['baseVestingTime']) * (previous_state['MRv'] / 100))
+    d_v = math.floor((tokens / params['base_vesting_resource']) * (previous_state['maxVestingTime']/params['baseVestingTime']) * (previous_state['MRv'] / 100))
     return {'delta_v': math.floor(d_v)}
 
 
@@ -86,3 +77,9 @@ def p_m_v_t(params, substep, state_history, previous_state):
     x = previous_state['timestep'] // params['unitsPerYear']
     d_m_v_t = params['baseVestingTime'] * (2**x)
     return {'delta_m_v_t': d_m_v_t}
+
+
+def p_agents_amount(params, substep, state_history, previous_state):
+    x = previous_state['timestep'] // params['unitsPerYear']
+    d_agents_amount = 18 * x + 100
+    return {'delta_agents_amount': d_agents_amount}
