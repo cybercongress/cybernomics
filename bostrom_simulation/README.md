@@ -4,6 +4,9 @@
 
 0. Install Python3 if you have no
 1. Go to `bostrom_simulation` folder
+```bash
+cd bostrom_simulation
+```
 2. Install requirements via pip3
 ```bash
 pip3 install -r requirements.txt
@@ -14,7 +17,7 @@ jupyter notebook
 ```
 4. The notebook server should be running at `http://127.0.0.1:8888` 
 
-5. Open `simulation.ipynb`
+5. Open [`simulation.ipynb`](simulation.ipynb)
 
 6. Fill `Initial state` and `Params for simulating` sections
 
