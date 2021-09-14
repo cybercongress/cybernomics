@@ -64,16 +64,16 @@ The addresses for gift are defined in the [research](https://github.com/Snedashk
 We need to derive *claim_rate* (by formula to define).
 
 Assumptions:
-- 100,000 agents will claim our gift. After that the gift will be activated (*start_agent_count* = 100_000)
+- 100,000 agents will claim our gift. After that the gift will be activated (*start_agents_count* = 100_000)
 - it will take 100 days since genesis before the gift claiming process will be completed (*days_for_gift_activation* = 100)  
 
-  *days_for_gift_activation* is needed to refine days for gift activation to reach *start_agent_count*.
+  *days_for_gift_activation* is needed to refine days for gift activation to reach *start_agents_count*.
 
 After the modeling of claim dynamics, we can set baselines for adoption ("understanding network effects" chapter).
 
 ### Simulation parameters
 
-- *start_agent_count* `(10'000, 50'000, 100'000)`
+- *start_agents_count* `(10'000, 50'000, 100'000)`
 - *days_for_gift_activation* `(100, 150)`
 - *days_for_gift_full_claim* `(0, 360)` 
 - *claimed_at_activation_share* (`1, 0.5`)
@@ -106,6 +106,7 @@ BTC (from 100 day from start till 2160 days of network, as before 100 days ETH p
 We derived such formula:
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_user = 60\,000 \cdot agents\_count^{-0,7}">
+
 
 We assumed that dynamics of capitalization of BOOT token in ETH will resemble ETH token dynamics in BTC prices.
 We adjusted the formula that our first day *capitalization_per_user* will be equal to 1 ETH
@@ -191,7 +192,7 @@ Parameters to define for V and A:
 - *boot_inflation_max*
 - *boot_inflation_min*
 - *boot_bonded_target*  
-- *start_agent_count* `(10'000, 50'000, 100'000)`
+- *start_agents_count* `(10'000, 50'000, 100'000)`
 - *days_for_gift_activation* `(30, 100)`
 - <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B start\_agents\_count">
 - <img src="https://render.githubusercontent.com/render/math?math=\color{green}start\_capitalization\_per\_user = 1">
