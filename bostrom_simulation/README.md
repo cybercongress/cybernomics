@@ -192,8 +192,8 @@ Parameters to define for V and A:
 - __*days_for_gift_activation*__ `(30, 100)`
 - <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B start\_agents\_count">
 - <img src="https://render.githubusercontent.com/render/math?math=\color{green}start\_capitalization\_per\_agent = 1">
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot start\_agents\_count^{0.7} \cdot  agents\_count^{-0,7}">
-- __*boot_bonded_share*__ = `0.7`
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot start\_agents\_count^{0.7} \cdot  agents\_count^{-0.7}">
+- __*boot_bonded_share*__ `(0.7)`
 - <img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
 - __*extra_links*__ - function to define
 - __*guaranteed_links*__ - function to define
