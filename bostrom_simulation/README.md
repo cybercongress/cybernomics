@@ -101,7 +101,7 @@ BTC (from 100 day from start till 2160 days of network, as before 100 days ETH p
 
 We derived such formula:
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = 60\,000 \cdot agents\_count^{-0,7}">
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = 60\,000 \cdot agents\_count^{-0.7}">
 
 
 We assumed that dynamics of capitalization of BOOT token in ETH will resemble ETH token dynamics in BTC prices.
@@ -206,13 +206,13 @@ Parameters to define for V and A:
 
 ## Investments into infrastructure
 
-BOOT Supply
-BOOT Staked
-Comission = 10%
-BOOT price
-Validator count = 92
-
-Target - revenue of 1 validator
+- BOOT Supply
+- BOOT Staked
+- Comission = 10%
+- BOOT price
+- Validator count = 92
+ 
+Target goal of simulation is to estimate revenue of 1 validator.
 
 ## Further work
 
