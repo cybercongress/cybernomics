@@ -4,35 +4,30 @@ from utils.suf import *
 partial_state_update_blocks = [
     {
         'policies': {
-            'IRC': p_inflation,
-            'provision': p_provision,
-            'delta_F': p_claim,
-            'delta_L': p_vest,
-            'delta_U': p_unvest,
-            'delta_MRa': p_mr_a,
-            'delta_MRv': p_mr_v,
-            'delta_CL': p_cl,
-            'delta_a': p_a,
-            'delta_v': p_v,
-            'delta_m_v_t': p_m_v_t,
-            'delta_agents_amount': p_agents_amount
-
+            'delta_boot_inflation_rate': p_boot_inflation_rate,
+            'timestep_provision': p_timestep_provision,
+            'delta_frozen_boot': p_frozen_boot,
+            'delta_vested_boot': p_vested_boot,
+            'delta_unvested_boot': p_unvested_boot,
+            'delta_cyberlinks': p_cyberlinks,
+            'delta_amper': p_amper,
+            'delta_volt': p_volt,
+            'delta_agents_count': p_agents_count,
+            'delta_capitalization_per_agent': p_capitalization_per_agent
         },
         'variables': {
-            'I_r': s_I_r,
-            'F': s_F,
-            'L': s_L,
-            'T': s_T,
-            'd_u': s_d_u,
-            'd_v': s_d_l,
-            'A': s_a,
-            'V': s_v,
-            'MRa': s_mr_a,
-            'MRv': s_mr_v,
-            'CL': s_cl,
-            'maxVestingTime': s_m_v_t,
-            'agents_amount': s_agents_amount,
-            's_capitalization': s_capitalization
+            'boot_inflation_rate': s_boot_inflation_rate,
+            'frozen_boot': s_frozen_boot,
+            'vested_boot': s_vested_boot,
+            'liquid_boot': s_liquid_boot,
+            'amper': s_amper,
+            'volt': s_volt,
+            'mint_rate_amper': s_mint_rate_amper,
+            'mint_rate_volt': s_mint_rate_volt,
+            'cyberlinks': s_cyberlinks,
+            'investmint_max_period': s_investmint_max_period,
+            'agents_count': s_agents_count,
+            'capitalization_per_agent': s_capitalization_per_agent
         }
     }
 ]

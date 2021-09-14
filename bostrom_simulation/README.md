@@ -35,11 +35,50 @@ To optimize parameters for launching Bostrom.
 An idea is to model the value of BOOT through the understanding of established network effects in Ethereum.
 Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for cyberlinks based on address growth we can adjust the supply of cyberlinks so that V price could grow. The given model also allows defining inflation parameters of BOOT to optimize investments into the hardware infrastructure.
 
+## Timestpep unit
+
+timesteps_per_year == 365
+timestep == day
+
 ## BOOT supply 
 
 Simulate the ability of heroes to invest in infrastructure depending on different market conditions.  
 
 The fomula is described in [Differential Equations](#differential-equations) section.
+
+## Inflation
+
+The minting mechanism was designed to:
+
+- allow for a flexible inflation rate determined by market demand targeting a particular bonded-stake ratio
+- effect a balance between market liquidity and staked supply
+
+In order to best determine the appropriate market rate for inflation rewards, a moving change rate is used. The moving change rate mechanism ensures that if the % bonded is either over or under the goal %-bonded, the inflation rate will adjust to further incentivize or disincentivize being bonded, respectively. Setting the goal %-bonded at less than 100% encourages the network to maintain some non-staked tokens which should help provide some liquidity.
+
+It can be broken down in the following way:
+
+- If the inflation rate is below the `boot_bonded_share_target` the inflation rate will increase until a maximum value (`boot_inflation_max`) is reached
+- If the `boot_bonded_share_target` (0.70 in bostrom network) is maintained, then the inflation rate will stay constant
+- If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a minimum value (`boot_inflation_min`) is reached
+
+The target annual inflation rate is recalculated each `timestep`. The inflation is also subject to a rate change (positive or negative) depending on the distance from the desired ratio (0.70). The maximum rate change possible is defined to be `boot_inflation_rate_change` per year, however the annual inflation is capped as between `boot_inflation_min` and `boot_inflation_max`.
+
+```python
+def p_timestep_provision(params, substep, state_history, previous_state):
+    boot_supply = previous_state['liquid_boot'] + previous_state['frozen_boot'] + previous_state['vested_boot']
+    vested_ratio = previous_state['vested_boot']/boot_supply
+    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['inflation_rate_change_annual']
+    delta_boot_inflation_rate = delta_boot_inflation_rate / params['timesteps_per_year']
+    boot_inflation_rate = previous_state['boot_inflation_rate'] + delta_boot_inflation_rate
+    if boot_inflation_rate > params['boot_inflation_max']:
+        boot_inflation_rate = params['boot_inflation_max']
+    elif boot_inflation_rate < params['boot_inflation_min']:
+        boot_inflation_rate = params['boot_inflation_min']
+    timestep_provision = (boot_supply * boot_inflation_rate) / params['timesteps_per_year']
+    return {'timestep_provision': math.floor(timestep_provision)}
+```
+
+
 
 ### Simulation parameters
 
@@ -195,24 +234,6 @@ Target goal of simulation is to estimate revenue of 1 validator.
 Model could work as prediction governance tool for working network based on acutal measurements.
 
 
-## Legend
-
-There are three network tokens:
-
--  F - Unclaimed network token
--  T - Liquid network token
--  L - Frozen network token
-
-
-and two resource tokens:
-
--  A - Amper token
--  V - Volt token
-
-The initial state of all tokens should be defined below
-
--  1 __**timestep**__ == 1 time unit
-
 ## Claim function
 
 The function of claim frozen tokens is:
@@ -278,19 +299,11 @@ where:
 -  __**initMRv**__ is the initial value of MRv
 
 
-## Inflation
-
-The inflation function depends on the ratio between vested tokens and tokens supply. It the same as in cosmos-based
-networks.
-
 ## Supply
 
-Supply is the sum of liquid, vested and frozen tokens in each block.
+Supply is the sum of liquid, vested and frozen tokens in each timestep.
 
-
-## Utils
-
-The function of using volts for cyberlinking. By the simulation the probability in a timestamp [0.01, 0.02, 0.03, 0.05, 0.08, 0.13, 0.21, 0.34] .
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = iquid\_boot_t %2B vested\_boot_t_u %2B frozen\_boot_t"></p>
 
 
 ## Assumptions
@@ -302,48 +315,74 @@ The function of using volts for cyberlinking. By the simulation the probability 
 
 ### Differential Equations
 
--  T - liquid network token
--  L - locked(vested) network token
--  F - not claimed(frozen) network token
--  IRC_u - inflation rate change per time unit
--  S - total network tokens supply
--  I - inflation per time unit in network tokens
--  Provision - per time unit token provision
--  A - Amper token
--  V - Volt token
--  CL - cyberlinks
--  Agents_count - the amount of the active agents
--  
+- liquid_boot - liquid network token
+- vested_boot - locked(vested) network token (hydrogen)
+- frozen_boot - not claimed(frozen) network token
+- boot_inflation_rate_change - inflation rate change per timesep
+- boot_supply - total network tokens supply
+- inflation_rate_change_param - inflation per timestep in network tokens
+- provision - timestep token provision
+- amper - amper resource token
+- volt - volt token
+- mint_rate_amper
+- mint_rate_volt
+- cyberlinks - cyberlinks
+- agents_count - the amount of the active agents
+- capitalization_per_agent - the value of agent in ETH
+- capitalization - network capitalization in ETH, cap is defined as `agent_count * capitalization_per_agent`
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}T_u = T_{u-1} %2B {\Delta T} \tag{1}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}L_u = V_{u-1} %2B {\Delta V} \tag{2}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}F_u = F_{u-1} %2B {\Delta F} \tag{3}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}A_u = A_{u-1} %2B {\Delta A} \tag{4}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}V_u = V_{u-1} %2B {\Delta V} \tag{5}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}MR^{a}_{u} = {\Delta MR^a} \tag{6}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}MR^{v}_{u} = {\Delta MR^v} \tag{7}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}CL_{u} = CL_{u-1} %2B {\Delta CL} \tag{8}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}Agents = Agentes_{u-1} %2B {\Delta Agents} \tag{1}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}S_u = T_u %2B L_u %2B F_u \tag{9}">  
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate_t = boot\_inflation\_rate_{t-1} %2B {\Delta boot\_inflation\_rate}"></p>
 
-where the rate of change (<img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta">) is:  
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}liquid\_boot_t = liquid\_boot_{t-1} %2B {\Delta liquid\_boot}"></p>
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta F} = - \frac{5.6 \cdot 10^{14}}{3 \cdot unitsPerYear} \tag{10}">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta L} = \frac{T_{u-1}}{\frac{unitsPerYear}{12} \cdot vestingSpeed} - {\Delta U} \tag{11} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta T} = - {\Delta F} - {\Delta L} %2B I_{u-1} %2B {\Delta U}  \tag{12} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta A} = \lfloor{\lfloor{\frac{\frac{1}{2} \cdot \Delta L}{initPrice} \cdot \frac{vestringTime_{max}}{baseVestingTime}}\rfloor \cdot MR^a}\rfloor  \tag{13} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta V} = \lfloor{\lfloor{\frac{\frac{1}{2} \cdot \Delta L}{initPrice} \cdot \frac{vestringTime_{max}}{baseVestingTime}}\rfloor \cdot MR^v}\rfloor  \tag{14} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta U} = \frac{V_{u-1}}{\frac{unitsPerYear}{12} \cdot unvestingSpeed} \tag{15} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta MR^a} = \frac{MR^a_{init}}{2^{\lfloor{\frac{u}{unitsPerYear}}\rfloor}} \tag{16} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta MR^v} = \frac{MR^v_{init}}{2^{\lfloor{\frac{V}{voltHalving}}\rfloor}} \tag{17} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta Agents} = 18 \cdot u %2B 100 \tag{18} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta CL} = \frac{6.3 \cdot agents}{agents^{0.3}}  \tag{18} ">  
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}vested\_boot_t = vested\_boot_{t-1} %2B {\Delta vested\_boot}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}frozen\_boot_t = frozen\_boot_{t-1} %2B {\Delta frozen\_boot}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}amper_t = amper_{t-1} %2B {\Delta amper}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}volt_t = volt_{t-1} %2B {\Delta volt}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks_{t} = cyberlinks_{t-1} %2B {\Delta cyberlinks}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count_t = agents\_count_{t-1} %2B {\Delta agents\_count}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent_t = capitalization\_per\_agent_{t-1} %2B {\Delta capitalization\_per\_agent}"></p>
+
+
+where the rate of change (<img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta">) is: 
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_inflation\_rate = \frac{\left(1 - \frac{vested\_ratio_{t-1}}{boot\_bonded\_share\_target}\right) \cdot inflation\_rate\_change\_annual}{timesteps\_per\_year}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta frozen\_boot} = 45404590000000 \cdot e^{-0.0648637x}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta vested\_boot} = \frac{liquid_{t-1}}{\frac{timesteps\_per\_year}{12} \cdot vesting\_speed} - {\Delta unvested\_boot}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta unvested\_boot} = \frac{vested\_boot_{t-1}}{\frac{timesteps\_per\_year}{12} \cdot unvesting\_speed}"></p>
+ 
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta liquid\_boot} = - {\Delta frozen\_boot} - {\Delta vested\_boot} %2B timestep\_provision_{t-1} %2B {\Delta unvested\_boot}"></p>
+ 
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta amper} = \lfloor{\frac{\frac{1}{2} \cdot \Delta vested\_boot}{base\_investmint\_amount\_amper} \cdot \frac{investmint\_max\_period_t}{base\_investmint\_period\_amper} \cdot mint\_rate\_amper_{t}}\rfloor"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta volt} = \lfloor{\frac{\frac{1}{2} \cdot \Delta vested\_boot}{base\_investmint\_amount\_volt} \cdot \frac{investmint\_max\_period_t}{base\_investmint\_period\_volt} \cdot mint\_rate\_volt_{t}}\rfloor"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta agents\_count} = 18 \cdot t %2B 100"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta cyberlinks} = \frac{6.3}{agents\_count^{0.3}} %2B extra\_links %2B guaranteed\_links" ></p> 
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta capitalization\_per\_agent} = - \frac{start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7}}{agents\_count^{1.7}}"></p>
 
 where:
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}I_{u-1} = \frac{S_{u-1} \cdot IRC_{u-1}}{unitsPerYear} \tag{19} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}IRC_u = \frac{\left(1 - \frac{vestedRatio_{u-1}}{goalVested}\right) \cdot inflationRateChange}{unitsPerYear} \tag{20} ">  
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}{vestingTime_{max} = initVestingTime_{max} \cdot 2^{\lfloor{\frac{u}{unitsPerYear}}\rfloor}} \tag{21} ">  
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{mint\_rate\_amper_t} = \frac{mint\_rate\_amper\_init}{2^{\lfloor{\frac{t-1}{base\_halving\_period\_amper}}\rfloor}}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{mint\_rate\_volt_t} = \frac{mint\_rate\_volt\_init}{2^{\lfloor{\frac{t-1}{base\_halving\_period\_volt}}\rfloor}}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision_{t-1} = \frac{boot\_supply_{t-1} \cdot boot\_inflation\_rate\_change_{t-1}}{timesteps\_per\_year}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}vested\_ratio_{t-1} = \frac{vested\_boot}{boot\_supply}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{timesteps\_per\_year}}\rfloor}}"></p>  
 
 ## Summary of simulation parameters
 
