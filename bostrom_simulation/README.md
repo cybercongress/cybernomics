@@ -57,17 +57,17 @@ The addresses for gift are defined in the [research](https://github.com/Snedashk
 We need to derive __*claim_rate*__ (by formula to define).
 
 Assumptions:
-- agents (__*start_agents_count*__) will claim our gift. After that the gift will be activated 
+- agents (__*agents_count_at_activation*__) will claim our gift. After that the gift will be activated 
 - it will take __*days_for_gift_activation*__ since genesis before the gift claiming process will be completed 
 - agents on the moment of gift activation will claim share of the gift (__*claimed_at_activation_share*__)
-- claim process can be prolonged on __*days_for_gift_full_claim*__ in case if __*start_agents_count*__ will not reach the target goal by __*days_for_gift_activation*__.
+- claim process can be prolonged on __*days_for_gift_full_claim*__ in case if __*agents_count_at_activation*__ will not reach the target goal by __*days_for_gift_activation*__.
 - __*liquid_boot_supply_share*__ - is share of BOOT supply that will be in circulation from the network launch
 
 After the modeling of claim dynamics, we can set baselines for adoption ("understanding network effects" chapter).
 
 ### Simulation parameters
 
-- __*start_agents_count*__ `(10'000, 50'000, 100'000)`
+- __*agents_count_at_activation*__ `(10'000, 50'000, 100'000)`
 - __*days_for_gift_activation*__ `(100, 150)`
 - __*days_for_gift_full_claim*__ `(0, 360)` 
 - __*claimed_at_activation_share*__ `(1, 0.5)`
@@ -92,7 +92,7 @@ We have combined 2 trendlines and derived the following formula of agents count 
 Assuming that there are much more crypto-agents now than it was on  time of ETH launch we adjusted formula with
 coeffients to expect more rapid growth.
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B start\_agents\_count">
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
 
 We decided to model total capitalization through __*capitalization_per_agent*__ metric derived from ETH capitalization in
 BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had a lot of fluctuations).
@@ -108,13 +108,13 @@ We assumed that dynamics of capitalization of BOOT token in ETH will resemble ET
 We adjusted the formula that our first day __*capitalization_per_agent*__ will be equal to 1 ETH
 (__*start_capitalization_per_agent*__).
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot start\_agents\_count^{0.7} \cdot  agents\_count^{-0.7}">
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
 
 ### Simulation parameters
 
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B start\_agents\_count">
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
 - __*start_capitalization_per_agent*__ `(1)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot start\_agents\_count^{0.7} \cdot  agents\_count^{-0.7}">
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
 
 ## Modeling H supply
 
@@ -168,7 +168,7 @@ __*investmint_period*__ - is period of investminiting H token for selected agent
 And it is limited by system setting of __*investmint_max_period*__, that has some dynamic formula to define and research (presumably it will become longer with the age of network - [3, 6, 9, 12 ... ] monthes but no longer than the time from network start). 
 - __*investmint_amount*__ - is amount of H token investminted by agents for selected period of time.  
 - __*halving_time*__ - time period to increase investmint amount twofold.
-- __*a_v_proportion*__ - ?
+- __*a_v_ratio*__ - ?
 
 ### Simulation parameteres
 
@@ -178,31 +178,7 @@ Parameters to define for V and A:
 - __*start_investmint_max_period*__ `(90)`  
 - __*horizont_step*__ 
 - __*halving_time*__
-- __*a_v_proportion*__ `(0.5)`  
-
-## Subtotal summary of simulation parameters
-
-- __*start_boot_supply*__ = `1e15`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply = start\_boot\_supply \cdot ( 1 %2B \frac{ 0.12}{1 %2B \frac{days}{365 \cdot 2}})^{\frac{days}{365}}">
-- __*boot_inflation_rate_change*__  
-- __*boot_inflation_max*__  
-- __*boot_inflation_min*__  
-- __*boot_bonded_share_target*__  
-- __*start_agents_count*__ `(10'000, 50'000, 100'000)`
-- __*days_for_gift_activation*__ `(30, 100)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B start\_agents\_count">
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}start\_capitalization\_per\_agent = 1">
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot start\_agents\_count^{0.7} \cdot  agents\_count^{-0.7}">
-- __*boot_bonded_share*__ `(0.7)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
-- __*extra_links*__ - function to define
-- __*guaranteed_links*__ - function to define
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_agent = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links">
-- __*investmint_period*__  
-- __*investmint_amount*__  
-- __*halving_time*__  
-- __*investmint_max_period*__  
-- __*a_v_proportion*__  
+- __*a_v_ratio*__ `(0.5)`  
 
 ## Investments into infrastructure
 
@@ -368,3 +344,28 @@ where:
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}I_{u-1} = \frac{S_{u-1} \cdot IRC_{u-1}}{unitsPerYear} \tag{19} ">  
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}IRC_u = \frac{\left(1 - \frac{vestedRatio_{u-1}}{goalVested}\right) \cdot inflationRateChange}{unitsPerYear} \tag{20} ">  
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}{vestingTime_{max} = initVestingTime_{max} \cdot 2^{\lfloor{\frac{u}{unitsPerYear}}\rfloor}} \tag{21} ">  
+
+## Summary of simulation parameters
+
+- __*start_boot_supply*__ = `1e15`
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply = start\_boot\_supply \cdot ( 1 %2B \frac{ 0.12}{1 %2B \frac{days}{365 \cdot 2}})^{\frac{days}{365}}">
+- __*boot_inflation_rate_change*__  
+- __*boot_inflation_max*__  
+- __*boot_inflation_min*__  
+- __*boot_bonded_share_target*__  
+- __*agents_count_at_activation*__ `(10'000, 50'000, 100'000)`
+- __*days_for_gift_activation*__ `(30, 100)`
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}start\_capitalization\_per\_agent = 1">
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
+- __*boot_bonded_share*__ `(0.7)`
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
+- __*extra_links*__ - function to define
+- __*guaranteed_links*__ - function to define
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_agent = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links">
+- __*investmint_period*__  
+- __*investmint_amount*__  
+- __*halving_time*__  
+- __*investmint_max_period*__  
+- __*a_v_ratio*__  
+
