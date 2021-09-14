@@ -241,13 +241,13 @@ The initial state of all tokens should be defined below
 
 The function of claim frozen tokens is:
 
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}f(x) = 7 \cdot 10^{14} \cdot e^{-0.0648637x}">
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}f(x) = 7 \cdot 10^{14} - \frac{5.6 \cdot 10^{14}}{3}x">
+![calim](images/claim.png)
 
-<img src='images/claim.png' />
+<!-- <img src='images/claim.png' /> -->
 
-where __**x**__ is year. This function means 80% of frozen tokens are going to be claimed in 3 years linearly by ~187
-TeraTokens per year
+where __**x**__ is days. 
 
 ## Vesting and Unvesting
 
@@ -260,7 +260,6 @@ be unlocked in the unlock timeframe.
 ## Resource tokens
 
 Amperes and Volts mints by the following formula:
-
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}f(x) = \frac{x \cdot \frac{maxLockTime}{cycle}}{initPrice} \cdot MR^r">
 
