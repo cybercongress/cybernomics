@@ -37,6 +37,8 @@ Then we can forecast claim dynamics and address growth based on approximated net
 
 ## Timestpep unit
 
+The timestepp variable for simulation defined as `timestep` and depends on `timesteps_per_year` param. 
+
 timesteps_per_year == 365
 timestep == day
 
@@ -63,31 +65,22 @@ It can be broken down in the following way:
 
 The target annual inflation rate is recalculated each `timestep`. The inflation is also subject to a rate change (positive or negative) depending on the distance from the desired ratio (0.70). The maximum rate change possible is defined to be `boot_inflation_rate_change` per year, however the annual inflation is capped as between `boot_inflation_min` and `boot_inflation_max`.
 
-```python
-def p_timestep_provision(params, substep, state_history, previous_state):
-    boot_supply = previous_state['liquid_boot'] + previous_state['frozen_boot'] + previous_state['vested_boot']
-    vested_ratio = previous_state['vested_boot']/boot_supply
-    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['inflation_rate_change_annual']
-    delta_boot_inflation_rate = delta_boot_inflation_rate / params['timesteps_per_year']
-    boot_inflation_rate = previous_state['boot_inflation_rate'] + delta_boot_inflation_rate
-    if boot_inflation_rate > params['boot_inflation_max']:
-        boot_inflation_rate = params['boot_inflation_max']
-    elif boot_inflation_rate < params['boot_inflation_min']:
-        boot_inflation_rate = params['boot_inflation_min']
-    timestep_provision = (boot_supply * boot_inflation_rate) / params['timesteps_per_year']
-    return {'timestep_provision': math.floor(timestep_provision)}
-```
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate_t = boot\_inflation\_rate_{t-1} %2B {\Delta boot\_inflation\_rate}"></p>
 
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision_{t-1} = \frac{boot\_supply_{t-1} \cdot boot\_inflation\_rate\_change{t-1}}{timesteps\_per\_year}"></p>
 
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}vested\_ratio_{t-1} = \frac{vested\_boot}{boot\_supply}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{timesteps\_per\_year}}\rfloor}}"></p>
 
 ### Simulation parameters
 
 - __*start_boot_supply*__ `(1e15)`
-- __*boot_inflation_rate_change*__  
-- __*boot_inflation_max*__  
-- __*boot_inflation_min*__  
-- __*boot_bonded_share_target*__  
-- __*boot_supply*__  
+- __*boot_inflation_rate_change_annual*__  `(0.07)`
+- __*boot_inflation_max*__  `(0.20)`
+- __*boot_inflation_min*__  `(0.05)`
+- __*boot_bonded_share_target*__ `(0.70)` 
+<!-- - __*boot_supply*__   -->
 
 ## Modeling H supply
 
@@ -214,11 +207,14 @@ And it is limited by system setting of __*investmint_max_period*__, that has som
 ### Simulation parameteres
 
 Parameters to define for V and A:
-- __*base_investmint_period*__  
-- __*base_investmint_amount*__  
-- __*start_investmint_max_period*__ `(90)`  
-- __*horizont_step*__ 
-- __*halving_time*__
+- __*base_investmint_preiod_amper*__  `(timesteps_per_year / 12)`
+- __*base_investmint_preiod_volt*__  `(timesteps_per_year / 12)`
+- __*base_investmint_amount_amper*__  `(100_000_000)`
+- __*base_investmint_amount_volt*__  `(100_000_000)`
+- __*investmint_max_period_init*__ `(timesteps_per_year / 12)`  
+- __*horizont_step*__ ?
+- __*base_halving_period_amper*__ `(12_000_000 * 6.4)`
+- __*base_halving_period_volt*__ `(12_000_000 * 6.4)`
 - __*a_v_ratio*__ `(0.5)`  
 
 ## Investments into infrastructure
@@ -235,65 +231,48 @@ Target goal of simulation is to estimate revenue of 1 validator.
 
 The function of claim frozen tokens is:
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}f(x) = 7 \cdot 10^{14} \cdot e^{-0.0648637x}">
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}claim(timestep) = 7 \cdot 10^{14} \cdot e^{-0.0648637timestep}"></p>
 
 ![calim](images/claim.png)
 
 <!-- <img src='images/claim.png' /> -->
-
-where __**x**__ is days. 
 
 ## Vesting and Unvesting
 
 The vesting function is defined as the amount of locking tokens in the time unit assumed by all liquid tokens must be
 locked in the lock timeframe.
 
-The vesting function is defined as the amount of unlocking tokens in the time unit assumed by all locked tokens must
+The unvesting function is defined as the amount of unlocking tokens in the time unit assumed by all locked tokens must
 be unlocked in the unlock timeframe.
 
-## Resource tokens
+## Amper minting
 
-Amperes and Volts mints by the following formula:
+Amperes mints by the following formula:
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}f(x) = \frac{x \cdot \frac{maxLockTime}{cycle}}{initPrice} \cdot MR^r">
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{amper} = \lfloor{\frac{hydrogent}{base\_investmint\_amount\_amper} \cdot \frac{investmint\_period}{base\_investmint\_period\_amper} \cdot mint\_rate\_amper}\rfloor"></p>
 
-where: 
--  __**x**__ is number of vested tokens
--  __**lockTime**__ is the maximum time for locking tokens
--  __**cycle**__ is amount of blocks for rank and entropy calculation
--  __**initPrice**__ is the initial price of the minting
--  __**MR_r**__ is mint rate [100, 1]. It's different for all energy tokens
+## Volt minting
 
+Volt mints by the following formula:
 
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt} = \lfloor{\frac{hydrogent}{base\_investmint\_amount\_volt} \cdot \frac{investmint\_period}{base\_investmint\_period\_volt} \cdot mint\_rate\_volt}\rfloor"></p>
 
 ## Mint Rate (Amperes)
 
 Mint rate is multiple coefficient for minting Amper tokens
 
-It is halving every year
+It is halving every `base_halving_period_amper`
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}MR_a(x) = \frac{initMR^a}{2^{\lfloor{x}\rfloor}}">
-
-where: 
--  __**x**__ is year
--  __**initMRa**__ is the initial value of MRa
-
-f.e.
-
-<img src='images/mr_a.png' />
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{mint\_rate\_amper_t} = \frac{mint\_rate\_amper\_init}{2^{\lfloor{\frac{t-1}{base\_halving\_period\_amper}}\rfloor}}"></p>
 
 
 ## Mint Rate (Voltes)
 
 Mint rate is multiple coefficient for minting Volt tokens
 
-It is halving every amount of supply defined
+It is halving every `base_halving_period_volt`
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}MR_v(x) = \frac{initMR^v}{2^{\lfloor{x}\rfloor}}">
-
-where: 
--  __**x**__ is defined supply
--  __**initMRv**__ is the initial value of MRv
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{mint\_rate\_volt_t} = \frac{mint\_rate\_volt\_init}{2^{\lfloor{\frac{t-1}{base\_halving\_period\_volt}}\rfloor}}"></p>
 
 
 ## Supply
@@ -349,13 +328,13 @@ Supply is the sum of liquid, vested and frozen tokens in each timestep.
 
 where the rate of change (<img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta">) is: 
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_inflation\_rate = \frac{\left(1 - \frac{vested\_ratio_{t-1}}{boot\_bonded\_share\_target}\right) \cdot inflation\_rate\_change\_annual}{timesteps\_per\_year}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_inflation\_rate = \frac{\left(1 - \frac{vested\_ratio_{t-1}}{boot\_bonded\_share\_target}\right) \cdot boot\_inflation\_rate\_change\_annual}{timesteps\_per\_year}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta frozen\_boot} = 45404590000000 \cdot e^{-0.0648637x}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta vested\_boot} = \frac{liquid_{t-1}}{\frac{timesteps\_per\_year}{12} \cdot vesting\_speed} - {\Delta unvested\_boot}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta unvested\_boot} = \frac{vested\_boot_{t-1}}{\frac{timesteps\_per\_year}{12} \cdot unvesting\_speed}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta unvested\_boot} = \frac{vested\_boot_{t-1}}{\frac{timesteps\_per\_year}{12} \cdot unvesting\_speed}- {\Delta vested\_boot}"></p>
  
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta liquid\_boot} = - {\Delta frozen\_boot} - {\Delta vested\_boot} %2B timestep\_provision_{t-1} %2B {\Delta unvested\_boot}"></p>
  

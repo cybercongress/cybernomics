@@ -4,7 +4,7 @@ import math
 def p_boot_inflation_rate(params, substep, state_history, previous_state):
     boot_supply = previous_state['liquid_boot'] + previous_state['frozen_boot'] + previous_state['vested_boot']
     vested_ratio = previous_state['vested_boot']/boot_supply
-    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['inflation_rate_change_annual']
+    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['boot_inflation_rate_change_annual']
     delta_boot_inflation_rate = delta_boot_inflation_rate / params['timesteps_per_year']
     return {'delta_boot_inflation_rate': delta_boot_inflation_rate}
 
@@ -12,7 +12,7 @@ def p_boot_inflation_rate(params, substep, state_history, previous_state):
 def p_timestep_provision(params, substep, state_history, previous_state):
     boot_supply = previous_state['liquid_boot'] + previous_state['frozen_boot'] + previous_state['vested_boot']
     vested_ratio = previous_state['vested_boot']/boot_supply
-    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['inflation_rate_change_annual']
+    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['boot_inflation_rate_change_annual']
     delta_boot_inflation_rate = delta_boot_inflation_rate / params['timesteps_per_year']
     boot_inflation_rate = previous_state['boot_inflation_rate'] + delta_boot_inflation_rate
     if boot_inflation_rate > params['boot_inflation_max']:
@@ -39,7 +39,9 @@ def p_unvested_boot(params, substep, state_history, previous_state):
     if previous_state['timestep'] <= params['base_investmint_preiod_volt']:
         delta_unvested_boot = 0
     else:
-        delta_unvested_boot = previous_state['liquid_boot']/((params['timesteps_per_year']/12) * params['unvesting_speed'])
+        delta_vested_boot = previous_state['liquid_boot'] / (
+                    (params['timesteps_per_year'] / 12) * params['vesting_speed'])
+        delta_unvested_boot = previous_state['liquid_boot']/((params['timesteps_per_year']/12) * params['unvesting_speed']) - delta_vested_boot
     return {'delta_unvested_boot': math.floor(delta_unvested_boot)}
 
 
