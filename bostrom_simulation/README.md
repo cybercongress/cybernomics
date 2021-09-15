@@ -194,7 +194,8 @@ on this demand also adding __*guaranteed_links*__ count.
 
 To model minting properties of V for the planning of GPU storage and maximization of price. As A reource do not have natural measure we decide to model A supply rules equal to V. 
 
-Gboot __*__ 1 day = 1 volt
+System designed in the way that investminted 1 GBOOT for 1 day yelds 1 V. 
+
 
 __*investmint_period*__ - is period of investminiting H token for selected agent. It is choosen by agent according to his understanding and priorities of maximisation his benefits. 
 
@@ -202,7 +203,7 @@ __*investmint_period*__ - is period of investminiting H token for selected agent
 And it is limited by system setting of __*investmint_max_period*__, that has some dynamic formula to define and research (presumably it will become longer with the age of network - [3, 6, 9, 12 ... ] monthes but no longer than the time from network start). 
 - __*investmint_amount*__ - is amount of H token investminted by agents for selected period of time.  
 - __*halving_time*__ - time period to increase investmint amount twofold.
-- __*a_v_ratio*__ - ?
+- __*a_v_ratio*__ - the ratio between A and V tokens in ?
 
 ### Simulation parameteres
 
@@ -219,13 +220,16 @@ Parameters to define for V and A:
 
 ## Investments into infrastructure
 
-- BOOT Supply
-- BOOT Staked
-- Comission = 10%
-- BOOT price
-- Validator count = 92
- 
-Target goal of simulation is to estimate revenue of 1 validator.
+Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have commision (`validator_comission`)  equals to 10% and that there are 92 validators (`validator_count` = 92). 
+
+It is defined by formula - ?
+
+### Simulation parameters
+
+- validator_comission `(0.1)`
+- boot_price - ?
+- validator_count `(92)`
+
 
 ## Claim function
 
