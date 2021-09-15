@@ -46,7 +46,7 @@ Simulate the ability of heroes to invest in infrastructure depending on differen
 
 The fomula is described in [Differential Equations](#differential-equations) section.
 
-## Inflation
+### BOOT inflation
 
 The minting mechanism was designed to:
 
@@ -88,6 +88,18 @@ def p_timestep_provision(params, substep, state_history, previous_state):
 - __*boot_inflation_min*__  
 - __*boot_bonded_share_target*__  
 - __*boot_supply*__  
+
+## Modeling H supply
+
+Agents will delegate __*boot_bonded_share*__ (70%) of BOOT Supply to heroes, and H will be minted in the corresponding amount.
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
+
+### Simulation parameters
+
+- __*boot_bonded_share*__ `(0.7)`
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
+
 
 ## Gift claim dynamics
  
@@ -155,16 +167,6 @@ We adjusted the formula that our first day __*capitalization_per_agent*__ will b
 - __*start_capitalization_per_agent*__ `(1)`
 - <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
 
-## Modeling H supply
-
-Agents will delegate __*boot_bonded_share*__ (70%) of BOOT Supply to heroes, and H will be minted in the corresponding amount.
-
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
-
-### Simulation parameters
-
-- __*boot_bonded_share*__ `(0.7)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
 
 ## Predicting V demand
 
@@ -228,11 +230,6 @@ Parameters to define for V and A:
 - Validator count = 92
  
 Target goal of simulation is to estimate revenue of 1 validator.
-
-## Further work
-
-Model could work as prediction governance tool for working network based on acutal measurements.
-
 
 ## Claim function
 
