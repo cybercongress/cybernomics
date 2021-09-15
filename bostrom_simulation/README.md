@@ -35,14 +35,18 @@ To optimize parameters for launching Bostrom.
 An idea is to model the value of BOOT through the understanding of established network effects in Ethereum.
 Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for cyberlinks based on address growth we can adjust the supply of cyberlinks so that V price could grow. The given model also allows defining inflation parameters of BOOT to optimize investments into the hardware infrastructure.
 
-## Timestpep unit
+## Timestep unit
 
 The timestepp variable for simulation defined as `timestep` and depends on `timesteps_per_year` param. 
 
-timesteps_per_year == 365
-timestep == day
+timesteps_per_year `(365)`
+timestep = day
 
 ## BOOT supply 
+
+Supply is the sum of liquid, vested and frozen boot per each timestep.
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = iquid\_boot_t %2B vested\_boot_t_u %2B frozen\_boot_t"></p>
 
 Simulate the ability of heroes to invest in infrastructure depending on different market conditions.  
 
@@ -278,12 +282,6 @@ It is halving every `base_halving_period_volt`
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{mint\_rate\_volt_t} = \frac{mint\_rate\_volt\_init}{2^{\lfloor{\frac{t-1}{base\_halving\_period\_volt}}\rfloor}}"></p>
 
-
-## Supply
-
-Supply is the sum of liquid, vested and frozen tokens in each timestep.
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = iquid\_boot_t %2B vested\_boot_t_u %2B frozen\_boot_t"></p>
 
 
 ## Assumptions
