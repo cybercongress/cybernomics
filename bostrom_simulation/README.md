@@ -37,10 +37,15 @@ Then we can forecast claim dynamics and address growth based on approximated net
 
 ## Timestep unit
 
-The timestepp variable for simulation defined as `timestep` and depends on `timesteps_per_year` param. 
+The timestep variable for simulation defined as `timestep` and depends on `timesteps_per_year` param. 
 
+<<<<<<< HEAD
 timesteps_per_year `(365)`
 timestep = day
+=======
+timesteps_per_year == 365  
+timestep == day
+>>>>>>> model-description
 
 ## BOOT supply 
 
@@ -50,7 +55,7 @@ Supply is the sum of liquid, vested and frozen boot per each timestep.
 
 Simulate the ability of heroes to invest in infrastructure depending on different market conditions.  
 
-The fomula is described in [Differential Equations](#differential-equations) section.
+The formula is described in [Differential Equations](#differential-equations) section.
 
 ### BOOT inflation
 
@@ -120,7 +125,7 @@ After the modeling of claim dynamics, we can set baselines for adoption ("unders
 - __*days_for_gift_full_claim*__ `(0, 360)` 
 - __*claimed_at_activation_share*__ `(1, 0.5)`
 - __*liquid_boot_supply_share*__ `(0.25)`
-- __*claimed_boot_supply*__ - ?
+
 
 ## Understanding network effects
 
@@ -142,7 +147,7 @@ coeffients to expect more rapid growth.
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
 
-We decided to model total capitalization through __*capitalization_per_agent*__ metric derived from ETH capitalization in
+We decided to model total __*capitalization*__ through __*capitalization_per_agent*__ metric derived from ETH capitalization in
 BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had a lot of fluctuations).
 
 ![ETH dynamics](images/EthCapPerAgentActiveInBTC1.png)
@@ -164,6 +169,15 @@ We adjusted the formula that our first day __*capitalization_per_agent*__ will b
 - __*start_capitalization_per_agent*__ `(1)`
 - <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
 
+## Capitalization and price 
+
+__*capitalization*__  in ETH is defined as `agents_count * capitalization_per_agent`.
+__*boot_price*__ in ETH is defined as __*capitalization*__ / __*boot_supply*__. 
+
+
+### Simulation parameters
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization = agents\_count \cdot capitalization\_per\_agent">
+- <img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_price=\frac{capitalization}{boot\_supply}">
 
 ## Predicting V demand
 
@@ -204,10 +218,18 @@ System designed in the way that investminted 1 GBOOT for 1 day yelds 1 V.
 __*investmint_period*__ - is period of investminiting H token for selected agent. It is choosen by agent according to his understanding and priorities of maximisation his benefits. 
 
 
-And it is limited by system setting of __*investmint_max_period*__, that has some dynamic formula to define and research (presumably it will become longer with the age of network - [3, 6, 9, 12 ... ] monthes but no longer than the time from network start). 
+And it is limited by system setting of __*investmint_max_period*__, that has dynamic formula to define and research (presumably it will become longer with the age of network - [3, 6, 12 ... ] monthes but no longer than the time from network start). 
+
+__*investmint_max_period*__ is calculated as:
+
+
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_step \cdot 2^{\lceil{\log_2 \lceil{\frac{timestamp %2B 1}{horizont\_step}}\rceil}\rceil}">
+
 - __*investmint_amount*__ - is amount of H token investminted by agents for selected period of time.  
 - __*halving_time*__ - time period to increase investmint amount twofold.
 - __*a_v_ratio*__ - the ratio between A and V tokens in ?
+- __*horizont_step*__ - ?
 
 ### Simulation parameteres
 
@@ -217,23 +239,24 @@ Parameters to define for V and A:
 - __*base_investmint_amount_amper*__  `(100_000_000)`
 - __*base_investmint_amount_volt*__  `(100_000_000)`
 - __*investmint_max_period_init*__ `(timesteps_per_year / 12)`  
-- __*horizont_step*__ ?
+- __*horizont_step*__ ? - написать определение
 - __*base_halving_period_amper*__ `(12_000_000 * 6.4)`
 - __*base_halving_period_volt*__ `(12_000_000 * 6.4)`
 - __*a_v_ratio*__ `(0.5)`  
 
 ## Investments into infrastructure
 
-Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have commision (`validator_comission`)  equals to 10% and that there are 92 validators (`validator_count` = 92). 
+Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have commision (`validator_comission`)  equals to 10% and that there are 92 validators (`max_validator_count` = 92). 
 
-It is defined by formula - ?
+__*validator_revenue*__ is defined by formula
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue = \frac{timestep_provision \cdot validator\_commision \cdot boot\_price}{ max\_validator\_count} ">
 
 ### Simulation parameters
 
 - validator_comission `(0.1)`
 - boot_price - ?
-- validator_count `(92)`
-
+- max_validator_count `(92)`
 
 ## Claim function
 
@@ -307,7 +330,7 @@ It is halving every `base_halving_period_volt`
 - cyberlinks - cyberlinks
 - agents_count - the amount of the active agents
 - capitalization_per_agent - the value of agent in ETH
-- capitalization - network capitalization in ETH, cap is defined as `agent_count * capitalization_per_agent`
+- capitalization - network capitalization in ETH, cap is defined as `agents_count * capitalization_per_agent`
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate_t = boot\_inflation\_rate_{t-1} %2B {\Delta boot\_inflation\_rate}"></p>
 
