@@ -35,26 +35,26 @@ To optimize parameters for launching Bostrom.
 An idea is to model the value of BOOT through the understanding of established network effects in Ethereum.
 Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for cyberlinks based on address growth we can adjust the supply of cyberlinks so that V price could grow. The given model also allows defining inflation parameters of BOOT to optimize investments into the hardware infrastructure.
 
-## Timestep variable (need to discuss)
+## `timestep` variable (need to discuss)
 
 The variable `timestep` (`t`) is used in all formulas and definitions across this spec and defined as:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \frac{timesteps\_per\_year}{365}"></p>
 
-timesteps_per_year `(365)`
+
+### Simulation parameters
+
+- `timestep` (`t`)
+- `timesteps_per_year` `(365)`
 
 
 ## BOOT supply 
 
-The boot supply on each timestep defines as the boot supply on the previous timestep plus provision on the current timestep:
+The boot supply on each `timestep` defines as the boot supply on the previous `timestep` plus provision on the current timestep:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision_t"></p>
 
-Simulate the ability of heroes to invest in infrastructure depending on different market conditions.  
-
-The fomula is described in [Differential Equations](#differential-equations) section. (is it really need here now?)
-
-The `timestep_provision` variable is described in the `BOOT inflation` section.
+The `timestep_provision` variable is described in the [BOOT inflation](#boot-inflation) subsection.
 
 ### BOOT inflation
 
@@ -73,15 +73,16 @@ It can be broken down in the following way:
 
 The target annual inflation rate is recalculated each `timestep`. The inflation is also subject to a rate change (positive or negative) depending on the distance from the desired ratio (0.70). The maximum rate change possible is defined to be `boot_inflation_rate_change` per year, however the annual inflation is capped as between `boot_inflation_min` and `boot_inflation_max`.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision_t = \frac{boot\_supply_{t} \cdot inflation_{t}}{timesteps\_per\_year}"></p>
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation_t = boot\_inflation_{t-1} + %2B boot\_inflation\_rate\_change"></p>
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change_t = \frac{boot\_inflation\_rate\_change\_per\_year_t}{timesteps\_per\_year}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{bonded\_boot\_amount_{t-1}}{boot\_supply}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change\_per\_year_t = \frac{1 - \frac{boot\_bonded\_share_{t-1}}{boot\_bonded\_share\_target}}{boot\_inflation\_rate\_change\_annual}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{bonded\_boot\_amount_{t-1}}{boot\_supply}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change_t = \frac{boot\_inflation\_rate\_change\_per\_year_t}{timesteps\_per\_year}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation_t = boot\_inflation_{t-1} + %2B boot\_inflation\_rate\_change"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision_t = \frac{boot\_supply_{t-1} \cdot boot\_inflation_{t}}{timesteps\_per\_year}"></p>
+
 
 <!-- <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{timesteps\_per\_year}}\rfloor}}"></p> -->
 
@@ -91,47 +92,51 @@ In case if inflation lower than `boot_inflation_min` param the inflation sets as
 
 ### Simulation parameters
 
-- __*start_boot_supply*__ `(1e15)`
-- __*boot_inflation_rate_change_annual*__  `(0.07)`
-- __*boot_inflation_max*__  `(0.20)`
-- __*boot_inflation_min*__  `(0.05)`
-- __*boot_bonded_share_target*__ `(0.70)` 
-<!-- - __*boot_supply*__   -->
+- `start_boot_supply` `(1e15)` - нет в формулах
+- `boot_supply`
+- `boot_bonded_share_target`
+- `boot_inflation_max`
+- `boot_inflation_min`
+- 
+- `boot_inflation_rate_change_annual`  `(0.07)` 
+- `boot_inflation_max`  `(0.20)`
+- `boot_inflation_min`  `(0.05)`
+- `boot_bonded_share_target` `(0.70)` 
+<!-- - `boot_supply`   -->
 
 ## Modeling H supply (need to discuss)
 
-Agents will delegate __*boot_bonded_share*__ (70%) of BOOT Supply to heroes, and H will be minted in the corresponding amount.
+Agents will delegate `boot_bonded_share` (70%) of BOOT Supply to heroes, and H will be minted in the corresponding amount.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = liquid\_boot\_amount \cdot boot\_bonded\_share"></p>
 
 ### Simulation parameters
 
-- __*boot_bonded_share*__ `(0.7)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
+- `boot_bonded_share` `(0.7)`
 
 
 ## Gift claim dynamics
  
 The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of BOOT tokens. Further we need to model how this gifts can be claimed. 
 
-We need to derive __*claim_rate*__ (by formula to define).
+We need to derive `claim_rate` (by formula to define).
 
 Assumptions:
-- agents (__*agents_count_at_activation*__) will claim our gift. After that the gift will be activated 
-- it will take __*days_for_gift_activation*__ since genesis before the gift claiming process will be completed 
-- agents on the moment of gift activation will claim share of the gift (__*claimed_at_activation_share*__)
-- claim process can be prolonged on __*days_for_gift_full_claim*__ in case if __*agents_count_at_activation*__ will not reach the target goal by __*days_for_gift_activation*__.
-- __*liquid_boot_supply_share*__ - is share of BOOT supply that will be in circulation from the network launch
+- agents (`agents_count_at_activation`) will claim our gift. After that the gift will be activated 
+- it will take `days_for_gift_activation` since genesis before the gift claiming process will be completed 
+- agents on the moment of gift activation will claim share of the gift (`claimed_at_activation_share`)
+- claim process can be prolonged on `days_for_gift_full_claim` in case if `agents_count_at_activation` will not reach the target goal by `days_for_gift_activation`.
+- `liquid_boot_supply_share` - is share of BOOT supply that will be in circulation from the network launch
 
 After the modeling of claim dynamics, we can set baselines for adoption ("understanding network effects" chapter).
 
 ### Simulation parameters
 
-- __*agents_count_at_activation*__ `(10'000, 50'000, 100'000)`
-- __*days_for_gift_activation*__ `(100, 150)`
-- __*days_for_gift_full_claim*__ `(0, 360)` 
-- __*claimed_at_activation_share*__ `(1, 0.5)`
-- __*liquid_boot_supply_share*__ `(0.25)`
+- `agents_count_at_activation` `(10'000, 50'000, 100'000)`
+- `days_for_gift_activation` `(100, 150)`
+- `days_for_gift_full_claim` `(0, 360)` 
+- `claimed_at_activation_share` `(1, 0.5)`
+- `liquid_boot_supply_share` `(0.25)`
 
 
 ## Understanding network effects
@@ -149,42 +154,38 @@ We have combined 2 trendlines and derived the following formula of agents count 
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 2 \cdot days^{2} %2B 100 \cdot days %2B 8700">
 
-Assuming that there are much more crypto-agents now than it was on  time of ETH launch we adjusted formula with
-coeffients to expect more rapid growth.
+Assuming that there are much more crypto-agents now than it was at the time of ETH launch, we adjusted the formula with coefficients to expect more rapid growth.
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
 
-We decided to model total __*capitalization*__ through __*capitalization_per_agent*__ metric derived from ETH capitalization in
+We decided to model total `capitalization` through `capitalization_per_agent` metric derived from ETH capitalization in
 BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had a lot of fluctuations).
 
 ![ETH dynamics](images/EthCapPerAgentActiveInBTC1.png)
 
 We derived such formula:
 
-<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = 60\,000 \cdot agents\_count^{-0.7}">
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = 60000 \cdot agents\_count^{-0.7}">
 
 
 We assumed that dynamics of capitalization of BOOT token in ETH will resemble ETH token dynamics in BTC prices.
-We adjusted the formula that our first day __*capitalization_per_agent*__ will be equal to 1 ETH
-(__*start_capitalization_per_agent*__).
+We adjusted the formula that our first day `capitalization_per_agent` will be equal to 1 ETH
+(`start_capitalization_per_agent`).
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
 
 ### Simulation parameters
 
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
-- __*start_capitalization_per_agent*__ `(1)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
+- `start_capitalization_per_agent` `(1)`
 
 ## Capitalization and price 
 
-__*capitalization*__  in ETH is defined as `agents_count * capitalization_per_agent`.
-__*boot_price*__ in ETH is defined as __*capitalization*__ / __*boot_supply*__. 
+`capitalization`  in ETH is defined by formula: 
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization = agents\_count \cdot capitalization\_per\_agent">
 
+`boot_price` in ETH is defined by formula:
 
-### Simulation parameters
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization = agents\_count \cdot capitalization\_per\_agent">
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_price=\frac{capitalization}{boot\_supply}">
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_price=\frac{capitalization}{boot\_supply}">
 
 ## Predicting V demand
 
@@ -202,18 +203,17 @@ And we adjust such formula with the number of extra links and guaranteed links.
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_agent = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links">
 
-*Extra_links*__ count depends on UX specifics, such as name setting, following (proportion of agents) and extra:
+`extra_links` count depends on UX specifics, such as name setting, following (proportion of agents) and extra:
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, name, following, extra)"> 
 
 Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely
-on this demand also adding __*guaranteed_links*__ count.
+on this demand also adding `guaranteed_links` count.
 
 ### Simulation parameters 
 
-- __*extra_links*__ - function to define
-- __*guaranteed_links*__ - function to define
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_agent = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links">
+- `extra_links` - function to define
+- `guaranteed_links` - function to define
 
 ## Adjusting V and A supply
 
@@ -222,40 +222,40 @@ To model minting properties of V for the planning of GPU storage and maximizatio
 System designed in the way that investminted 1 GBOOT for 1 day yelds 1 V. 
 
 
-__*investmint_period*__ - is period of investminiting H token for selected agent. It is choosen by agent according to his understanding and priorities of maximisation his benefits. 
+`investmint_period` - is period of investminiting H token for selected agent. It is choosen by agent according to his understanding and priorities of maximisation his benefits. 
 
 
-And it is limited by system setting of __*investmint_max_period*__, that has dynamic formula to define and research (presumably it will become longer with the age of network - [3, 6, 12 ... ] monthes but no longer than the time from network start). 
+And it is limited by system setting of `investmint_max_period`, that has dynamic formula to define and research (presumably it will become longer with the age of network - [3, 6, 12 ... ] monthes but no longer than the time from network start). 
 
-__*investmint_max_period*__ is calculated as:
+`investmint_max_period` is calculated as:
 
 
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_step \cdot 2^{\lceil{\log_2 \lceil{\frac{timestamp %2B 1}{horizont\_step}}\rceil}\rceil}">
 
-- __*investmint_amount*__ - is amount of H token investminted by agents for selected period of time.  
-- __*halving_time*__ - time period to decrease mint_rate variable.
-- __*a_v_ratio*__ - the ratio between `amper` and `volt` tokens supply. This parameter defines a Graph coherence(?). Amper defines particles in the natural value volts defines cyberlinks. The ratio between particles and cyberlinks should seek 1/500.
-__*horizont_step*__ - ?
+- `investmint_amount` - is amount of H token investminted by agents for selected period of time.  
+- `halving_time` - time period to decrease mint_rate variable.
+- `a_v_ratio` - the ratio between `amper` and `volt` tokens supply. This parameter defines a Graph coherence(?). Amper defines particles in the natural value volts defines cyberlinks. The ratio between particles and cyberlinks should seek 1/500.
+`horizont_step` - ?
 
 ### Simulation parameteres
 
 Parameters to define for V and A:
-- __*base_investmint_preiod_amper*__  `(timesteps_per_year / 12)`
-- __*base_investmint_preiod_volt*__  `(timesteps_per_year / 12)`
-- __*base_investmint_amount_amper*__  `(100_000_000)`
-- __*base_investmint_amount_volt*__  `(100_000_000)`
-- __*investmint_max_period_init*__ `(timesteps_per_year / 12)`  
-- __*horizont_step*__ ? - написать определение
-- __*base_halving_period_amper*__ `(12_000_000 * 6.4)`
-- __*base_halving_period_volt*__ `(12_000_000 * 6.4)`
-- __*a_v_ratio*__ `(0.5)`  
+- `base_investmint_period_amper`  `(timesteps_per_year / 12)`
+- `base_investmint_period_volt`  `(timesteps_per_year / 12)`
+- `base_investmint_amount_amper`  `(100_000_000)`
+- `base_investmint_amount_volt`  `(100_000_000)`
+- `investmint_max_period_init` `(timesteps_per_year / 12)`  
+- `horizont_step` ? - написать определение
+- `base_halving_period_amper` `(12_000_000 * 6.4)`
+- `base_halving_period_volt` `(12_000_000 * 6.4)`
+- `a_v_ratio` `(0.5)`  
 
 ## Investments into infrastructure
 
-Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have commision (`validator_comission`)  equals to 10% and that there are 92 validators (`max_validator_count` = 92). 
+Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have commision (`validator_comission`)  equals to 10% and that there are 92 validators (`max_validator_count`). 
 
-__*validator_revenue*__ is defined by formula
+`validator_revenue` is defined by formula
 
 <img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue = \frac{timestep\_provision \cdot validator\_commision \cdot boot\_price}{ max\_validator\_count} ">
 
@@ -270,7 +270,7 @@ __*validator_revenue*__ is defined by formula
 
 The function of claim frozen tokens is:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}claim(timestep) = 7 \cdot 10^{14} \cdot e^{-0.0648637timestep}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}claim(timestep) = 7 \cdot 10^{14} \cdot e^{-0.0648637 \cdot timestep}"></p>
 
 ![calim](images/claim.png)
 
@@ -316,31 +316,131 @@ It is halving every `base_halving_period_volt`
 ## Assumptions
 
 1. All agents lock tokens for the maximum available period defined in params for simulating
-2. All agents mint maximum __**amper**__ and __**volt**__ tokens in 50/50 ratio
+2. All agents mint maximum `amper` and `volt` tokens in 50/50 ratio
 
 ## Mathematical Specification
 
+### Summary of simulation parameters
+
+- `start_boot_supply` `(1e15)`
+- `start_capitalization_per_agent` `(1)`
+- `boot_inflation_rate_change`  
+- `agents_count_at_activation` `(10'000, 50'000, 100'000)`
+- `days_for_gift_activation` `(30, 100)`
+- `boot_bonded_share` `(0.7)`
+- `extra_links` - function to define
+- `guaranteed_links` - function to define
+- `investmint_max_period`  
+<!-- здесь -->
+- `timesteps_per_year`
+- `boot_inflation_max`
+- `boot_inflation_min`
+- `boot_bonded_share_target`
+- `boot_inflation_rate_change_annual`
+- `claim_rate`
+- `claimed_at_activation_share`
+- `days_for_gift_full_claim`
+- `liquid_boot_supply_share`
+- `days`
+- `guaranteed_links`
+- `horizont_step`
+- `timestamp`
+- `investmint_amount`
+- `halving_time`
+- `volt`
+- `amper`
+- `a_v_ratio`
+- `base_investmint_period_volt`
+- `validator_comission`
+- `max_validator_count`
+- `validator_commision`
+- `timestep`
+- `base_investmint_amount_amper`
+- `locked_hydrogen_amount`
+- `base_investmint_period_amper`
+- `investmint_period`
+- `base_investmint_amount_volt`
+- `mint_rate_amper_init`
+- `base_halving_period_amper`
+- `mint_rate_volt_init`
+- `base_halving_period_volt`
+- `delta_unbonded_boot_amount`
+- `inflation_rate_change_annual`
+- `x`
+- `bonding_speed`
+- `unbonding_speed`
+- `investmint_max_period_init`
+
+### Formulas
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \frac{timesteps\_per\_year}{365}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision_t"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{bonded\_boot\_amount_{t-1}}{boot\_supply}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change\_per\_year_t = \frac{1 - \frac{boot\_bonded\_share_{t-1}}{boot\_bonded\_share\_target}}{boot\_inflation\_rate\_change\_annual}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change_t = \frac{boot\_inflation\_rate\_change\_per\_year_t}{timesteps\_per\_year}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation_t = boot\_inflation_{t-1} + %2B boot\_inflation\_rate\_change"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision_t = \frac{boot\_supply_{t-1} \cdot boot\_inflation_{t}}{timesteps\_per\_year}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = liquid\_boot\_amount \cdot boot\_bonded\_share"></p>
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 2 \cdot days^{2} %2B 100 \cdot days %2B 8700">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = 60\,000 \cdot agents\_count^{-0.7}">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization = agents\_count \cdot capitalization\_per\_agent">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_price=\frac{capitalization}{boot\_supply}">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}transactions\_per\_agent = 9 \cdot agents\_count^{-0.3}">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_agent = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, name, following, extra)"> 
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_step \cdot 2^{\lceil{\log_2 \lceil{\frac{timestamp %2B 1}{horizont\_step}}\rceil}\rceil}">
+
+<img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue = \frac{timestep\_provision \cdot validator\_commision \cdot boot\_price}{ max\_validator\_count} ">
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}claim(timestep) = 7 \cdot 10^{14} \cdot e^{-0.0648637 \ cdot timestep}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{minted\_amper\_amount} = \lfloor{\frac{locked\_hydrogen\_amount}{base\_investmint\_amount\_amper} \cdot \frac{investmint\_period}{base\_investmint\_period\_amper} \cdot mint\_rate\_amper}\rfloor"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{minted\_volt\_amount} = \lfloor{\frac{locked\_hydrogen\_amount}{base\_investmint\_amount\_volt} \cdot \frac{investmint\_period}{base\_investmint\_period\_volt} \cdot mint\_rate\_volt}\rfloor"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{mint\_rate\_amper_t} = \frac{mint\_rate\_amper\_init}{2^{\lfloor{\frac{t}{base\_halving\_period\_amper}}\rfloor}}"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{mint\_rate\_volt_t} = \frac{mint\_rate\_volt\_init}{2^{\lfloor{\frac{t}{base\_halving\_period\_volt}}\rfloor}}"></p>
+
+
+
 ### Differential Equations
 
-- liquid_boot_amount - liquid network token amount
-- bonded_boot_amount - bonded(staked) network token (hydrogen) amount
-- frozen_boot_amount - not claimed(frozen) network token amount
-- delta_unbonded_boot_amount - the amount of unbonded boots in `t`
-- bonding_speed - the amount of months to bond all liquid boots
-- unbonding_speed - the amount of months to unbond all bonded boots
-- boot_inflation - inflation on timesep
-- boot_supply - total network tokens supply
-- inflation_rate_change_annual - maximum annual inflation rate change
-- timestep_provision - timestep token provision
-- amper_amount - amper resource token amount
-- volt_amount - volt token amount
-- mint_rate_amper - mint rate for amper token minting
-- mint_rate_volt - mint rate for volt token minting
-- cyberlinks_amount
-- agents_count - the amount of the active agents
-- capitalization_per_agent - the value of agent in ETH
-- capitalization - network capitalization in ETH, cap is defined as `agents_count * capitalization_per_agent`
-- horizont_step - ?
+- `liquid_boot_amount` - liquid network token amount
+- `bonded_boot_amount` - bonded(staked) network token (hydrogen) amount
+- `frozen_boot_amount` - not claimed(frozen) network token amount
+- `delta_unbonded_boot_amount` - the amount of unbonded boots in `t`
+- `bonding_speed` - the amount of months to bond all liquid boots
+- `unbonding_speed` - the amount of months to unbond all bonded boots
+- `boot_inflation` - inflation on timesep
+- `boot_supply` - total network tokens supply
+- `inflation_rate_change_annual` - maximum annual inflation rate change
+- `timestep_provision` - `timestep` token provision
+- `amper_amount` - amper resource token amount
+- `volt_amount` - volt token amount
+- `mint_rate_amper` - mint rate for amper token minting
+- `mint_rate_volt` - mint rate for volt token minting
+- `cyberlinks_amount`
+- `agents_count` - the amount of the active agents
+- `capitalization_per_agent` - the value of agent in ETH
+- `horizont_step` - ?
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation_t = boot\_inflation_{t-1} %2B {\Delta boot\_inflation}"></p>
 
@@ -365,7 +465,7 @@ where the rate of change (<img src="https://render.githubusercontent.com/render/
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_inflation = \frac{\left(1 - \frac{boot\_bonded\_share_{t-1}}{boot\_bonded\_share\_target}\right)}{timesteps\_per\_year \cdot boot\_inflation\_rate\_change\_annual}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta frozen\_boot\_amount} = 45404590000000 \cdot e^{-0.0648637x}">need to refactor</p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta frozen\_boot\_amount} = 45404590000000 \cdot e^{-0.0648637 \cdot x}">need to refactor</p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta bonded\_boot\_amount} = \frac{liquid\_boot\_amount_{t-1}}{\frac{timesteps\_per\_year}{12} \cdot bonding\_speed} - {\Delta unbonded\_boot\_amount}"></p>
 
@@ -394,28 +494,4 @@ where:
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_{t} = \frac{bonded\_boot\_amount_{t-1}}{boot\_supply_{t-1}}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{horizont\_step}}\rfloor}}"></p>  
-
-## Summary of simulation parameters
-
-- __*start_boot_supply*__ = `1e15`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply = start\_boot\_supply \cdot ( 1 %2B \frac{ 0.12}{1 %2B \frac{days}{365 \cdot 2}})^{\frac{days}{365}}">
-- __*boot_inflation_rate_change*__  
-- __*boot_inflation_max*__  
-- __*boot_inflation_min*__  
-- __*boot_bonded_share_target*__  
-- __*agents_count_at_activation*__ `(10'000, 50'000, 100'000)`
-- __*days_for_gift_activation*__ `(30, 100)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation">
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}start\_capitalization\_per\_agent = 1">
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}">
-- __*boot_bonded_share*__ `(0.7)`
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = boot\_supply \cdot boot\_bonded\_share">
-- __*extra_links*__ - function to define
-- __*guaranteed_links*__ - function to define
-- <img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_agent = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links">
-- __*investmint_period*__  
-- __*investmint_amount*__  
-- __*halving_time*__  
-- __*investmint_max_period*__  
-- __*a_v_ratio*__  
 
