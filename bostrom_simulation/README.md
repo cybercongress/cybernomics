@@ -230,7 +230,7 @@ System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1
 
 And it is limited by system setting of `investmint_max_period`, that has dynamic formula written below. 
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_initial\_period \cdot 2^{\lceil{\log_2 \lceil{\frac{timestamp %2B 1}{horizont\_initial\_period}}\rceil}\rceil}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_initial\_period \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizont\_initial\_period}}\rceil}\rceil}"></p>
 
 Where `horizont_initial_period` (period in timesteps equal to 3 monthes) is the period before first `investmint_max_period` raise.
 
@@ -307,7 +307,7 @@ be unlocked in the unlock timeframe.
 
 ## Investments into infrastructure
 
-Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have commision (`validator_commission`)  equals to 10% and that there are 92 validators (`max_validator_count`). 
+Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have commission (`validator_commission`)  equals to 10% and that there are 92 validators (`max_validator_count`). 
 
 `validator_revenue` is defined by formula:
 
@@ -387,9 +387,9 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, name, following, extra)"> 
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_initial\_period \cdot 2^{\lceil{\log_2 \lceil{\frac{timestamp %2B 1}{horizont\_initial\_period}}\rceil}\rceil}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_initial\_period \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizont\_initial\_period}}\rceil}\rceil}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue = \frac{timestep\_provision \cdot validator\_commision \cdot boot\_price}{ max\_validator\_count} "></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue = \frac{timestep\_provision \cdot validator\_commission \cdot boot\_price}{ max\_validator\_count} "></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}claim(timestep) = 7 \cdot 10^{14} \cdot e^{-0.0648637 \ cdot timestep}"></p>
 
@@ -413,7 +413,7 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 - `unbonding_speed` - the amount of months to unbond all bonded boots
 - `boot_inflation` - inflation on timesep
 - `boot_supply` - total network tokens supply
-- `inflation_rate_change_annual` - maximum annual inflation rate change
+- `boot_inflation_rate_change_annual` - maximum annual inflation rate change
 - `timestep_provision` - `timestep` token provision
 - `amper_amount` - amper resource token amount
 - `volt_amount` - volt token amount
