@@ -35,11 +35,13 @@ To optimize parameters for launching Bostrom.
 An idea is to model the value of BOOT through the understanding of established network effects in Ethereum.
 Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for cyberlinks based on address growth we can adjust the supply of cyberlinks so that Volts price could grow. The given model also allows defining inflation parameters of BOOT to optimize investments into the hardware infrastructure.
 
-## Time (rewrite!)
+## Time 
 
-We model Bostrom Network simulation as a (discrete) sequence of events in time. We define the `timestep` variable (syn `t`). `timestep` is used in all formulas and definitions across this spec and defined as:
+We model Bostrom Network simulation as a (discrete) sequence of events in time. We define the `timestep` variable (syn `t`) as integer number of time steps since the network launch. `timestep` is used in formulas and definitions across this specification and defined as:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \frac{timesteps\_per\_year}{365}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \lfloor{time\_from\_launch\_in\_years \cdot timesteps\_per\_year}\rfloor"></p>
+
+where `time_from_launch_in_years` is time from the system launch expressed in years (float data type).
 
 
 ### Simulation parameters
