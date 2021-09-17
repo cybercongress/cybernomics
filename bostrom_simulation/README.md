@@ -210,12 +210,12 @@ And we adjusted such formula with adding a number of `extra_links` and `guarante
 
 `extra_links` count depends on UX specifics, such as name setting, following (proportion of agents) and extra:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, name, following, extra)"> 
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, setting name, following, extra )"> 
 
 Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely
 on this demand also adding `guaranteed_links` count.
 
-### Simulation parameters 
+### Simulation parameters
 
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
@@ -241,10 +241,10 @@ According to this formula current `investmint_max_period` will be set to [3, 6, 
 - `a_v_ratio` - the ratio between Ampers and Volts tokens supply. This parameter defines a Graph coherence(?). Amper defines particles in the natural value volts defines cyberlinks. The ratio between particles and cyberlinks should seek 1/500.
 
 
-### Simulation parameteres
+### Simulation parameters
 
 Parameters to define for Volts and A:
-- `horizont_initial_period` `(3)`
+- `horizont_initial_period` `(90)`
 - `a_v_ratio` `(0.5)`  
 
 ## Amper and Volt minting
@@ -338,7 +338,7 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 - `start_capitalization_per_agent` `(1)`
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
-- `horizont_initial_period` `(3)`
+- `horizont_initial_period` `(90)`
 - `a_v_ratio` `(0.5)`  
 - `base_investmint_amount_amper`  `(100_000_000)`
 - `base_investmint_amount_volt`  `(100_000_000)`
@@ -422,7 +422,7 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 - `cyberlinks_amount`
 - `agents_count` - the amount of the active agents
 - `capitalization_per_agent` - the value of agent in ETH
-- `horizont_initial_period` - ?
+- `horizont_initial_period` - the period before first `investmint_max_period` raise
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation_t = boot\_inflation_{t-1} %2B {\Delta boot\_inflation}"></p>
 
