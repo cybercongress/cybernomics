@@ -291,10 +291,8 @@ It is halving every `base_halving_period_volt`
 2. All agents mint maximum Amper and Volt tokens in 50/50 ratio
 
 ### Simulation parameters
-- `mint_rate_amper_init`
-- `base_halving_period_amper`
-- `mint_rate_volt_init`
-- `base_halving_period_volt`
+- `mint_rate_amper_init` `(1)`
+- `mint_rate_volt_init` `(1)`
 
 
 
@@ -349,10 +347,8 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 - `base_investmint_period_volt`  `(timesteps_per_year / 12)`
 - `base_halving_period_amper` `(12_000_000 * 6.4)`
 - `base_halving_period_volt` `(12_000_000 * 6.4)`
-- `mint_rate_amper_init`
-- `base_halving_period_amper`
-- `mint_rate_volt_init`
-- `base_halving_period_volt`
+- `mint_rate_amper_init` `(1)`
+- `mint_rate_volt_init` `(1)`
 - `validator_commission` `(0.1)`
 - `max_validator_count` `(92)`
 
