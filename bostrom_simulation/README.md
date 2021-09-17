@@ -190,7 +190,7 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 
 `boot_price` in ETH is defined by formula:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_price=\frac{capitalization}{boot\_supply}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_price = \frac{capitalization}{boot\_supply}"></p>
 
 ## Predicting Volts demand
 
@@ -286,7 +286,7 @@ It is halving every `base_halving_period_volt`
 ### Assumptions
 
 1. All agents lock tokens for the maximum available period defined in params for simulating
-2. All agents mint maximum `amper` and `volt` tokens in 50/50 ratio
+2. All agents mint maximum Amper and Volt tokens in 50/50 ratio
 
 ### Simulation parameters
 - `mint_rate_amper_init`
