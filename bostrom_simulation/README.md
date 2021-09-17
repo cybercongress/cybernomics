@@ -313,7 +313,7 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 
 `validator_revenue` is defined by formula:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue = \frac{timestep\_provision \cdot validator\_commision \cdot boot\_price}{ max\_validator\_count} "></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue = \frac{timestep\_provision \cdot validator\_commission \cdot boot\_price}{ max\_validator\_count} "></p>
 
 ### Simulation parameters
 
