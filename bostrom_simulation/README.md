@@ -217,8 +217,8 @@ on this demand also adding `guaranteed_links` count.
 
 ### Simulation parameters 
 
-- `extra_links` - function to define
-- `guaranteed_links` - function to define
+- `extra_links` `(0)`
+- `guaranteed_links` `(0)`
 
 ## Adjusting Volts and Ampers supply
 
@@ -336,8 +336,8 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 - `liquid_boot_supply_share` `(0.25)`
 - `agents_count_at_activation` `(100000)`
 - `start_capitalization_per_agent` `(1)`
-- `extra_links` - function to define
-- `guaranteed_links` - function to define
+- `extra_links` `(0)`
+- `guaranteed_links` `(0)`
 - `horizont_initial_period` `(3)`
 - `a_v_ratio` `(0.5)`  
 - `base_investmint_amount_amper`  `(100_000_000)`
