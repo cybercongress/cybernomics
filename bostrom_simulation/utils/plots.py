@@ -1,4 +1,5 @@
 import plotly.express as px
+import seaborn as sns
 
 
 def df_preparator(df):
@@ -12,30 +13,36 @@ year = dict(
     )
 
 
-def linear_plot(df, _y):
-    fig = px.line(
-        df,
-        x="timestep",
-        y=_y,
-        facet_col='simulation',
-        template='seaborn'
-    )
-    fig.update_layout(
+def linear_plot(df, _y, render='sns'):
+    if render == 'px':
+        fig = px.line(
+            df,
+            x="timestep",
+            y=_y,
+            facet_col='simulation',
+            template='seaborn'
+        )
+        fig.update_layout(
+            margin=dict(l=20, r=20, t=20, b=20), xaxis=year)
+        fig.show()
+    elif render == 'sns':
+        sns.lmplot('timestep', _y, data=df, fit_reg=True)
+
+
+def scatter_plot(df, _y, render='sns'):
+    if render == 'px':
+        fig = px.scatter(
+            df,
+            x="timestep",
+            y=_y,
+            opacity=0.01,
+            trendline="lowess",
+            trendline_color_override="red",
+            facet_col='simulation',
+            labels={'color': _y}
+        )
+        fig.update_layout(
         margin=dict(l=20, r=20, t=20, b=20), xaxis=year)
-    fig.show()
-
-
-def scatter_plot(df, _y):
-    fig = px.scatter(
-        df,
-        x="timestep",
-        y=_y,
-        opacity=0.01,
-        trendline="lowess",
-        trendline_color_override="red",
-        facet_col='simulation',
-        labels={'color': _y}
-    )
-    fig.update_layout(
-    margin=dict(l=20, r=20, t=20, b=20), xaxis=year)
-    fig.show()
+        fig.show()
+    elif render == 'sns':
+        sns.lmplot('timestep', _y, data=df, fit_reg=True)

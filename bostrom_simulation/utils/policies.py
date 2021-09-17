@@ -1,85 +1,74 @@
 import math
 
 
-def p_inflation(params, substep, state_history, previous_state):
-    S = previous_state['T'] + previous_state['F'] + previous_state['L']
-    L_r = previous_state['L']/S
-    IRC = (1 - (L_r/params['goalVested'])) * params['inflationRateChange']
-    IRC = IRC / params['unitsPerYear']
-    return {'IRC': IRC}
+def p_boot_inflation_rate(params, substep, state_history, previous_state):
+    boot_supply = previous_state['liquid_boot'] + previous_state['frozen_boot'] + previous_state['vested_boot']
+    vested_ratio = previous_state['vested_boot']/boot_supply
+    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['boot_inflation_rate_change_annual']
+    delta_boot_inflation_rate = delta_boot_inflation_rate / params['timesteps_per_year']
+    return {'delta_boot_inflation_rate': delta_boot_inflation_rate}
 
 
-def p_provision(params, substep, state_history, previous_state):
-    S = previous_state['T'] + previous_state['F'] + previous_state['L']
-    L_r = previous_state['L'] / S
-    IRC = ((1 - L_r/params['goalVested']) * params['inflationRateChange']) / params['unitsPerYear']
-    I_r = previous_state['I_r'] + IRC
-    if I_r > params['inflationMax']:
-        I_r = params['inflationMax']
-    elif I_r < params['inflationMin']:
-        I_r = params['inflationMin']
-    I_p = (S * I_r) / params['unitsPerYear']
-    return {'provision': math.floor(I_p)}
+def p_timestep_provision(params, substep, state_history, previous_state):
+    boot_supply = previous_state['liquid_boot'] + previous_state['frozen_boot'] + previous_state['vested_boot']
+    vested_ratio = previous_state['vested_boot']/boot_supply
+    delta_boot_inflation_rate = (1 - (vested_ratio/params['boot_bonded_share_target'])) * params['boot_inflation_rate_change_annual']
+    delta_boot_inflation_rate = delta_boot_inflation_rate / params['timesteps_per_year']
+    boot_inflation_rate = previous_state['boot_inflation_rate'] + delta_boot_inflation_rate
+    if boot_inflation_rate > params['boot_inflation_max']:
+        boot_inflation_rate = params['boot_inflation_max']
+    elif boot_inflation_rate < params['boot_inflation_min']:
+        boot_inflation_rate = params['boot_inflation_min']
+    timestep_provision = (boot_supply * boot_inflation_rate) / params['timesteps_per_year']
+    return {'timestep_provision': math.floor(timestep_provision)}
 
 
-def p_claim(params, substep, state_history, previous_state):
-    if previous_state['timestep'] < params['gift_activation']:
-        delta_f = 0
-    delta_f = (5.6 * 10**14) / (3 * params['unitsPerYear'])
-    if previous_state['F'] <= 0:
-        delta_f = 0
-    return {'delta_F': -delta_f}
+def p_frozen_boot(params, substep, state_history, previous_state):
+    delta_frozen_boot = 45404590000000 * math.exp(-0.0648637 * (previous_state['timestep'] + 1))
+    if previous_state['frozen_boot'] <= 0:
+        delta_frozen_boot = 0
+    return {'delta_frozen_boot': -delta_frozen_boot}
 
 
-def p_vest(params, substep, state_history, previous_state):
-    investmint = previous_state['T']/((params['unitsPerYear']/12) * params['vestingSpeed']) * params['boot_bonded']
-    return {'delta_L': math.floor(investmint)}
+def p_vested_boot(params, substep, state_history, previous_state):
+    delta_vested_boot = previous_state['liquid_boot']/((params['timesteps_per_year']/12) * params['vesting_speed'])
+    return {'delta_vested_boot': math.floor(delta_vested_boot)}
 
 
-def p_unvest(params, substep, state_history, previous_state):
-    if previous_state['timestep'] <= params['baseVestingTime']:
-        uninvestmint = 0
+def p_unvested_boot(params, substep, state_history, previous_state):
+    if previous_state['timestep'] <= params['base_investmint_preiod_volt']:
+        delta_unvested_boot = 0
     else:
-        uninvestmint = previous_state['T']/((params['unitsPerYear']/12) * params['unvestingSpeed'])
-    return {'delta_U': math.floor(uninvestmint)}
+        delta_vested_boot = previous_state['liquid_boot'] / (
+                    (params['timesteps_per_year'] / 12) * params['vesting_speed'])
+        delta_unvested_boot = previous_state['liquid_boot']/((params['timesteps_per_year']/12) * params['unvesting_speed']) - delta_vested_boot
+    return {'delta_unvested_boot': math.floor(delta_unvested_boot)}
 
 
-def p_mr_a(params, substep, state_history, previous_state):
-    x = previous_state['timestep'] // params['unitsPerYear']
-    d_mr = params['MRa'] / (2**x)
-    return {'delta_MRa': d_mr}
+def p_cyberlinks(params, substep, state_history, previous_state):
+    cyberlinks = 6.3 / previous_state['agents_count'] + params['extra_links'] + params['guaranted_links']
+    return {'delta_cyberlinks': cyberlinks}
 
 
-def p_mr_v(params, substep, state_history, previous_state):
-    x = previous_state['V'] // params['voltHalving']
-    d_mr = params['MRv'] / (2**x)
-    return {'delta_MRv': d_mr}
+def p_amper(params, substep, state_history, previous_state):
+    delta_vested_boot = previous_state['liquid_boot']/((params['timesteps_per_year']/12) * params['vesting_speed'])
+    delta_amper = math.floor((delta_vested_boot / params['base_investmint_amount_amper']) * (previous_state['investmint_max_period']/params['base_investmint_preiod_amper']) * (previous_state['mint_rate_amper'] / 100))
+    return {'delta_amper': math.floor(delta_amper)}
 
 
-def p_cl(params, substep, state_history, previous_state):
-    x = params['extra_links'] + params['guaranted_links']
-    return {'delta_CL': x}
+def p_volt(params, substep, state_history, previous_state):
+    delta_vested_boot = previous_state['liquid_boot']/((params['timesteps_per_year']/12) * params['vesting_speed'])
+    delta_volt = math.floor((delta_vested_boot / params['base_investmint_amount_volt']) * (previous_state['investmint_max_period']/params['base_investmint_preiod_volt']) * (previous_state['mint_rate_volt'] / 100))
+    return {'delta_volt': math.floor(delta_volt)}
 
 
-def p_a(params, substep, state_history, previous_state):
-    tokens = math.floor(previous_state['d_l'] / 2)
-    d_a = math.floor((tokens / params['base_vesting_resource']) * (previous_state['maxVestingTime']/params['baseVestingTime']) * (previous_state['MRa'] / 100))
-    return {'delta_a': math.floor(d_a)}
+def p_agents_count(params, substep, state_history, previous_state):
+    timestep = ((previous_state['timestep'] + 1) // params['timesteps_per_year']) * 365
+    d_agents_count = 18 * timestep + 100
+    return {'delta_agents_count': d_agents_count}
 
 
-def p_v(params, substep, state_history, previous_state):
-    tokens = math.floor(previous_state['d_l'] / 2)
-    d_v = math.floor((tokens / params['base_vesting_resource']) * (previous_state['maxVestingTime']/params['baseVestingTime']) * (previous_state['MRv'] / 100))
-    return {'delta_v': math.floor(d_v)}
-
-
-def p_m_v_t(params, substep, state_history, previous_state):
-    x = previous_state['timestep'] // params['unitsPerYear']
-    d_m_v_t = params['baseVestingTime'] * (2**x)
-    return {'delta_m_v_t': d_m_v_t}
-
-
-def p_agents_amount(params, substep, state_history, previous_state):
-    x = previous_state['timestep'] // params['unitsPerYear']
-    d_agents_amount = 18 * x + 100
-    return {'delta_agents_amount': d_agents_amount}
+def p_capitalization_per_agent(params, substep, state_history, previous_state):
+    delta_capitalization_per_agent = - (params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7)) / \
+                                     math.pow(previous_state['agents_count'], 1.7)
+    return {'delta_capitalization_per_agent': delta_capitalization_per_agent}
