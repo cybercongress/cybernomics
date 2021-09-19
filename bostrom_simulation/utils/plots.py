@@ -3,7 +3,7 @@ import seaborn as sns
 
 
 def df_preparator(df):
-    df = df.drop(df[df['timestep']%10 != 0].index)
+    # df = df.drop(df[df['timestep']%10 != 0].index)
     return df
 
 
@@ -26,7 +26,8 @@ def linear_plot(df, _y, render='sns'):
             margin=dict(l=20, r=20, t=20, b=20), xaxis=year)
         fig.show()
     elif render == 'sns':
-        sns.lmplot('timestep', _y, data=df, fit_reg=True)
+        sns.set(rc={'figure.figsize': (11.7, 8.27)})
+        sns.lineplot(data=df, x='timestep', y=_y)
 
 
 def scatter_plot(df, _y, render='sns'):

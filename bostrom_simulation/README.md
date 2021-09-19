@@ -93,42 +93,72 @@ In case if inflation lower than `boot_inflation_min` param the inflation sets as
 
 ### Simulation parameters
 
-- `start_boot_supply` `(1e15)`
+- `start_boot_supply` `(1e15)` (it is in init values, not a param)
 - `boot_inflation_max`  `(0.20)`
 - `boot_inflation_min`  `(0.05)`
 - `boot_bonded_share_target` `(0.70)` 
 - `boot_inflation_rate_change_annual`  `(0.07)` 
-<!-- - `boot_supply`   -->
 
-## Modeling H supply (need to discuss)
+## Modeling bonded boot amount (hydrogen)
 
-Agents will delegate `boot_bonded_share` (70%) of BOOT Supply to heroes, and H will be minted in the corresponding amount.
+Agents will delegate `boot_bonding_share` (70%) of `boot_liquid_amount` to heroes, and Hydrogen will be minted in the corresponding amount.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}h\_supply = liquid\_boot\_amount \cdot boot\_bonded\_share"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_amount_t = boot\_bonded\_amount_{t-1} %2B \Delta boot\_bonded\_amount"></p>
+
+where:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_bonded\_amount = liquid\_boot\_amount_{t-1} \cdot boot\_bonding\_share"></p>
 
 ### Simulation parameters
 
-- `boot_bonded_share` `(0.7)`
+- `boot_bonding_share` `(0.7)`
 
 
-## Gift claim dynamics
+## Gift claim dynamics (Total refactoring of this section is needed)
  
 The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of BOOT tokens. Further we need to model how this gifts can be claimed. 
 
-We need to derive `claim_rate` (by formula to define).
+We need to define `claimed_boot_amount` function.
 
-The function of claim frozen tokens is:
+The `claimed_boot_amount` function has two phases:
+- before `days_for_gift_activation`
+- after `days_for_gift_activation`
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}claim(timestep) = 7 \cdot 10^{14} \cdot e^{-0.0648637 \cdot timestep}"></p>
+It's excepted that `claimed_at_activation_share` * `boot_gift_amount_init` amount of BOOTs will be reached in `days_for_gift_activation`. After that, (1 - `claimed_at_activation_share`) * `boot_gift_amount_init` should be claimed in `days_for_gift_full_claim`. 
 
-![calim](images/claim.png)
+Therefore the `claimed_boot_amount` function can be defined as liniar function with condition:
 
-<!-- <img src='images/claim.png' /> -->
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}claimed\_boot\_amount_t = claimed\_boot\_amount_{t-1} %2B \Delta claimed\_boot\_amount"></p>
 
- define boot_frozen_amount function
+if `t` < `days_for_gift_activation`:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta claimed\_boot\_amount = \frac{claimed\_at\_activation\_share \cdot boot\_gift\_amount\_init}{days\_for\_gift\_activation}"></p>
+
+if `t` >= `days_for_gift_activation`:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta claimed\_boot\_amount = \frac{(1 - claimed\_at\_activation\_share) \cdot boot\_gift\_amount\_init}{days\_for\_gift\_full\_claim}"></p>
+
+#### `to_distribution_boot_amount`
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} to\_distribution\_boot\_amount_t = to\_distribution\_boot\_amount_{t-1} %2B \Delta claimed\_boot\_amount %2B \Delta delta\_frozen\_boot\_amount"></p>
+
+#### `boot_frozen_amount` definition
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} boot\_frozen\_amount_t = boot\_frozen\_amount_{t-1} %2B \Delta boot\_frozen\_amount"></p>
+
+Therefore the `delta_boot_frozen_amount` function can be represented in 3 phases:
+
+if `t` < `days_for_gift_activation`:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} \Delta boot\_frozen\_amount = 0"></p>
+
+if `t` >= `days_for_gift_activation`:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} \Delta boot\_frozen\_amount = to\_distribution\_boot\_amount_{t-1} \cdot 0.1"></p>
+
 
 Assumptions:
-- agents (`agents_count_at_activation`) will claim our gift. After that the gift will be activated 
+- agents (`agents_count_at_activation`) will claim our gift. After that the gift will be activated
 - it will take `days_for_gift_activation` since genesis before the gift claiming process will be completed 
 - agents on the moment of gift activation will claim share of the gift (`claimed_at_activation_share`)
 - claim process can be prolonged on `days_for_gift_full_claim` in case if `agents_count_at_activation` will not reach the target goal by `days_for_gift_activation`.
