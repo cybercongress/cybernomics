@@ -94,7 +94,7 @@ def s_mint_rate_volt(params, substep, state_history, previous_state, policy_inpu
 
 
 def s_investmint_max_period(params, substep, state_history, previous_state, policy_input):
-    investmint_max_period = params['horizont_initial_period'] * math.pow(2, math.ceil((math.log2((previous_state['timestep'] + 1) / params['horizont_initial_period']))))
+    investmint_max_period = params['horizont_initial_period'] * math.pow(2, math.ceil((math.log2(math.ceil((previous_state['timestep'] + 1) / params['horizont_initial_period'])))))
     return 'investmint_max_period', investmint_max_period
 
 def s_minted_amper_amount(params, substep, state_history, previous_state, policy_input):
