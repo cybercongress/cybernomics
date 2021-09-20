@@ -48,6 +48,10 @@ def s_liquid_boot_amount(params, substep, state_history, previous_state, policy_
 def s_to_distribution_boot_amount(params, substep, state_history, previous_state, policy_input):
     to_distribution_boot_amount = previous_state['to_distribution_boot_amount'] + policy_input['delta_claimed_boot_amount'] + \
                                   policy_input['delta_frozen_boot_amount']
+    if to_distribution_boot_amount < 0:
+        to_distribution_boot_amount = 0
+    if to_distribution_boot_amount > params['boot_gift_amount_init']:
+        to_distribution_boot_amount = params['boot_gift_amount_init']
     return 'to_distribution_boot_amount', to_distribution_boot_amount
 
 
@@ -57,7 +61,7 @@ def s_agents_count(params, substep, state_history, previous_state, policy_input)
 
 
 def s_capitalization_per_agent(params, substep, state_history, previous_state, policy_input):
-    capitalization_per_agent = previous_state['capitalization_per_agent'] + policy_input['delta_capitalization_per_agent']
+    capitalization_per_agent = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'],0.7) * math.pow(previous_state['agents_count'], -0.7)
     return 'capitalization_per_agent', capitalization_per_agent
 
 

@@ -13,7 +13,7 @@ year = dict(
     )
 
 
-def linear_plot(df, _y, render='sns'):
+def linear_plot(df, _y, render='sns', figsize: tuple=(11.7, 8.27)):
     if render == 'px':
         fig = px.line(
             df,
