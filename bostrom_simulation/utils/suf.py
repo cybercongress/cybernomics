@@ -61,7 +61,7 @@ def s_agents_count(params, substep, state_history, previous_state, policy_input)
 
 
 def s_capitalization_per_agent(params, substep, state_history, previous_state, policy_input):
-    capitalization_per_agent = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'],0.7) * math.pow(previous_state['agents_count'], -0.7)
+    capitalization_per_agent = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7) * math.pow(previous_state['agents_count'], -0.7)
     return 'capitalization_per_agent', capitalization_per_agent
 
 
@@ -74,13 +74,18 @@ def s_gboot_price(params, substep, state_history, previous_state, policy_input):
 
 
 def s_validator_revenue(params, substep, state_history, previous_state, policy_input):
-    validator_revenue = ((previous_state['timestep_provision']) / 1_000_000_000 * params['validator_commission'] * previous_state['gboot_price']) / params['max_validator_count']
+    validator_revenue = previous_state['timestep_provision'] / 1_000_000_000 * params['validator_commission'] / params['max_validator_count']
     return 'validator_revenue', validator_revenue
 
 
 def s_cyberlinks(params, substep, state_history, previous_state, policy_input):
     cyberlinks = previous_state['cyberlinks'] + policy_input['delta_cyberlinks']
     return 'cyberlinks', cyberlinks
+
+
+def s_delta_cyberlinks(params, substep, state_history, previous_state, policy_input):
+    delta_cyberlinks = policy_input['delta_cyberlinks']
+    return 'delta_cyberlinks', delta_cyberlinks
 
 
 def s_mint_rate_amper(params, substep, state_history, previous_state, policy_input):
@@ -100,6 +105,7 @@ def s_mint_rate_volt(params, substep, state_history, previous_state, policy_inpu
 def s_investmint_max_period(params, substep, state_history, previous_state, policy_input):
     investmint_max_period = params['horizont_initial_period'] * math.pow(2, math.ceil((math.log2(math.ceil((previous_state['timestep'] + 1) / params['horizont_initial_period'])))))
     return 'investmint_max_period', investmint_max_period
+
 
 def s_minted_amper_amount(params, substep, state_history, previous_state, policy_input):
     minted_amper_amount = previous_state['minted_amper_amount'] + policy_input['delta_minted_amper_amount']

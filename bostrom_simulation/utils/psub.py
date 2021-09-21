@@ -31,6 +31,7 @@ partial_state_update_blocks = [
             'gboot_price': s_gboot_price,
             'validator_revenue': s_validator_revenue,
             'cyberlinks': s_cyberlinks,
+            'delta_cyberlinks': s_delta_cyberlinks,
             'minted_amper_amount': s_minted_amper_amount,
             'minted_volt_amount': s_minted_volt_amount,
             'mint_rate_volt': s_mint_rate_volt,

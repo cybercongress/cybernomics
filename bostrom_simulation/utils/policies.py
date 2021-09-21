@@ -15,12 +15,12 @@ def p_timestep_provision(params, substep, state_history, previous_state):
 
 
 def p_bonded_boot_amount(params, substep, state_history, previous_state):
-    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * params['boot_bonding_share'] * 0.1
+    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * params['boot_bonding_share'] * (1 - params['liquid_boot_supply_share'])
     return {'delta_bonded_boot_amount': math.floor(delta_bonded_boot_amount)}
 
 
 def p_unbonded_boot_amount(params, substep, state_history, previous_state):
-    delta_unbonded_boot_amount = previous_state['bonded_boot_amount'] * (1 - params['boot_bonding_share']) * 0.05
+    delta_unbonded_boot_amount = previous_state['bonded_boot_amount'] * (1 - params['boot_bonding_share']) * params['liquid_boot_supply_share']
     return {'delta_unbonded_boot_amount': delta_unbonded_boot_amount}
 
 

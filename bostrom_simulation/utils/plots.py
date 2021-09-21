@@ -47,3 +47,16 @@ def scatter_plot(df, _y, render='sns'):
         fig.show()
     elif render == 'sns':
         sns.lmplot('timestep', _y, data=df, fit_reg=True)
+
+
+def plot_line_2_diff_y(df, value_1, value_2, figsize: tuple = (16,9), value_1_log=False, value_2_log=False):
+    value_1_df = df[[value_1]]
+    value_2_df = df[[value_2]]
+    ax1 = value_1_df.plot.line(figsize=figsize, logy=value_1_log, xticks=range(0, 3650, 365), grid=True)
+    ax2 = ax1.twinx()
+    ax2.spines['right'].set_position(('axes', 1.0))
+    value_2_df.plot.line(ax=ax2, figsize=(16, 9), xticks=range(0, 3650, 365), style={value_2: 'r'}, logy=value_2_log, grid=True)
+
+
+def plot_line_2_same_y(df, values:list, figsize: tuple = (16,9), value_1_log=False, value_2_log=False):
+    df.plot(y=values, figsize=(16, 9), xticks=range(0, 3650, 365), grid=True)
