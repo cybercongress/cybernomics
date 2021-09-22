@@ -288,9 +288,9 @@ Volts are minted according to the following formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{minted\_volt\_amount} = \lfloor{\frac{locked\_hydrogen\_amount}{base\_investmint\_amount\_volt} \cdot \frac{investmint\_period}{base\_investmint\_period\_volt} \cdot mint\_rate\_volt}\rfloor"></p>
 
-`a_v_ratio` - the ratio between Amperes and Volts tokens supply. 
+`ampere_volt_ratio` - the ratio between Amperes and Volts tokens supply. 
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}a\_v\_ratio = \frac{minted\_ampere\_amount}{minted\_volt\_amount}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}ampere\_volt\_ratio = \frac{minted\_ampere\_amount}{minted\_volt\_amount}"></p>
 
 
 ### Simulation parameters
@@ -381,7 +381,7 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
 - `horizont_initial_period` `(90)`
-- `a_v_ratio` `(1)`  
+- `ampere_volt_ratio` `(1)`  
 - `base_investmint_amount_ampere`  `(100_000_000)`
 - `base_investmint_amount_volt`  `(100_000_000)`
 - `investmint_max_period_init` `(timesteps_per_year / 12)`  
@@ -414,7 +414,7 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage=40 \cdot cyberlinks\_count %2B 40 \cdot minted\_ampere\_amount" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}a\_v\_ratio = \frac{minted\_ampere\_amount}{minted\_volt\_amount}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}ampere\_volt\_ratio = \frac{minted\_ampere\_amount}{minted\_volt\_amount}"></p>
 
 
 
