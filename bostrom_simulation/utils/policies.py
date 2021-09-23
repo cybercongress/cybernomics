@@ -15,13 +15,13 @@ def p_timestep_provision(params, substep, state_history, previous_state):
 
 
 def p_bonded_boot_amount(params, substep, state_history, previous_state):
-    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * params['boot_bonding_share'] * (1 - params['liquid_boot_supply_share'])
+    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
     return {'delta_bonded_boot_amount': math.floor(delta_bonded_boot_amount)}
 
 
 def p_unbonded_boot_amount(params, substep, state_history, previous_state):
-    delta_unbonded_boot_amount = previous_state['bonded_boot_amount'] * (1 - params['boot_bonding_share']) * params['liquid_boot_supply_share']
-    return {'delta_unbonded_boot_amount': delta_unbonded_boot_amount}
+    # delta_unbonded_boot_amount = previous_state['bonded_boot_amount'] * (1 - params['boot_bonding_share']) * params['liquid_boot_supply_share']
+    return {'delta_unbonded_boot_amount': 0}
 
 
 def p_claimed_boot_amount(params, substep, state_history, previous_state):
@@ -58,14 +58,14 @@ def p_cyberlinks(params, substep, state_history, previous_state):
 
 
 def p_minted_amper_amount(params, substep, state_history, previous_state):
-    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * params['boot_bonding_share']
+    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
     delta_minted_amper_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_amper']) * \
                                            (previous_state['investmint_max_period']/params['base_investmint_period_amper']) * previous_state['mint_rate_amper'])
     return {'delta_minted_amper_amount': math.floor(delta_minted_amper_amount)}
 
 
 def p_minted_volt_amount(params, substep, state_history, previous_state):
-    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * params['boot_bonding_share']
+    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
     delta_minted_volt_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_volt']) * \
                                           (previous_state['investmint_max_period']/params['base_investmint_period_volt']) * previous_state['mint_rate_volt'])
     return {'delta_minted_volt_amount': math.floor(delta_minted_volt_amount)}
