@@ -58,14 +58,24 @@ def p_cyberlinks(params, substep, state_history, previous_state):
 
 
 def p_minted_amper_amount(params, substep, state_history, previous_state):
-    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
-    delta_minted_amper_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_amper']) * \
-                                           (previous_state['investmint_max_period']/params['base_investmint_period_amper']) * previous_state['mint_rate_amper'])
+    # delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
+    # delta_minted_amper_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_amper']) * \
+    #                                        (previous_state['investmint_max_period']/params['base_investmint_period_amper']) * previous_state['mint_rate_amper'])
+    if previous_state['timestep'] % 90 == 0:
+        delta_minted_amper_amount = math.floor((0.5 * previous_state['bonded_boot_amount'] / params['base_investmint_amount_amper']) * \
+                                    (90/params['base_investmint_period_amper']) * previous_state['mint_rate_amper'])
+    else:
+        delta_minted_amper_amount = 0
     return {'delta_minted_amper_amount': math.floor(delta_minted_amper_amount)}
 
 
 def p_minted_volt_amount(params, substep, state_history, previous_state):
-    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
-    delta_minted_volt_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_volt']) * \
-                                          (previous_state['investmint_max_period']/params['base_investmint_period_volt']) * previous_state['mint_rate_volt'])
+    # delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
+    # delta_minted_volt_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_volt']) * \
+    #                                       (previous_state['investmint_max_period']/params['base_investmint_period_volt']) * previous_state['mint_rate_volt'])
+    if previous_state['timestep'] % 90 == 0:
+        delta_minted_volt_amount = math.floor((0.5 * previous_state['bonded_boot_amount'] / params['base_investmint_amount_volt']) * \
+                                    (90/params['base_investmint_period_volt']) * previous_state['mint_rate_volt'])
+    else:
+        delta_minted_volt_amount = 0
     return {'delta_minted_volt_amount': math.floor(delta_minted_volt_amount)}
