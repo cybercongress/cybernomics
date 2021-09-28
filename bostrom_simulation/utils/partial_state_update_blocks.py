@@ -13,7 +13,8 @@ partial_state_update_blocks = [
             'delta_capitalization_per_agent': p_capitalization_per_agent,
             'cyberlinks_per_day': p_cyberlinks_per_day,
             'ampere_minted_amount': p_ampere_minted_amount,
-            'volt_minted_amount': p_volt_minted_amount
+            'volt_minted_amount': p_volt_minted_amount,
+            'volt_released': p_volt_released
         },
         'variables': {
             'boot_supply': s_boot_supply,
@@ -24,6 +25,7 @@ partial_state_update_blocks = [
             'boot_bonded_supply': s_boot_bonded_supply,
             'boot_liquid_supply': s_boot_liquid_supply,
             'boot_to_distribution_supply': s_boot_to_distribution_supply,
+            'hydrogen_supply': s_hydrogen_supply,
             'agents_count': s_agents_count,
             'capitalization_per_agent': s_capitalization_per_agent,
             'capitalization_in_eth': s_capitalization_in_eth,
@@ -37,7 +39,8 @@ partial_state_update_blocks = [
             'ampere_mint_rate': s_ampere_mint_rate,
             'investmint_max_period': s_investmint_max_period,
             'gpu_memory_usage': s_gpu_memory_usage,
-            'ampere_volt_ratio': s_ampere_volt_ratio
+            'ampere_volt_ratio': s_ampere_volt_ratio,
+            'volt_liquid_supply': s_volt_liquid_supply
         }
     }
 ]
