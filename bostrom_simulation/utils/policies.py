@@ -1,45 +1,40 @@
 import math
 
 
-def p_boot_inflation(params, substep, state_history, previous_state):
-    boot_supply = previous_state['liquid_boot_amount'] + previous_state['frozen_boot_amount'] + previous_state['bonded_boot_amount']
-    boot_bonded_share = previous_state['bonded_boot_amount']/boot_supply
-    delta_boot_inflation = (1 - (boot_bonded_share/params['boot_bonded_share_target'])) * params['boot_inflation_rate_change_annual']
-    delta_boot_inflation = delta_boot_inflation / params['timesteps_per_year']
-    return {'delta_boot_inflation': delta_boot_inflation}
+def p_boot_inflation_rate_change(params, substep, state_history, previous_state):
+    boot_supply = previous_state['boot_liquid_supply'] + previous_state['boot_frozen_supply'] + previous_state['boot_bonded_supply']
+    boot_bonded_share_current = previous_state['boot_bonded_supply'] / boot_supply
+    boot_inflation_rate_change = (1 - (boot_bonded_share_current/params['boot_bonded_share_target'])) * params['boot_inflation_rate_change_annual']
+    boot_inflation_rate_change = boot_inflation_rate_change / params['timesteps_per_year']
+    return {'boot_inflation_rate_change': boot_inflation_rate_change}
 
 
-def p_timestep_provision(params, substep, state_history, previous_state):
-    timestep_provision = (previous_state['boot_supply'] * previous_state['boot_inflation']) / params['timesteps_per_year']
-    return {'timestep_provision': math.floor(timestep_provision)}
+def p_timestep_provision_boot(params, substep, state_history, previous_state):
+    timestep_provision_boot = (previous_state['boot_supply'] * previous_state['boot_inflation_rate']) / params['timesteps_per_year']
+    return {'timestep_provision_boot': math.floor(timestep_provision_boot)}
 
 
-def p_bonded_boot_amount(params, substep, state_history, previous_state):
-    delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
-    return {'delta_bonded_boot_amount': math.floor(delta_bonded_boot_amount)}
+def p_boot_bonded_supply(params, substep, state_history, previous_state):
+    delta_boot_bonded_supply = previous_state['boot_liquid_supply'] * (1 - params['liquid_boot_supply_share']) * 0.005
+    return {'delta_boot_bonded_supply': math.floor(delta_boot_bonded_supply)}
 
 
-def p_unbonded_boot_amount(params, substep, state_history, previous_state):
-    # delta_unbonded_boot_amount = previous_state['bonded_boot_amount'] * (1 - params['boot_bonding_share']) * params['liquid_boot_supply_share']
-    return {'delta_unbonded_boot_amount': 0}
-
-
-def p_claimed_boot_amount(params, substep, state_history, previous_state):
+def p_boot_claimed_supply(params, substep, state_history, previous_state):
     if previous_state['timestep'] < params['days_for_gift_activation']:
-        delta_claimed_boot_amount = params['claimed_at_activation_share'] * params['boot_gift_amount_init'] / params['days_for_gift_activation']
+        delta_boot_claimed_supply = params['claimed_at_activation_share'] * params['boot_gift_amount_init'] / params['days_for_gift_activation']
     elif previous_state['timestep'] >= params['days_for_gift_activation']:
-        delta_claimed_boot_amount = (1 - params['claimed_at_activation_share']) * params['boot_gift_amount_init'] / params['days_for_gift_full_claim']
+        delta_boot_claimed_supply = (1 - params['claimed_at_activation_share']) * params['boot_gift_amount_init'] / params['days_for_gift_full_claim']
     if previous_state['timestep'] > params['days_for_gift_full_claim'] + params['days_for_gift_activation']:
-        delta_claimed_boot_amount = 0
-    return {'delta_claimed_boot_amount': delta_claimed_boot_amount}
+        delta_boot_claimed_supply = 0
+    return {'delta_boot_claimed_supply': delta_boot_claimed_supply}
 
 
-def p_frozen_boot_amount(params, substep, state_history, previous_state):
+def p_boot_frozen_supply(params, substep, state_history, previous_state):
     if previous_state['timestep'] < params['days_for_gift_activation']:
-        delta_frozen_boot_amount = 0
+        delta_boot_frozen_supply = 0
     else:
-        delta_frozen_boot_amount = previous_state['to_distribution_boot_amount'] * 0.1
-    return {'delta_frozen_boot_amount': -delta_frozen_boot_amount}
+        delta_boot_frozen_supply = previous_state['boot_to_distribution_supply'] * 0.1
+    return {'delta_boot_frozen_supply': -delta_boot_frozen_supply}
 
 
 def p_agents_count(params, substep, state_history, previous_state):
@@ -52,30 +47,24 @@ def p_capitalization_per_agent(params, substep, state_history, previous_state):
     return {'delta_capitalization_per_agent': delta_capitalization_per_agent}
 
 
-def p_cyberlinks(params, substep, state_history, previous_state):
-    delta_cyberlinks = 3 * 9 * math.pow(previous_state['agents_count'], -0.3) * previous_state['agents_count'] + params['extra_links'] + params['guaranted_links']
-    return {'delta_cyberlinks': delta_cyberlinks}
+def p_cyberlinks_per_day(params, substep, state_history, previous_state):
+    cyberlinks_per_day = params['cyberlinks_transactions_coeff'] * 9 * math.pow(previous_state['agents_count'], -0.3) * previous_state['agents_count'] + params['extra_links'] + params['guaranted_links']
+    return {'cyberlinks_per_day': cyberlinks_per_day}
 
 
-def p_minted_amper_amount(params, substep, state_history, previous_state):
-    # delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
-    # delta_minted_amper_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_amper']) * \
-    #                                        (previous_state['investmint_max_period']/params['base_investmint_period_amper']) * previous_state['mint_rate_amper'])
+def p_ampere_minted_amount(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 0:
-        delta_minted_amper_amount = math.floor((0.5 * previous_state['bonded_boot_amount'] / params['base_investmint_amount_amper']) * \
-                                    (90/params['base_investmint_period_amper']) * previous_state['mint_rate_amper'])
+        minted_ampere_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
+                                    (90 / params['ampere_base_investmint_period']) * previous_state['ampere_mint_rate'])
     else:
-        delta_minted_amper_amount = 0
-    return {'delta_minted_amper_amount': math.floor(delta_minted_amper_amount)}
+        minted_ampere_amount = 0
+    return {'ampere_minted_amount': math.floor(minted_ampere_amount)}
 
 
-def p_minted_volt_amount(params, substep, state_history, previous_state):
-    # delta_bonded_boot_amount = previous_state['liquid_boot_amount'] * (1 - params['liquid_boot_supply_share']) * 0.005
-    # delta_minted_volt_amount = math.floor((0.5 * delta_bonded_boot_amount / params['base_investmint_amount_volt']) * \
-    #                                       (previous_state['investmint_max_period']/params['base_investmint_period_volt']) * previous_state['mint_rate_volt'])
+def p_volt_minted_amount(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 0:
-        delta_minted_volt_amount = math.floor((0.5 * previous_state['bonded_boot_amount'] / params['base_investmint_amount_volt']) * \
-                                    (90/params['base_investmint_period_volt']) * previous_state['mint_rate_volt'])
+        minted_volt_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
+                                    (90/params['volt_base_investmint_period']) * previous_state['volt_mint_rate'])
     else:
-        delta_minted_volt_amount = 0
-    return {'delta_minted_volt_amount': math.floor(delta_minted_volt_amount)}
+        minted_volt_amount = 0
+    return {'volt_minted_amount': math.floor(minted_volt_amount)}

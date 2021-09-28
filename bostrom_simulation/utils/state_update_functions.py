@@ -2,57 +2,56 @@ import math
 
 
 def s_boot_supply(params, substep, state_history, previous_state, policy_input):
-    boot_supply = previous_state['boot_supply'] + policy_input['timestep_provision']
+    boot_supply = previous_state['boot_supply'] + policy_input['timestep_provision_boot']
     return 'boot_supply', boot_supply
 
 
-def s_timestep_provision(params, substep, state_history, previous_state, policy_input):
-    return 'timestep_provision', policy_input['timestep_provision']
+def s_timestep_provision_boot(params, substep, state_history, previous_state, policy_input):
+    return 'timestep_provision_boot', policy_input['timestep_provision_boot']
 
 
-def s_boot_inflation(params, substep, state_history, previous_state, policy_input):
-    boot_inflation = previous_state['boot_inflation'] + policy_input['delta_boot_inflation']
-    if boot_inflation > params['boot_inflation_max']:
-        boot_inflation = params['boot_inflation_max']
-    elif boot_inflation < params['boot_inflation_min']:
-        boot_inflation = params['boot_inflation_min']
-    return 'boot_inflation', boot_inflation
+def s_boot_inflation_rate(params, substep, state_history, previous_state, policy_input):
+    boot_inflation_rate = previous_state['boot_inflation_rate'] + policy_input['boot_inflation_rate_change']
+    if boot_inflation_rate > params['boot_inflation_rate_max']:
+        boot_inflation_rate = params['boot_inflation_rate_max']
+    elif boot_inflation_rate < params['boot_inflation_rate_min']:
+        boot_inflation_rate = params['boot_inflation_rate_min']
+    return 'boot_inflation_rate', boot_inflation_rate
 
 
-def s_bonded_boot_amount(params, substep, state_history, previous_state, policy_input):
-    bonded_boot_amount = previous_state['bonded_boot_amount'] + policy_input['delta_bonded_boot_amount'] - \
-                         policy_input['delta_unbonded_boot_amount']
-    return 'bonded_boot_amount', bonded_boot_amount
+def s_boot_bonded_supply(params, substep, state_history, previous_state, policy_input):
+    boot_bonded_supply = previous_state['boot_bonded_supply'] + policy_input['delta_boot_bonded_supply']
+    return 'boot_bonded_supply', boot_bonded_supply
 
 
-def s_claimed_boot_amount(params, substep, state_history, previous_state, policy_input):
-    claimed_boot_amount = previous_state['claimed_boot_amount'] + policy_input['delta_claimed_boot_amount']
-    if claimed_boot_amount > params['boot_gift_amount_init']:
-        claimed_boot_amount = params['boot_gift_amount_init']
-    return 'claimed_boot_amount', claimed_boot_amount
+def s_boot_claimed_supply(params, substep, state_history, previous_state, policy_input):
+    boot_claimed_supply = previous_state['boot_claimed_supply'] + policy_input['delta_boot_claimed_supply']
+    if boot_claimed_supply > params['boot_gift_amount_init']:
+        boot_claimed_supply = params['boot_gift_amount_init']
+    return 'boot_claimed_supply', boot_claimed_supply
 
 
-def s_frozen_boot_amount(params, substep, state_history, previous_state, policy_input):
-    frozen_boot_amount = previous_state['frozen_boot_amount'] + policy_input['delta_frozen_boot_amount']
-    if frozen_boot_amount < 0:
-        frozen_boot_amount = 0
-    return 'frozen_boot_amount', frozen_boot_amount
+def s_boot_frozen_supply(params, substep, state_history, previous_state, policy_input):
+    boot_frozen_supply = previous_state['boot_frozen_supply'] + policy_input['delta_boot_frozen_supply']
+    if boot_frozen_supply < 0:
+        boot_frozen_supply = 0
+    return 'boot_frozen_supply', boot_frozen_supply
 
 
-def s_liquid_boot_amount(params, substep, state_history, previous_state, policy_input):
-    liquid_boot_amount = previous_state['liquid_boot_amount'] - policy_input['delta_frozen_boot_amount'] - policy_input['delta_bonded_boot_amount'] + \
-                  policy_input['timestep_provision'] + policy_input['delta_unbonded_boot_amount']
-    return 'liquid_boot_amount', liquid_boot_amount
+def s_boot_liquid_supply(params, substep, state_history, previous_state, policy_input):
+    boot_liquid_supply = previous_state['boot_liquid_supply'] - policy_input['delta_boot_frozen_supply'] - policy_input['delta_boot_bonded_supply'] + \
+                  policy_input['timestep_provision_boot']
+    return 'boot_liquid_supply', boot_liquid_supply
 
 
-def s_to_distribution_boot_amount(params, substep, state_history, previous_state, policy_input):
-    to_distribution_boot_amount = previous_state['to_distribution_boot_amount'] + policy_input['delta_claimed_boot_amount'] + \
-                                  policy_input['delta_frozen_boot_amount']
-    if to_distribution_boot_amount < 0:
-        to_distribution_boot_amount = 0
-    if to_distribution_boot_amount > params['boot_gift_amount_init']:
-        to_distribution_boot_amount = params['boot_gift_amount_init']
-    return 'to_distribution_boot_amount', to_distribution_boot_amount
+def s_boot_to_distribution_supply(params, substep, state_history, previous_state, policy_input):
+    boot_to_distribution_supply = previous_state['boot_to_distribution_supply'] + policy_input['delta_boot_claimed_supply'] + \
+                                  policy_input['delta_boot_frozen_supply']
+    if boot_to_distribution_supply < 0:
+        boot_to_distribution_supply = 0
+    if boot_to_distribution_supply > params['boot_gift_amount_init']:
+        boot_to_distribution_supply = params['boot_gift_amount_init']
+    return 'boot_to_distribution_supply', boot_to_distribution_supply
 
 
 def s_agents_count(params, substep, state_history, previous_state, policy_input):
@@ -65,66 +64,66 @@ def s_capitalization_per_agent(params, substep, state_history, previous_state, p
     return 'capitalization_per_agent', capitalization_per_agent
 
 
-def s_capitalization(params, substep, state_history, previous_state, policy_input):
-    return 'capitalization', previous_state['capitalization_per_agent'] * previous_state['agents_count']
+def s_capitalization_in_eth(params, substep, state_history, previous_state, policy_input):
+    return 'capitalization_in_eth', previous_state['capitalization_per_agent'] * previous_state['agents_count']
 
 
 def s_gboot_price(params, substep, state_history, previous_state, policy_input):
-    return 'gboot_price', (previous_state['capitalization'] / previous_state['boot_supply']) * 1_000_000_000
+    return 'gboot_price', (previous_state['capitalization_in_eth'] / previous_state['boot_supply']) * 1_000_000_000
 
 
-def s_validator_revenue(params, substep, state_history, previous_state, policy_input):
-    validator_revenue = previous_state['timestep_provision'] / 1_000_000_000 * params['validator_commission'] / params['max_validator_count']
-    return 'validator_revenue', validator_revenue
+def s_validator_revenue_gboot(params, substep, state_history, previous_state, policy_input):
+    validator_revenue_gboot = previous_state['timestep_provision_boot'] / 1_000_000_000 * params['validator_commission'] / params['max_validator_count']
+    return 'validator_revenue_gboot', validator_revenue_gboot
 
 
-def s_cyberlinks(params, substep, state_history, previous_state, policy_input):
-    cyberlinks = previous_state['cyberlinks'] + policy_input['delta_cyberlinks']
-    return 'cyberlinks', cyberlinks
+def s_cyberlinks_count(params, substep, state_history, previous_state, policy_input):
+    cyberlinks_count = previous_state['cyberlinks_count'] + policy_input['cyberlinks_per_day']
+    return 'cyberlinks_count', cyberlinks_count
 
 
-def s_delta_cyberlinks(params, substep, state_history, previous_state, policy_input):
-    delta_cyberlinks = policy_input['delta_cyberlinks']
-    return 'delta_cyberlinks', delta_cyberlinks
+def s_cyberlinks_per_day(params, substep, state_history, previous_state, policy_input):
+    cyberlinks_per_day = policy_input['cyberlinks_per_day']
+    return 'cyberlinks_per_day', cyberlinks_per_day
 
 
-def s_mint_rate_amper(params, substep, state_history, previous_state, policy_input):
-    mint_rate_amper = params['mint_rate_amper_init'] / math.pow(2, (math.floor(previous_state['timestep'] / params['base_halving_period_amper'])))
-    if mint_rate_amper < 0.01:
-        mint_rate_amper = 0.01
-    return 'mint_rate_amper', mint_rate_amper
+def s_ampere_mint_rate(params, substep, state_history, previous_state, policy_input):
+    ampere_mint_rate = params['ampere_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] / params['ampere_base_halving_period'])))
+    if ampere_mint_rate < 0.01:
+        ampere_mint_rate = 0.01
+    return 'ampere_mint_rate', ampere_mint_rate
 
 
-def s_mint_rate_volt(params, substep, state_history, previous_state, policy_input):
-    mint_rate_volt = params['mint_rate_volt_init'] / math.pow(2, (math.floor(previous_state['timestep'] / params['base_halving_period_volt'])))
-    if mint_rate_volt < 0.01:
-        mint_rate_volt = 0.01
-    return 'mint_rate_volt', mint_rate_volt
+def s_volt_mint_rate(params, substep, state_history, previous_state, policy_input):
+    volt_mint_rate = params['volt_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] / params['volt_base_halving_period'])))
+    if volt_mint_rate < 0.01:
+        volt_mint_rate = 0.01
+    return 'volt_mint_rate', volt_mint_rate
 
 
 def s_investmint_max_period(params, substep, state_history, previous_state, policy_input):
-    investmint_max_period = params['horizont_initial_period'] * math.pow(2, math.ceil((math.log2(math.ceil((previous_state['timestep'] + 1) / params['horizont_initial_period'])))))
+    investmint_max_period = params['horizont_period_init'] * math.pow(2, math.ceil((math.log2(math.ceil((previous_state['timestep'] + 1) / params['horizont_period_init'])))))
     return 'investmint_max_period', investmint_max_period
 
 
-def s_minted_amper_amount(params, substep, state_history, previous_state, policy_input):
-    minted_amper_amount = previous_state['minted_amper_amount'] + policy_input['delta_minted_amper_amount']
-    return 'minted_amper_amount', minted_amper_amount
+def s_ampere_supply(params, substep, state_history, previous_state, policy_input):
+    ampere_supply = previous_state['ampere_supply'] + policy_input['ampere_minted_amount']
+    return 'ampere_supply', ampere_supply
 
 
-def s_minted_volt_amount(params, substep, state_history, previous_state, policy_input):
-    minted_volt_amount = previous_state['minted_volt_amount'] + policy_input['delta_minted_volt_amount']
-    return 'minted_volt_amount', minted_volt_amount
+def s_volt_supply(params, substep, state_history, previous_state, policy_input):
+    volt_supply = previous_state['volt_supply'] + policy_input['volt_minted_amount']
+    return 'volt_supply', volt_supply
 
 
 def s_gpu_memory_usage(params, substep, state_history, previous_state, policy_input):
-    if previous_state['minted_volt_amount'] == 0:
+    if previous_state['volt_supply'] == 0:
         return 'gpu_memory_usage', 0
-    gpu_memory_usage = 40 * previous_state['cyberlinks'] + 40 * previous_state['minted_amper_amount']
+    gpu_memory_usage = 40 * previous_state['cyberlinks_count'] + 40 * previous_state['ampere_supply']
     return 'gpu_memory_usage', gpu_memory_usage
 
 
-def s_amper_volt_ratio(params, substep, state_history, previous_state, policy_input):
-    if previous_state['minted_volt_amount'] == 0:
-        return 'amper_volt_ratio', 0
-    return 'amper_volt_ratio', previous_state['minted_amper_amount'] / previous_state['minted_volt_amount']
+def s_ampere_volt_ratio(params, substep, state_history, previous_state, policy_input):
+    if previous_state['volt_supply'] == 0:
+        return 'ampere_volt_ratio', 0.5
+    return 'ampere_volt_ratio', previous_state['ampere_supply'] / previous_state['volt_supply']
