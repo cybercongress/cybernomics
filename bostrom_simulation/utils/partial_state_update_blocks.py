@@ -1,5 +1,5 @@
 from utils.policies import *
-from utils.suf import *
+from utils.state_update_functions import *
 
 partial_state_update_blocks = [
     {

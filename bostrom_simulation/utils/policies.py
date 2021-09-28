@@ -53,7 +53,7 @@ def p_capitalization_per_agent(params, substep, state_history, previous_state):
 
 
 def p_cyberlinks(params, substep, state_history, previous_state):
-    delta_cyberlinks = 27 * math.pow(previous_state['agents_count'], -0.3) * previous_state['agents_count'] + params['extra_links'] + params['guaranted_links']
+    delta_cyberlinks = 3 * 9 * math.pow(previous_state['agents_count'], -0.3) * previous_state['agents_count'] + params['extra_links'] + params['guaranted_links']
     return {'delta_cyberlinks': delta_cyberlinks}
 
 
