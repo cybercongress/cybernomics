@@ -27,7 +27,7 @@ def linear_plot(df: pd.DataFrame, _y: str, render: str = 'sns', figsize: tuple =
             margin=dict(l=20, r=20, t=20, b=20), xaxis=year)
         fig.show()
     elif render == 'sns':
-        sns.set(rc={'figure.figsize': (11.7, 8.27)})
+        sns.set(rc={'figure.figsize': figsize})
         sns.lineplot(data=df, x='timestep', y=_y)
 
 
@@ -50,14 +50,15 @@ def scatter_plot(df: pd.DataFrame, _y: str, render: str = 'sns') -> None:
         sns.lmplot('timestep', _y, data=df, fit_reg=True)
 
 
-def plot_line_2_diff_y(df: pd.DataFrame, value_1: str, value_2: str, figsize: tuple = (16, 9), value_1_log: bool = False,
-                       value_2_log: bool = False) -> None:
+def plot_line_2_diff_y(df: pd.DataFrame, value_1: str, value_2: str, figsize: tuple = (16, 9),
+                       value_1_log: bool = False, value_2_log: bool = False) -> None:
     value_1_df = df[[value_1]]
     value_2_df = df[[value_2]]
     ax1 = value_1_df.plot.line(figsize=figsize, logy=value_1_log, xticks=range(0, 3650, 365), grid=True)
     ax2 = ax1.twinx()
     ax2.spines['right'].set_position(('axes', 1.0))
-    value_2_df.plot.line(ax=ax2, figsize=(16, 9), xticks=range(0, 3650, 365), style={value_2: 'r'}, logy=value_2_log, grid=True)
+    value_2_df.plot.line(ax=ax2, figsize=(16, 9), xticks=range(0, 3650, 365), style={value_2: 'r'}, logy=value_2_log,
+                         grid=True)
 
 
 def plot_line_2_same_y(df: pd.DataFrame, values: list, figsize: tuple = (16, 9), value_1_log: bool = False,
