@@ -48,26 +48,26 @@ def p_capitalization_per_agent(params, substep, state_history, previous_state):
 
 
 def p_cyberlinks_per_day(params, substep, state_history, previous_state):
-    cyberlinks_per_day = params['cyberlinks_transactions_coeff'] * 9 * math.pow(previous_state['agents_count'], -0.3) * previous_state['agents_count'] + params['extra_links'] + params['guaranted_links']
+    cyberlinks_per_day = params['cyberlinks_transactions_coeff'] * 9 * math.pow(previous_state['agents_count'], -0.3) * previous_state['agents_count'] + params['extra_links'] + params['guaranteed_links']
     return {'cyberlinks_per_day': cyberlinks_per_day}
 
 
 def p_ampere_minted_amount(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 0:
-        minted_ampere_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
+        ampere_minted_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
                                     (90 / params['ampere_base_investmint_period']) * previous_state['ampere_mint_rate'])
     else:
-        minted_ampere_amount = 0
-    return {'ampere_minted_amount': math.floor(minted_ampere_amount)}
+        ampere_minted_amount = 0
+    return {'ampere_minted_amount': math.floor(ampere_minted_amount)}
 
 
 def p_volt_minted_amount(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 0:
-        minted_volt_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
+        volt_minted_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
                                     (90 / params['volt_base_investmint_period']) * previous_state['volt_mint_rate'])
     else:
-        minted_volt_amount = 0
-    return {'volt_minted_amount': math.floor(minted_volt_amount)}
+        volt_minted_amount = 0
+    return {'volt_minted_amount': math.floor(volt_minted_amount)}
 
 
 def p_volt_released(params, substep, state_history, previous_state):
