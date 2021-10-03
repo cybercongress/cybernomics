@@ -15,36 +15,36 @@ def p_timestep_provision_boot(params, substep, state_history, previous_state):
 
 
 def p_boot_bonded_supply(params, substep, state_history, previous_state):
-    delta_boot_bonded_supply = previous_state['boot_liquid_supply'] * (1 - params['liquid_boot_supply_share']) * 0.005
-    return {'delta_boot_bonded_supply': math.floor(delta_boot_bonded_supply)}
+    boot_bonded_supply_delta = previous_state['boot_liquid_supply'] * (1 - params['liquid_boot_supply_share']) * 0.005
+    return {'boot_bonded_supply_delta': math.floor(boot_bonded_supply_delta)}
 
 
 def p_boot_claimed_supply(params, substep, state_history, previous_state):
     if previous_state['timestep'] < params['days_for_gift_activation']:
-        delta_boot_claimed_supply = params['claimed_at_activation_share'] * params['boot_gift_amount_init'] / params['days_for_gift_activation']
+        boot_claimed_supply_delta = params['claimed_at_activation_share'] * params['boot_gift_amount_init'] / params['days_for_gift_activation']
     elif previous_state['timestep'] >= params['days_for_gift_activation']:
-        delta_boot_claimed_supply = (1 - params['claimed_at_activation_share']) * params['boot_gift_amount_init'] / params['days_for_gift_full_claim']
+        boot_claimed_supply_delta = (1 - params['claimed_at_activation_share']) * params['boot_gift_amount_init'] / params['days_for_gift_full_claim']
     if previous_state['timestep'] > params['days_for_gift_full_claim'] + params['days_for_gift_activation']:
-        delta_boot_claimed_supply = 0
-    return {'delta_boot_claimed_supply': delta_boot_claimed_supply}
+        boot_claimed_supply_delta = 0
+    return {'boot_claimed_supply_delta': boot_claimed_supply_delta}
 
 
 def p_boot_frozen_supply(params, substep, state_history, previous_state):
     if previous_state['timestep'] < params['days_for_gift_activation']:
-        delta_boot_frozen_supply = 0
+        boot_frozen_supply_delta = 0
     else:
-        delta_boot_frozen_supply = previous_state['boot_to_distribution_supply'] * 0.1
-    return {'delta_boot_frozen_supply': -delta_boot_frozen_supply}
+        boot_frozen_supply_delta = previous_state['boot_to_distribution_supply'] * 0.1
+    return {'boot_frozen_supply_delta': -boot_frozen_supply_delta}
 
 
 def p_agents_count(params, substep, state_history, previous_state):
-    delta_agents_count = 18 * previous_state['timestep'] + 100
-    return {'delta_agents_count': delta_agents_count}
+    agents_count_delta = 18 * previous_state['timestep'] + 100
+    return {'agents_count_delta': agents_count_delta}
 
 
 def p_capitalization_per_agent(params, substep, state_history, previous_state):
-    delta_capitalization_per_agent = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7) * math.pow(previous_state['agents_count'], -0.7)
-    return {'delta_capitalization_per_agent': delta_capitalization_per_agent}
+    capitalization_per_agent_delta = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7) * math.pow(previous_state['agents_count'], -0.7)
+    return {'capitalization_per_agent_delta': capitalization_per_agent_delta}
 
 
 def p_cyberlinks_per_day(params, substep, state_history, previous_state):

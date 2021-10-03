@@ -20,12 +20,12 @@ def s_boot_inflation_rate(params, substep, state_history, previous_state, policy
 
 
 def s_boot_bonded_supply(params, substep, state_history, previous_state, policy_input):
-    boot_bonded_supply = previous_state['boot_bonded_supply'] + policy_input['delta_boot_bonded_supply']
+    boot_bonded_supply = previous_state['boot_bonded_supply'] + policy_input['boot_bonded_supply_delta']
     return 'boot_bonded_supply', boot_bonded_supply
 
 
 def s_hydrogen_supply(params, substep, state_history, previous_state, policy_input):
-    hydrogen_supply = previous_state['hydrogen_supply'] + policy_input['delta_boot_bonded_supply']
+    hydrogen_supply = previous_state['hydrogen_supply'] + policy_input['boot_bonded_supply_delta']
     return 'hydrogen_supply', hydrogen_supply
 
 
@@ -40,28 +40,28 @@ def s_ampere_liquid_supply(params, substep, state_history, previous_state, polic
 
 
 def s_boot_claimed_supply(params, substep, state_history, previous_state, policy_input):
-    boot_claimed_supply = previous_state['boot_claimed_supply'] + policy_input['delta_boot_claimed_supply']
+    boot_claimed_supply = previous_state['boot_claimed_supply'] + policy_input['boot_claimed_supply_delta']
     if boot_claimed_supply > params['boot_gift_amount_init']:
         boot_claimed_supply = params['boot_gift_amount_init']
     return 'boot_claimed_supply', boot_claimed_supply
 
 
 def s_boot_frozen_supply(params, substep, state_history, previous_state, policy_input):
-    boot_frozen_supply = previous_state['boot_frozen_supply'] + policy_input['delta_boot_frozen_supply']
+    boot_frozen_supply = previous_state['boot_frozen_supply'] + policy_input['boot_frozen_supply_delta']
     if boot_frozen_supply < 0:
         boot_frozen_supply = 0
     return 'boot_frozen_supply', boot_frozen_supply
 
 
 def s_boot_liquid_supply(params, substep, state_history, previous_state, policy_input):
-    boot_liquid_supply = previous_state['boot_liquid_supply'] - policy_input['delta_boot_frozen_supply'] - policy_input['delta_boot_bonded_supply'] + \
+    boot_liquid_supply = previous_state['boot_liquid_supply'] - policy_input['boot_frozen_supply_delta'] - policy_input['boot_bonded_supply_delta'] + \
                   policy_input['timestep_provision_boot']
     return 'boot_liquid_supply', boot_liquid_supply
 
 
 def s_boot_to_distribution_supply(params, substep, state_history, previous_state, policy_input):
-    boot_to_distribution_supply = previous_state['boot_to_distribution_supply'] + policy_input['delta_boot_claimed_supply'] + \
-                                  policy_input['delta_boot_frozen_supply']
+    boot_to_distribution_supply = previous_state['boot_to_distribution_supply'] + policy_input['boot_claimed_supply_delta'] + \
+                                  policy_input['boot_frozen_supply_delta']
     if boot_to_distribution_supply < 0:
         boot_to_distribution_supply = 0
     if boot_to_distribution_supply > params['boot_gift_amount_init']:
@@ -70,7 +70,7 @@ def s_boot_to_distribution_supply(params, substep, state_history, previous_state
 
 
 def s_agents_count(params, substep, state_history, previous_state, policy_input):
-    agents_count = previous_state['agents_count'] + policy_input['delta_agents_count']
+    agents_count = previous_state['agents_count'] + policy_input['agents_count_delta']
     return 'agents_count', agents_count
 
 
