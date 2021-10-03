@@ -34,6 +34,11 @@ def s_volt_liquid_supply(params, substep, state_history, previous_state, policy_
     return 'volt_liquid_supply', volt_liquid_supply
 
 
+def s_ampere_liquid_supply(params, substep, state_history, previous_state, policy_input):
+    ampere_liquid_supply = previous_state['ampere_liquid_supply'] + policy_input['ampere_released']
+    return 'ampere_liquid_supply', ampere_liquid_supply
+
+
 def s_boot_claimed_supply(params, substep, state_history, previous_state, policy_input):
     boot_claimed_supply = previous_state['boot_claimed_supply'] + policy_input['delta_boot_claimed_supply']
     if boot_claimed_supply > params['boot_gift_amount_init']:
@@ -84,6 +89,8 @@ def s_gboot_price(params, substep, state_history, previous_state, policy_input):
 
 def s_validator_revenue_gboot(params, substep, state_history, previous_state, policy_input):
     validator_revenue_gboot = previous_state['timestep_provision_boot'] / 1_000_000_000 * params['validator_commission'] / params['max_validator_count']
+    if validator_revenue_gboot == 0:
+        validator_revenue_gboot = 0.3
     return 'validator_revenue_gboot', validator_revenue_gboot
 
 
@@ -135,5 +142,5 @@ def s_gpu_memory_usage(params, substep, state_history, previous_state, policy_in
 
 def s_ampere_volt_ratio(params, substep, state_history, previous_state, policy_input):
     if previous_state['volt_supply'] == 0:
-        return 'ampere_volt_ratio', 0.5
+        return 'ampere_volt_ratio', 1
     return 'ampere_volt_ratio', previous_state['ampere_supply'] / previous_state['volt_supply']

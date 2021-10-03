@@ -77,3 +77,12 @@ def p_volt_released(params, substep, state_history, previous_state):
     else:
         volt_released = 0
     return {'volt_released': math.floor(volt_released)}
+
+
+def p_ampere_released(params, substep, state_history, previous_state):
+    if previous_state['timestep'] % 89 == 0:
+        ampere_released = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
+                                    (89 / params['ampere_base_investmint_period']) * previous_state['ampere_mint_rate'])
+    else:
+        ampere_released = 0
+    return {'ampere_released': math.floor(ampere_released)}
