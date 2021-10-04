@@ -12,3 +12,4 @@ bostrom_simulation/.ipynb_checkpoints/
 .ipynb_checkpoints/
 
 __pycache__/
+*.parquet
