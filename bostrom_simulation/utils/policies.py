@@ -71,7 +71,7 @@ def p_volt_minted_amount(params, substep, state_history, previous_state):
 
 
 def p_volt_released(params, substep, state_history, previous_state):
-    if previous_state['timestep'] % 89 == 0:
+    if previous_state['timestep'] % 90 == 89:
         volt_released = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
                                     (89 / params['volt_base_investmint_period']) * previous_state['volt_mint_rate'])
     else:
@@ -80,7 +80,7 @@ def p_volt_released(params, substep, state_history, previous_state):
 
 
 def p_ampere_released(params, substep, state_history, previous_state):
-    if previous_state['timestep'] % 89 == 0:
+    if previous_state['timestep'] % 90 == 89:
         ampere_released = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
                                     (89 / params['ampere_base_investmint_period']) * previous_state['ampere_mint_rate'])
     else:
