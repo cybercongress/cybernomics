@@ -109,6 +109,15 @@ def mint_rate_plot(df, title='ampere and volt mint rate investmint max', figsize
     plt.show()
 
 
+def minted_volt_ampere_plot(df, title='ampere and volt mint rate investmint max', figsize=_figsize):
+    columns = ['volt_minted_amount', 'ampere_minted_amount']
+    ax1 = df.plot.line(x='timestep', y=columns, xticks=_xticks, grid=True, figsize=figsize)
+    ax1.set(xlabel=_xlabel, ylabel="tokens")
+    ax1.set_title(title, size=16, fontweight="bold")
+    plt.savefig(path + title.replace(' ', '_') + '.png')
+    plt.show()
+
+
 def gpu_memory_usage_plot(df, title='gpu memory usage', figsize=_figsize):
     ax1 = df.plot(y=['cyberlinks_count'], figsize=figsize, xticks=_xticks, grid=True, logy=True)
     ax1.set(xlabel=_xlabel, ylabel="cyberlinks")
