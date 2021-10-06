@@ -120,7 +120,8 @@ def s_volt_mint_rate(params, substep, state_history, previous_state, policy_inpu
 
 
 def s_investmint_max_period(params, substep, state_history, previous_state, policy_input):
-    investmint_max_period = params['horizont_period_init'] * math.pow(2, math.ceil((math.log2(math.ceil((previous_state['timestep'] + 1) / params['horizont_period_init'])))))
+    investmint_max_period = params['investmint_max_period_init'] * math.pow(2, (math.floor(previous_state['timestep'] / params['horizont_period_init'])))
+    # investmint_max_period = params['horizont_period_init'] * math.pow(2, math.ceil((math.log2(math.ceil((previous_state['timestep']) / params['horizont_period_init'])))))
     return 'investmint_max_period', investmint_max_period
 
 
