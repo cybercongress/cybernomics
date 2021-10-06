@@ -67,7 +67,7 @@ def gboot_price_plot(df, title='gboot price and validators revenue', figsize=_fi
 def cyberlinks_per_day_plot(df, title='cyberlinks per day', figsize=_figsize):
     ax1 = df.plot(y=['cyberlinks_per_day', 'volt_supply', 'volt_liquid_supply'], figsize=figsize, xticks=_xticks,
                   style={'cyberlinks_per_day': 'r'}, grid=True)
-    ax1.set(xlabel="timestep", ylabel="cyberlinks | volts")
+    ax1.set(xlabel=_xlabel, ylabel="cyberlinks | volts")
     ax1.set_title(title, size=16, fontweight="bold")
     plt.savefig(path + title.replace(' ', '_') + '.png')
     plt.show()
@@ -82,6 +82,7 @@ def cyberlinks_count_plot(df, title='cyberlinks count', figsize=_figsize):
     # df.plot.line(ax=ax2, y=['ampere_supply', 'ampere_liquid_supply'], figsize=figsize, xticks=range(0, 3650, 365),
     #                   grid=True)
     # # plt.legend(bbox_to_anchor=(1.0, 1.0))
+    ax1.set(xlabel=_xlabel, ylabel="cyberlinks")
     ax1.set_title(title, size=16, fontweight="bold")
     plt.savefig(path + title.replace(' ', '_') + '.png')
     plt.show()
