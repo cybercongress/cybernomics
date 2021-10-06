@@ -1,14 +1,9 @@
-import plotly.express as px
-import seaborn as sns
-import pandas as pd
+# import plotly.express as px
+# import seaborn as sns
+# import pandas as pd
 import matplotlib.pyplot as plt
 
 path = './images/'
-
-
-def df_preparator(df: pd.DataFrame) -> pd.DataFrame:
-    # df = df.drop(df[df['timestep']%10 != 0].index)
-    return df
 
 
 def boot_supply_plot(df, title='boot supply and inflation rate', figsize=(16, 9)):
