@@ -136,9 +136,10 @@ def s_volt_supply(params, substep, state_history, previous_state, policy_input):
 
 
 def s_gpu_memory_usage(params, substep, state_history, previous_state, policy_input):
+    particles = previous_state['cyberlinks_count'] * params['particle_per_cyberlink']
     if previous_state['volt_supply'] == 0:
         return 'gpu_memory_usage', 0
-    gpu_memory_usage = 40 * previous_state['cyberlinks_count'] + 40 * previous_state['ampere_supply']
+    gpu_memory_usage = 40 * previous_state['cyberlinks_count'] + 40 * particles
     return 'gpu_memory_usage', gpu_memory_usage
 
 

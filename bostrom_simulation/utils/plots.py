@@ -110,10 +110,13 @@ def mint_rate_plot(df, title='ampere and volt mint rate investmint max', figsize
 
 
 def gpu_memory_usage_plot(df, title='gpu memory usage', figsize=_figsize):
-    ax1 = df.plot(y=['ampere_supply', 'cyberlinks_count'], figsize=figsize, xticks=_xticks, grid=True, title=title)
+    ax1 = df.plot(y=['cyberlinks_count'], figsize=figsize, xticks=_xticks, grid=True, logy=True)
+    ax1.set(xlabel=_xlabel, ylabel="cyberlinks")
+    ax1.set_title(title, size=16, fontweight="bold")
     ax2 = ax1.twinx()
     ax2.spines['right'].set_position(('axes', 1.0))
-    df.plot.line(ax=ax2, y='gpu_memory_usage', figsize=figsize, xticks=range(0, 3650, 365),
+    ax2.set(ylabel="bytes")
+    df.plot.line(ax=ax2, y='gpu_memory_usage', figsize=figsize, xticks=_xticks,
                       style={'gpu_memory_usage': 'r'}, grid=True)
     plt.legend(bbox_to_anchor=(1.0, 1.0))
     plt.savefig(path + title.replace(' ', '_') + '.png')
