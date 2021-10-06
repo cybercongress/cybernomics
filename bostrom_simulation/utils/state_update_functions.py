@@ -75,7 +75,8 @@ def s_agents_count(params, substep, state_history, previous_state, policy_input)
 
 
 def s_capitalization_per_agent(params, substep, state_history, previous_state, policy_input):
-    capitalization_per_agent = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7) * math.pow(previous_state['agents_count'], -0.7)
+    # capitalization_per_agent = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7) * math.pow(previous_state['agents_count'], -0.7)
+    capitalization_per_agent = previous_state['capitalization_per_agent'] + policy_input['capitalization_per_agent_delta']
     return 'capitalization_per_agent', capitalization_per_agent
 
 

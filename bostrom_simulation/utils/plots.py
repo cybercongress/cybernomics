@@ -41,20 +41,19 @@ def agents_count_plot(df, title='agents count', figsize=_figsize):
 
 
 def capitalization_plot(df, title='cap in eth and cap per agent', figsize=_figsize):
-    ax1 = df.plot(y='capitalization_per_agent', figsize=figsize, xticks=_xticks, grid=True,
-                  logy=True, style={'capitalization_per_agent': 'r'})
+    ax1 = df.plot(y='capitalization_per_agent', figsize=figsize, xticks=_xticks, grid=True, style={'capitalization_per_agent': 'r'}, logy=True)
     ax1.set(xlabel=_xlabel, ylabel="eth")
     ax1.set_title(title, size=16, fontweight="bold")
     ax2 = ax1.twinx()
     ax2.spines['right'].set_position(('axes', 1.0))
     ax2.set(ylabel="eth")
-    df.plot.line(ax=ax2, y='capitalization_in_eth', figsize=figsize, xticks=_xticks, grid=True, )
+    df.plot.line(ax=ax2, y='capitalization_in_eth', figsize=figsize, xticks=_xticks, grid=True)
     plt.savefig(path + title.replace(' ', '_') + '.png')
     plt.show()
 
 
 def gboot_price_plot(df, title='gboot price and validators revenue', figsize=_figsize):
-    ax1 = df.plot(y='gboot_price', figsize=figsize, xticks=_xticks, grid=True, logy=True, style={'gboot_price': 'r'})
+    ax1 = df.plot(y='gboot_price', figsize=figsize, xticks=_xticks, grid=True, style={'gboot_price': 'r'})
     ax1.set(xlabel=_xlabel, ylabel="eth")
     ax1.set_title(title, size=16, fontweight="bold")
     ax2 = ax1.twinx()
