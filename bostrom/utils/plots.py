@@ -135,11 +135,12 @@ def minted_volt_ampere_plot(df: pd.DataFrame, title: str = 'AMPERE and VOLT Mint
 
 
 def gpu_memory_usage_plot(df: pd.DataFrame, title: str = 'GPU Memory Usage', figsize: tuple = FIGSIZE):
+    df['gpu_memory_usage_gb'] = df['gpu_memory_usage'] / 1e9
     plot(df=df,
          title=title,
          columns_1=['cyberlinks_count'],
-         columns_2=['gpu_memory_usage'],
+         columns_2=['gpu_memory_usage_gb'],
          ylabel_1='cyberLinks Count',
-         ylabel_2='GPU Memory Usage, bytes',
+         ylabel_2='GPU Memory Usage, GB',
          type_1='line',
          figsize=figsize)

@@ -6,7 +6,7 @@
 0. Install Python3 if you have no
 1. Go to `bostrom_simulation` folder
 ```bash
-cd bostrom_simulation
+cd bostrom
 ```
 2. Install requirements via pip3
 ```bash

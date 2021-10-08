@@ -1,11 +1,11 @@
 
-bostrom_simulation/.idea/
+bostrom/.idea/
 
 .DS_Store
 
-bostrom_simulation/utils/__pycache__/
+bostrom/utils/__pycache__/
 
-bostrom_simulation/.ipynb_checkpoints/
+bostrom/.ipynb_checkpoints/
 
 .idea/
 
