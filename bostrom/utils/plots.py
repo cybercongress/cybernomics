@@ -8,6 +8,29 @@ XLIM = (0, 3650)
 XLABEL = "timestep(days)"
 
 
+def rename_column(column: str) -> str:
+    return column.\
+                replace('_', ' ').title(). \
+                replace('Gboot', 'GBOOT'). \
+                replace('Boot', 'BOOT'). \
+                replace('Hydrogen', 'HYDROGEN'). \
+                replace('Ampere', 'AMPERE'). \
+                replace('Volt', 'VOLT'). \
+                replace('Eth', 'ETH'). \
+                replace('Gpu', 'GPU'). \
+                replace('Gb', 'GB'). \
+                replace('In ', 'in '). \
+                replace('To ', 'to '). \
+                replace('Per ', 'per ')
+
+
+def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
+    rename_columns_dict = {item: rename_column(item) for item in df.columns
+                           if item not in ('simulation', 'subset', 'run', 'substep', 'timestep')}
+    df.rename(columns=rename_columns_dict)
+    return df.rename(columns=rename_columns_dict)
+
+
 def plot(df: pd.DataFrame, title: str,
          columns_1: list,
          ylabel_1: str, ylabel_2: str = '',
@@ -15,8 +38,8 @@ def plot(df: pd.DataFrame, title: str,
          type_1: str = 'area',
          ymin_1: float = 0, ymin_2: float = 0,
          figsize: tuple = FIGSIZE):
-
-    if type_1 =='area':
+    columns_1 = list(map(rename_column, columns_1))
+    if type_1 == 'area':
         ax1 = df.plot.area(y=columns_1, linewidth=0, colormap="winter", xticks=XTICKS, grid=True, figsize=figsize)
     else:
         ax1 = df.plot(y=columns_1, figsize=figsize, xticks=XTICKS, grid=True, style={columns_1[0]: 'r'})
@@ -25,6 +48,7 @@ def plot(df: pd.DataFrame, title: str,
     ax1.spines['top'].set_visible(False)
     ax1.legend(loc='upper left')
     if ylabel_2:
+        columns_2 = list(map(rename_column, columns_2))
         ax2 = ax1.twinx()
         ax2.spines['right'].set_position(('axes', 1.0))
         ax2.set(ylabel=ylabel_2)
@@ -124,7 +148,7 @@ def mint_rate_plot(df: pd.DataFrame, title: str = 'Mint Rate and Investmint Maxi
          figsize=figsize)
 
 
-def minted_volt_ampere_plot(df: pd.DataFrame, title: str = 'AMPERE and VOLT Minted Amount', 
+def minted_volt_ampere_plot(df: pd.DataFrame, title: str = 'AMPERE and VOLT Minted Amount',
                             figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
@@ -135,7 +159,7 @@ def minted_volt_ampere_plot(df: pd.DataFrame, title: str = 'AMPERE and VOLT Mint
 
 
 def gpu_memory_usage_plot(df: pd.DataFrame, title: str = 'GPU Memory Usage', figsize: tuple = FIGSIZE):
-    df['gpu_memory_usage_gb'] = df['gpu_memory_usage'] / 1e9
+    df[rename_column('gpu_memory_usage_gb')] = df[rename_column('gpu_memory_usage')] / 1e9
     plot(df=df,
          title=title,
          columns_1=['cyberlinks_count'],
