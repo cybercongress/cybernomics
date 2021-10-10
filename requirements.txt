@@ -5,3 +5,4 @@ cadCAD>=0.4.23
 google-cloud-bigquery
 google-cloud-bigquery-storage
 seaborn
+matplotlib~=3.3.4

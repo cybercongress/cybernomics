@@ -531,3 +531,20 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{horizont\_period\_init}}\rfloor}}"></p>  
 
+## Simulation Results
+### BOOT and HYDROGEN Supply
+![BOOT Supply and Inflation Rate](images/boot_supply_and_inflation_rate.png)
+![HYDROGEN Supply](images/hydrogen_supply.png)
+### BOOT Capitalization
+![Agents Count](images/agents_count.png)
+![BOOT Capitalization and BOOT Capitalization per Agent, ETH](images/boot_capitalization_and_boot_capitalization_per_agent,_eth.png)
+![GBOOT Price and Validators Revenue](images/gboot_price_and_validators_revenue.png)
+### cyberLinks
+![cyberLinks per day](images/cyberlinks_per_day.png)
+![cyberLinks Count](images/cyberlinks_count.png)
+### AMPERE and VOLT
+![AMPERE and VOLT Supply](images/ampere_and_volt_supply.png)
+![Mint Rate and Investmint Maximum Period for AMPERE and VOLT](images/mint_rate_and_investmint_maximum_period_for_ampere_and_volt.png)
+![AMPERE and VOLT Minted Amount](images/ampere_and_volt_minted_amount.png)
+### GPU Usage
+![GPU Memory Usage](images/gpu_memory_usage.png)

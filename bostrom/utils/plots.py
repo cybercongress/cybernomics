@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
 
 IMAGES_PATH = './images/'
-FIGSIZE = (16, 7)
+FIGSIZE = (16, 5)
 XTICKS = range(0, 4015, 365)
 XLIM = (0, 3650)
 XLABEL = 'timestep(days)'
@@ -41,10 +41,11 @@ def plot(df: pd.DataFrame, title: str,
          ymin_1: float = 0, ymin_2: float = 0,
          figsize: tuple = FIGSIZE):
     columns_1 = list(map(rename_column, columns_1))
+    plt.rcParams["figure.figsize"] = figsize
     if type_1 == 'area':
-        ax1 = df.plot.area(y=columns_1, linewidth=0, colormap='winter', xticks=XTICKS, grid=True, figsize=figsize)
+        ax1 = df.plot.area(y=columns_1, linewidth=0, colormap='winter', xticks=XTICKS, grid=True)
     else:
-        ax1 = df.plot(y=columns_1, figsize=figsize, xticks=XTICKS, grid=True, style={columns_1[0]: 'r'})
+        ax1 = df.plot(y=columns_1, xticks=XTICKS, grid=True, style={columns_1[0]: 'r'})
     ax1.set(xlabel=XLABEL, ylabel=ylabel_1)
     ax1.set_ylim(bottom=ymin_1)
     ax1.set_title(title, size=16, fontweight='bold')
@@ -60,7 +61,7 @@ def plot(df: pd.DataFrame, title: str,
         ax2 = ax1.twinx()
         ax2.spines['right'].set_position(('axes', 1.0))
         ax2.set(ylabel=ylabel_2)
-        df.plot.line(ax=ax2, y=columns_2, figsize=figsize, xticks=XTICKS, grid=True)
+        df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True)
         ax2.set_ylim(bottom=ymin_2)
         ax2.spines['top'].set_visible(False)
         ax2.grid(None)
