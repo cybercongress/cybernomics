@@ -33,7 +33,7 @@ jupyter notebook
 To optimize parameters for launching Bostrom.
 
 An idea is to model the value of BOOT through the understanding of established network effects in Ethereum.
-Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for cyberlinks based on address growth we can adjust the supply of cyberlinks accounting for computing capability and so that Volts price could grow. The given model also allows defining inflation parameters of BOOT to optimize investments into the hardware infrastructure.
+Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for cyberlinks based on address growth we can adjust the supply of cyberlinks accounting for computing capability and so that VOLT price could grow. The given model also allows defining inflation parameters of BOOT to optimize investments into the hardware infrastructure.
 
 ## Time 
 
@@ -177,7 +177,7 @@ After the modeling of claim dynamics, we can set baselines for adoption ("unders
 
 ## Understanding network effects
 
-Modeling price of BOOT as a function of usage weighted on network effects.  
+### Agents growth
 
 To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active agent dynamics
 ([excel spreadsheet online](https://needfordata-my.sharepoint.com/:x:/g/personal/max_needfordata_ru/EZWCgmE-VOBEsGJTg8lslpYBP2LQoBFdMC9LgXleJ3Dj_Q?e=PwmaIh)).
@@ -193,6 +193,8 @@ We have combined 2 trendlines and derived the following formula of agents count 
 Assuming that there are much more crypto-agents now than it was at the time of ETH launch, we adjusted the formula with coefficients to expect more rapid growth.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation"></p>
+
+### Capitalization dynamics
 
 We decided to model total `capitalization_in_eth` through `capitalization_per_agent` metric derived from ETH capitalization in
 BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had a lot of fluctuations).
@@ -224,9 +226,9 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gboot\_price = \frac{capitalization\_in\_eth}{boot\_supply}"></p>
 
-## Predicting Volts demand
+## Predicting VOLT demand
 
-Volts are natural tokens. Each volt enables its holder to produce cyberlink in exchange of it. To simulate cyberlinks usage we have derived base estimate of `cyberlinks_per_day` formula from ETH data:
+VOLT are natural tokens. Each volt enables its holder to produce cyberlink in exchange of it. To simulate cyberlinks usage we have derived base estimate of `cyberlinks_per_day` formula from ETH data:
 
 ![ETH Data](images/EthAgentsCountActive_vs_EthTransPerAgent.png)
 
@@ -250,11 +252,11 @@ on this demand also adding `guaranteed_links` count.
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
 
-## Adjusting Volts and Amperes supply
+## Adjusting AMPERE and VOLT supply
 
-To model minting properties of Volts for the planning of GPU storage and maximization of Volts price. As Amperes are resource tokens and they do not have natural measure we decide to model Amperes supply equal to Volts. 
+To model minting properties of VOLT for the planning of GPU storage and maximization of VOLT price. As AMPERE are resource tokens and they do not have natural measure we decide to model AMPERE supply equal to VOLT. 
 
-System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1GBoot) for 1 day yelds 1 Volts. 
+System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1GBoot) for 1 day yelds 1 VOLT. 
 
 `investmint_period` - is period of investminiting H token for selected agent. It is choosen by agent according to his understanding and priorities of maximisation his benefits. 
 
@@ -273,21 +275,21 @@ According to this formula current `investmint_max_period` will be set to [3, 6, 
 
 ### Simulation parameters
 
-Parameters to define for Volts and A:
+Parameters to define for VOLT and A:
 - `horizont_period_init` `(90)`
 
-## Ampere and Volt minting
+## AMPERE and VOLT minting
 
-Amperes are minted according to the following formula:
+AMPERE are minted according to the following formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_period}{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate}\rfloor"></p>
 
 
-Volts are minted according to the following formula:
+VOLT are minted according to the following formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p>
 
-`ampere_volt_ratio` - the ratio between Amperes and Volts tokens supply. 
+`ampere_volt_ratio` - the ratio between AMPERE and VOLT tokens supply. 
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}ampere\_volt\_ratio = \frac{ampere\_minted\_amount}{volt\_minted\_amount}"></p>
 
@@ -303,9 +305,9 @@ Volts are minted according to the following formula:
 
 
 
-## Mint Rate of Amperes and Volts
+## Mint Rate of AMPERE and VOLT
 
-Mint rate is multiple coefficient for minting Ampere tokens
+Mint rate is multiple coefficient for minting AMPERE tokens
 
 It is halving every `ampere_base_halving_period`
 
@@ -330,7 +332,7 @@ It is halving every `volt_base_halving_period`
 
 ## Planing GPU Memory usage
 
-We had stress testing of testnet to measure resource usage.
+We had stress testing on testnet to measure resource usage.
 
 |             |        Now |      1B links |        100B links |
 | :---------- | ---------: | ------------: | ----------------: |
@@ -345,6 +347,8 @@ We had stress testing of testnet to measure resource usage.
 According to stress testing measurements on testnet we derived formula of GPU memory usage:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage=40 \cdot cyberlinks\_count %2B 40 \cdot ampere\_minted\_amount" ></p>
+
+[The results of modeling](#gpu-usage)
 
 ## Bonding and Unbonding (Need to discuss. Probably depricated)
 
@@ -463,8 +467,8 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 ### Differential Equations
 
 - `boot_liquid_supply` - liquid network token amount
-- `boot_bonded_supply` - bonded(staked) network token (hydrogen) amount
-- `boot_frozen_supply` - not claimed(frozen) network token amount
+- `boot_bonded_supply` - bonded (staked) network token (HYDROGEN) amount
+- `boot_frozen_supply` - not claimed (frozen) network token amount
 - `bonding_speed` - the amount of months to bond all liquid boots
 - `unbonding_speed` - the amount of months to unbond all bonded boots
 - `boot_inflation_rate` - inflation on timesep
@@ -473,7 +477,7 @@ Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivale
 - `timestep_provision_boot` - `timestep` token provision
 - `ampere_supply` - Ampere resource token amount
 - `volt_supply` - volt token amount
-- `ampere_mint_rate` - mint rate for Ampere token minting
+- `ampere_mint_rate` - mint rate for AMPERE token minting
 - `volt_mint_rate` - mint rate for volt token minting
 - `cyberlinks_count` - number of cyberlinks
 - `agents_count` - the amount of the active agents
@@ -532,19 +536,20 @@ where:
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{horizont\_period\_init}}\rfloor}}"></p>  
 
 ## Simulation Results
-### BOOT and HYDROGEN Supply
+### [BOOT and HYDROGEN Supply](#boot-supply)
 ![BOOT Supply and Inflation Rate](images/boot_supply_and_inflation_rate.png)
 ![HYDROGEN Supply](images/hydrogen_supply.png)
-### BOOT Capitalization
+### [Agents growth](#agents-growth)
 ![Agents Count](images/agents_count.png)
+### [BOOT Capitalization](#capitalization-dynamics)
 ![BOOT Capitalization and BOOT Capitalization per Agent, ETH](images/boot_capitalization_and_boot_capitalization_per_agent,_eth.png)
 ![GBOOT Price and Validators Revenue](images/gboot_price_and_validators_revenue.png)
-### cyberLinks
+### [cyberLinks](#predicting-volts-demand)
 ![cyberLinks per day](images/cyberlinks_per_day.png)
 ![cyberLinks Count](images/cyberlinks_count.png)
-### AMPERE and VOLT
+### [AMPERE and VOLT](#ampere-and-volt-minting)
 ![AMPERE and VOLT Supply](images/ampere_and_volt_supply.png)
 ![Mint Rate and Investmint Maximum Period for AMPERE and VOLT](images/mint_rate_and_investmint_maximum_period_for_ampere_and_volt.png)
 ![AMPERE and VOLT Minted Amount](images/ampere_and_volt_minted_amount.png)
-### GPU Usage
+### [GPU Usage](#planing-gpu-memory-usage)
 ![GPU Memory Usage](images/gpu_memory_usage.png)
