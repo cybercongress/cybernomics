@@ -42,6 +42,9 @@ def plot(df: pd.DataFrame, title: str,
          figsize: tuple = FIGSIZE):
     columns_1 = list(map(rename_column, columns_1))
     plt.rcParams["figure.figsize"] = figsize
+    plt.rcParams["figure.facecolor"] = '#FFFFFF'
+    plt.rcParams["legend.facecolor"] = '#FFFFFF'
+    plt.rcParams["legend.edgecolor"] = '#FFFFFF'
     if type_1 == 'area':
         ax1 = df.plot.area(y=columns_1, linewidth=0, colormap='winter', xticks=XTICKS, grid=True)
     else:
@@ -50,7 +53,8 @@ def plot(df: pd.DataFrame, title: str,
     ax1.set_ylim(bottom=ymin_1)
     ax1.set_title(title, size=16, fontweight='bold')
     ax1.spines['top'].set_visible(False)
-    ax1.legend(loc='upper left')
+    legend_1 = ax1.legend(loc='upper left')
+    legend_1.get_frame().set_facecolor('#FFFFFF')
     ax1.yaxis.set_major_locator(plt.MaxNLocator(6))
     if ypercent_1:
         ticks_loc = ax1.get_yticks()
