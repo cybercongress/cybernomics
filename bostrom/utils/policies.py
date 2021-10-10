@@ -15,7 +15,7 @@ def p_timestep_provision_boot(params, substep, state_history, previous_state):
 
 
 def p_boot_bonded_supply(params, substep, state_history, previous_state):
-    boot_bonded_supply_delta = previous_state['boot_liquid_supply'] * (1 - params['liquid_boot_supply_share']) * 0.01
+    boot_bonded_supply_delta = previous_state['boot_liquid_supply'] * (1 - params['liquid_boot_supply_share']) * params['bonding_speed_coeff']
     return {'boot_bonded_supply_delta': math.floor(boot_bonded_supply_delta)}
 
 
