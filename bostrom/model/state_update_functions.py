@@ -29,6 +29,11 @@ def s_hydrogen_supply(params, substep, state_history, previous_state, policy_inp
     return 'hydrogen_supply', hydrogen_supply
 
 
+def s_hydrogen_liquid_supply(params, substep, state_history, previous_state, policy_input):
+    hydrogen_liquid_supply = previous_state['hydrogen_liquid_supply'] + policy_input['hydrogen_liquid_supply_delta']
+    return 'hydrogen_liquid_supply', hydrogen_liquid_supply
+
+
 def s_volt_liquid_supply(params, substep, state_history, previous_state, policy_input):
     volt_liquid_supply = previous_state['volt_liquid_supply'] + policy_input['volt_released']
     return 'volt_liquid_supply', volt_liquid_supply
@@ -165,6 +170,7 @@ def s_ampere_volt_ratio(params, substep, state_history, previous_state, policy_i
 
 def s_volt_minted_amount(params, substep, state_history, previous_state, policy_input):
     return 'volt_minted_amount', policy_input['volt_minted_amount']
+
 
 def s_ampere_minted_amount(params, substep, state_history, previous_state, policy_input):
     return 'ampere_minted_amount', policy_input['ampere_minted_amount']

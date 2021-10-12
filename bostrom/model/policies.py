@@ -57,7 +57,7 @@ def p_cyberlinks_per_day(params, substep, state_history, previous_state):
 
 def p_ampere_minted_amount(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 0:
-        ampere_minted_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
+        ampere_minted_amount = math.floor((0.4 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
                                     (90 / params['ampere_base_investmint_period']) * previous_state['ampere_mint_rate'])
     else:
         ampere_minted_amount = 0
@@ -66,16 +66,27 @@ def p_ampere_minted_amount(params, substep, state_history, previous_state):
 
 def p_volt_minted_amount(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 0:
-        volt_minted_amount = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
+        volt_minted_amount = math.floor((0.4 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
                                     (90 / params['volt_base_investmint_period']) * previous_state['volt_mint_rate'])
     else:
         volt_minted_amount = 0
     return {'volt_minted_amount': math.floor(volt_minted_amount)}
 
 
+def p_hydrogen_liquid_supply_delta(params, substep, state_history, previous_state):
+    boot_bonded_share = previous_state['boot_bonded_supply'] / previous_state['boot_supply']
+    boot_bonded_supply_delta = (params['boot_bonded_share_target'] - boot_bonded_share) * previous_state[
+        'boot_supply'] * params['bonding_speed_coeff']
+    if previous_state['timestep'] % 90 == 0:
+        hydrogen_liquid_supply_delta = 0.2 * boot_bonded_supply_delta
+    else:
+        hydrogen_liquid_supply_delta = 0
+    return {'hydrogen_liquid_supply_delta': math.floor(hydrogen_liquid_supply_delta)}
+
+
 def p_volt_released(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 89:
-        volt_released = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
+        volt_released = math.floor((0.4 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
                                     (89 / params['volt_base_investmint_period']) * previous_state['volt_mint_rate'])
     else:
         volt_released = 0
@@ -84,7 +95,7 @@ def p_volt_released(params, substep, state_history, previous_state):
 
 def p_ampere_released(params, substep, state_history, previous_state):
     if previous_state['timestep'] % 90 == 89:
-        ampere_released = math.floor((0.5 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
+        ampere_released = math.floor((0.4 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
                                     (89 / params['ampere_base_investmint_period']) * previous_state['ampere_mint_rate'])
     else:
         ampere_released = 0

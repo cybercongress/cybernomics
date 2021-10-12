@@ -1,13 +1,13 @@
 from model.policies import p_boot_inflation_rate_change, p_timestep_provision_boot, p_boot_frozen_supply, \
     p_boot_bonded_supply, p_boot_claimed_supply, p_agents_count, p_capitalization_per_agent, p_cyberlinks_per_day, \
-    p_ampere_minted_amount, p_volt_minted_amount, p_volt_released, p_ampere_released
+    p_ampere_minted_amount, p_volt_minted_amount, p_volt_released, p_ampere_released, p_hydrogen_liquid_supply_delta
 from model.state_update_functions import s_boot_supply, s_timestep_provision_boot, s_boot_claimed_supply, \
     s_boot_inflation_rate, s_boot_frozen_supply, s_boot_bonded_supply, s_boot_liquid_supply, \
     s_boot_to_distribution_supply, s_hydrogen_supply, s_agents_count, s_capitalization_per_agent, \
     s_capitalization_in_eth, s_gboot_price, s_validator_revenue_gboot, s_cyberlinks_count, s_cyberlinks_per_day, \
     s_ampere_supply, s_volt_supply, s_volt_mint_rate, s_ampere_mint_rate, s_investmint_max_period, s_gpu_memory_usage, \
     s_ampere_volt_ratio, s_volt_liquid_supply, s_ampere_liquid_supply, s_volt_minted_amount, s_ampere_minted_amount, \
-    s_cpu_memory_usage, s_cpu_time_usage, s_gpu_time_usage
+    s_cpu_memory_usage, s_cpu_time_usage, s_gpu_time_usage, s_hydrogen_liquid_supply
 
 partial_state_update_blocks = [
     {
@@ -23,7 +23,8 @@ partial_state_update_blocks = [
             'ampere_minted_amount': p_ampere_minted_amount,
             'volt_minted_amount': p_volt_minted_amount,
             'volt_released': p_volt_released,
-            'ampere_released': p_ampere_released
+            'ampere_released': p_ampere_released,
+            'hydrogen_liquid_supply_delta': p_hydrogen_liquid_supply_delta
         },
         'variables': {
             'boot_supply': s_boot_supply,
@@ -35,6 +36,7 @@ partial_state_update_blocks = [
             'boot_liquid_supply': s_boot_liquid_supply,
             'boot_to_distribution_supply': s_boot_to_distribution_supply,
             'hydrogen_supply': s_hydrogen_supply,
+            'hydrogen_liquid_supply': s_hydrogen_liquid_supply,
             'agents_count': s_agents_count,
             'capitalization_per_agent': s_capitalization_per_agent,
             'capitalization_in_eth': s_capitalization_in_eth,
