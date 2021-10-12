@@ -31,6 +31,7 @@ def rename_column(column: str) -> str:
 
 
 def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
+
     df['boot_liquid_supply'] = df['boot_liquid_supply'] / 1e12
     df['boot_frozen_supply'] = df['boot_frozen_supply'] / 1e12
     df['boot_bonded_supply'] = df['boot_bonded_supply'] / 1e12
@@ -43,6 +44,11 @@ def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
     df['cyberlinks_count'] = df['cyberlinks_count'] / 1e9
     df['agents_count'] = df['agents_count'] / 1e6
     df['gpu_memory_usage'] = df['gpu_memory_usage'] / 1e9
+
+    growth_rate_period = 1
+    df['agents_count_growth_rate'] = df['agents_count'].pct_change(periods=growth_rate_period)
+    df['cyberlink_count_growth_rate'] = df['cyberlinks_count'].pct_change(periods=growth_rate_period)
+
     rename_columns_dict = {item: rename_column(item) for item in df.columns
                            if item not in ('simulation', 'subset', 'run', 'substep', 'timestep')}
     df.rename(columns=rename_columns_dict)
@@ -53,6 +59,7 @@ def plot(df: pd.DataFrame, title: str,
          columns_1: list,
          ylabel_1: str, ylabel_2: str = '',
          ypercent_1: bool = False, ypercent_2: bool = False,
+         ylogscale_1: bool = False, ylogscale_2: bool = False,
          columns_2=None,
          type_1: str = 'area',
          ymin_1: float = 0, ymin_2: float = 0,
@@ -65,37 +72,39 @@ def plot(df: pd.DataFrame, title: str,
     if type_1 == 'area':
         ax1 = df.plot.area(y=columns_1, linewidth=0, colormap='winter', xticks=XTICKS, grid=True)
     else:
-        ax1 = df.plot(y=columns_1, xticks=XTICKS, grid=True, style={columns_1[0]: 'r'})
+        ax1 = df.plot(y=columns_1, xticks=XTICKS, grid=True, style={columns_1[0]: 'r'}, logy=ylogscale_1)
     ax1.set(xlabel=XLABEL, ylabel=ylabel_1)
-    ax1.set_ylim(bottom=ymin_1)
     ax1.set_title(title, size=16, fontweight='bold')
     ax1.spines['top'].set_visible(False)
-    if df[columns_1].max().max() > 1000:
-        ax1.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
     legend_1 = ax1.legend(loc='upper left')
     legend_1.get_frame().set_facecolor('#FFFFFF')
-    ax1.yaxis.set_major_locator(plt.MaxNLocator(6))
-    if ypercent_1:
-        ticks_loc = ax1.get_yticks()
-        ax1.yaxis.set_major_locator(FixedLocator(ticks_loc))
-        ax1.set_yticklabels(['{:,.0%}'.format(x) for x in ticks_loc])
+    if not ylogscale_1:
+        ax1.set_ylim(bottom=ymin_1)
+        ax1.yaxis.set_major_locator(plt.MaxNLocator(6))
+        if df[columns_1].max().max() > 1000:
+            ax1.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
+        if ypercent_1:
+            ticks_loc = ax1.get_yticks()
+            ax1.yaxis.set_major_locator(FixedLocator(ticks_loc))
+            ax1.set_yticklabels(['{:,.0%}'.format(x) for x in ticks_loc])
     if ylabel_2:
         columns_2 = list(map(rename_column, columns_2))
         ax2 = ax1.twinx()
         ax2.spines['right'].set_position(('axes', 1.0))
         ax2.set(ylabel=ylabel_2)
-        df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True)
-        ax2.set_ylim(bottom=ymin_2)
+        df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True, logy=ylogscale_2)
         ax2.spines['top'].set_visible(False)
-        if df[columns_2].max().max() > 1000:
-            ax2.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
         ax2.grid(None)
         ax2.legend(loc='upper right')
-        ax2.yaxis.set_major_locator(plt.MaxNLocator(6))
-        if ypercent_2:
-            ticks_loc = ax2.get_yticks()
-            ax2.yaxis.set_major_locator(FixedLocator(ticks_loc))
-            ax2.set_yticklabels(['{:,.1%}'.format(x) for x in ticks_loc])
+        if not ylogscale_2:
+            ax2.set_ylim(bottom=ymin_2)
+            ax2.yaxis.set_major_locator(plt.MaxNLocator(6))
+            if df[columns_2].max().max() > 1000:
+                ax2.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
+            if ypercent_2:
+                ticks_loc = ax2.get_yticks()
+                ax2.yaxis.set_major_locator(FixedLocator(ticks_loc))
+                ax2.set_yticklabels(['{:,.1%}'.format(x) for x in ticks_loc])
     else:
         ax1.spines['right'].set_visible(False)
     plt.xlim(XLIM)
@@ -126,7 +135,10 @@ def agents_count_plot(df: pd.DataFrame, title: str = 'Neurons Forecast', figsize
     plot(df=df,
          title=title,
          columns_1=['agents_count'],
+         columns_2=['agents_count_growth_rate'],
          ylabel_1='Neurons Amount, millions',
+         ylabel_2='Neurons Daily Growth Rate',
+         ylogscale_2=True,
          figsize=figsize)
 
 
@@ -168,7 +180,10 @@ def cyberlinks_count_plot(df: pd.DataFrame, title: str = 'cyberLinks Forecast', 
     plot(df=df,
          title=title,
          columns_1=['cyberlinks_count'],
+         columns_2=['cyberlink_count_growth_rate'],
          ylabel_1='cyberLinks Amount, billions',
+         ylabel_2='cyberLinks Daily Growth Rate',
+         ylogscale_2=True,
          figsize=figsize)
 
 
@@ -223,5 +238,6 @@ def gpu_memory_usage_plot(df: pd.DataFrame, title: str = 'GPU Memory Usage', fig
          title=title,
          columns_1=['gpu_memory_usage'],
          ylabel_1='GPU Memory Usage, GB',
+         ylogscale_1=True,
          type_1='line',
          figsize=figsize)
