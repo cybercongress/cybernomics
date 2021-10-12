@@ -46,15 +46,9 @@ def p_agents_count(params, substep, state_history, previous_state):
 
 
 def p_capitalization_per_agent(params, substep, state_history, previous_state):
-    # capitalization_per_agent_delta = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7) * math.pow(previous_state['agents_count'], -0.7)
-    # capitalization_per_agent_delta = (-0.7 * params['start_capitalization_per_agent'] *
-    #                                     math.pow(params['agents_count_at_activation'], 0.7)) * \
-    #                                  math.pow(previous_state['agents_count'], -1.7) * \
-    #                                  (18 * previous_state['timestep'] + 100)
-    capitalization_per_agent_delta = - (12.6 * params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7)) * (previous_state['timestep'] + 5.55556) / \
-                                     math.pow((params['agents_count_at_activation'] + previous_state['timestep'] * (9 * previous_state['timestep'] + 100)), 1.7)
+    agents_count_delta = 18 * previous_state['timestep'] + 100
+    capitalization_per_agent_delta = 2990 * (- 0.7) * math.pow(previous_state['agents_count'], (-1.7)) * agents_count_delta
     return {'capitalization_per_agent_delta': capitalization_per_agent_delta}
-
 
 def p_cyberlinks_per_day(params, substep, state_history, previous_state):
     cyberlinks_per_day = params['cyberlinks_transactions_coeff'] * 9 * math.pow(previous_state['agents_count'], -0.3) * previous_state['agents_count'] + params['extra_links'] + params['guaranteed_links']
