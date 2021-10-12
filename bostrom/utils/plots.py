@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FixedLocator
+from matplotlib.ticker import FixedLocator, FuncFormatter
 
 IMAGES_PATH = './images/'
 FIGSIZE = (16, 5)
@@ -10,22 +10,39 @@ XLABEL = 'timestep(days)'
 
 
 def rename_column(column: str) -> str:
-    return column.\
+    return column. \
+                replace('cyberlinks_per_day', 'cyberlinks_demand'). \
                 replace('_', ' ').title(). \
+                replace('Cyberlink', 'cyberLink'). \
+                replace('Count', 'Amount'). \
+                replace('Agent', 'Neuron'). \
                 replace('Gboot', 'GBOOT'). \
                 replace('Boot', 'BOOT'). \
-                replace('Hydrogen', 'HYDROGEN'). \
-                replace('Ampere', 'AMPERE'). \
-                replace('Volt', 'VOLT'). \
+                replace('Hydrogen', 'H'). \
+                replace('Ampere', 'A'). \
+                replace('Volt', 'V'). \
                 replace('Eth', 'ETH'). \
                 replace('Gpu', 'GPU'). \
                 replace('Gb', 'GB'). \
+                replace('Of ', 'of '). \
                 replace('In ', 'in '). \
                 replace('To ', 'to '). \
                 replace('Per ', 'per ')
 
 
-def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
+def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
+    df['boot_liquid_supply'] = df['boot_liquid_supply'] / 1e12
+    df['boot_frozen_supply'] = df['boot_frozen_supply'] / 1e12
+    df['boot_bonded_supply'] = df['boot_bonded_supply'] / 1e12
+    df['hydrogen_supply'] = df['hydrogen_supply'] / 1e12
+    df['ampere_supply'] = df['ampere_supply'] / 1e6
+    df['ampere_minted_amount'] = df['ampere_minted_amount'] / 1e6
+    df['volt_supply'] = df['volt_supply'] / 1e6
+    df['volt_minted_amount'] = df['volt_minted_amount'] / 1e6
+    df['cyberlinks_per_day'] = df['cyberlinks_per_day'] / 1e6
+    df['cyberlinks_count'] = df['cyberlinks_count'] / 1e9
+    df['agents_count'] = df['agents_count'] / 1e6
+    df['gpu_memory_usage'] = df['gpu_memory_usage'] / 1e9
     rename_columns_dict = {item: rename_column(item) for item in df.columns
                            if item not in ('simulation', 'subset', 'run', 'substep', 'timestep')}
     df.rename(columns=rename_columns_dict)
@@ -53,6 +70,8 @@ def plot(df: pd.DataFrame, title: str,
     ax1.set_ylim(bottom=ymin_1)
     ax1.set_title(title, size=16, fontweight='bold')
     ax1.spines['top'].set_visible(False)
+    if df[columns_1].max().max() > 1000:
+        ax1.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
     legend_1 = ax1.legend(loc='upper left')
     legend_1.get_frame().set_facecolor('#FFFFFF')
     ax1.yaxis.set_major_locator(plt.MaxNLocator(6))
@@ -68,6 +87,8 @@ def plot(df: pd.DataFrame, title: str,
         df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True)
         ax2.set_ylim(bottom=ymin_2)
         ax2.spines['top'].set_visible(False)
+        if df[columns_2].max().max() > 1000:
+            ax2.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
         ax2.grid(None)
         ax2.legend(loc='upper right')
         ax2.yaxis.set_major_locator(plt.MaxNLocator(6))
@@ -78,38 +99,38 @@ def plot(df: pd.DataFrame, title: str,
     else:
         ax1.spines['right'].set_visible(False)
     plt.xlim(XLIM)
-    plt.savefig(IMAGES_PATH + title.replace(' ', '_').lower() + '.png')
+    plt.savefig(IMAGES_PATH + title.replace(' ', '_').replace(',', '_').lower() + '.png')
     plt.show()
 
 
-def boot_supply_plot(df: pd.DataFrame, title: str = 'BOOT Supply and Inflation Rate', figsize: tuple = FIGSIZE):
+def boot_supply_plot(df: pd.DataFrame, title: str = 'BOOT Supply', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
          columns_1=['boot_liquid_supply', 'boot_frozen_supply', 'boot_bonded_supply'],
          columns_2=['boot_inflation_rate'],
-         ylabel_1='BOOT Supply',
+         ylabel_1='BOOT Supply, trillions',
          ylabel_2='BOOT Inflation Rate',
          ypercent_2=True,
          figsize=figsize)
 
 
-def hydrogen_supply_plot(df: pd.DataFrame, title: str = 'HYDROGEN Supply', figsize: tuple = FIGSIZE):
+def hydrogen_supply_plot(df: pd.DataFrame, title: str = 'H Supply', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
          columns_1=['hydrogen_supply'],
-         ylabel_1='HYDROGEN Supply',
+         ylabel_1='H Supply, trillions',
          figsize=figsize)
 
 
-def agents_count_plot(df: pd.DataFrame, title: str = 'Agents Count', figsize: tuple = FIGSIZE):
+def agents_count_plot(df: pd.DataFrame, title: str = 'Neurons Forecast', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
          columns_1=['agents_count'],
-         ylabel_1='Agents Count',
+         ylabel_1='Neurons Amount, millions',
          figsize=figsize)
 
 
-def capitalization_plot(df: pd.DataFrame, title: str = 'BOOT Capitalization and BOOT Capitalization per Agent, ETH',
+def capitalization_plot(df: pd.DataFrame, title: str = 'BOOT Capitalization',
                         figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
@@ -121,72 +142,86 @@ def capitalization_plot(df: pd.DataFrame, title: str = 'BOOT Capitalization and 
          figsize=figsize)
 
 
-def gboot_price_plot(df: pd.DataFrame, title: str = 'GBOOT Price and Validators Revenue', figsize: tuple = FIGSIZE):
+def gboot_price_plot(df: pd.DataFrame, title: str = 'Validators Revenue', figsize: tuple = FIGSIZE):
+    df[rename_column('validator_revenue,_eth')] = \
+        df[rename_column('validator_revenue_gboot')] * df[rename_column('gboot_price')]
     plot(df=df,
          title=title,
          columns_1=['gboot_price'],
-         columns_2=['validator_revenue_gboot'],
+         columns_2=['validator_revenue,_eth'],
          ylabel_1='GBOOT Price, ETH',
-         ylabel_2='Validators Revenue, GBOOT',
+         ylabel_2='Validators Revenue, ETH',
          type_1='line',
          figsize=figsize)
 
 
-def cyberlinks_per_day_plot(df: pd.DataFrame, title: str = 'cyberLinks per day', figsize: tuple = FIGSIZE):
+def cyberlinks_per_day_plot(df: pd.DataFrame, title: str = 'Demand and Supply of cyberLinks', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['cyberlinks_per_day', 'volt_supply', 'volt_liquid_supply'],
-         ylabel_1='cyberLinks per day | VOLT Supply',
+         columns_1=['cyberlinks_per_day', 'volt_supply'],
+         ylabel_1='cyberLinks Demand | VOLT Supply, millions',
          type_1='line',
          figsize=figsize)
 
 
-def cyberlinks_count_plot(df: pd.DataFrame, title: str = 'cyberLinks Count', figsize: tuple = FIGSIZE):
+def cyberlinks_count_plot(df: pd.DataFrame, title: str = 'cyberLinks Forecast', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
          columns_1=['cyberlinks_count'],
-         ylabel_1='cyberLinks Count',
+         ylabel_1='cyberLinks Amount, billions',
          figsize=figsize)
 
 
-def volt_and_ampere_supply_plot(df: pd.DataFrame, title: str = 'AMPERE and VOLT Supply', figsize: tuple = FIGSIZE):
+def ampere_supply_plot(df: pd.DataFrame, title: str = 'A Supply', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['volt_supply', 'ampere_supply'],
-         ylabel_1='AMPERE | VOLT',
+         columns_1=['ampere_supply'],
+         ylabel_1='A Supply, millions',
+         columns_2=['ampere_minted_amount'],
+         ylabel_2='Minted A, millions',
          figsize=figsize)
 
 
-def mint_rate_plot(df: pd.DataFrame, title: str = 'Mint Rate and Investmint Maximum Period for AMPERE and VOLT',
-                   figsize: tuple = FIGSIZE):
+def ampere_mint_rate_plot(df: pd.DataFrame, title: str = 'A Halving Cycles',
+                          figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['ampere_mint_rate', 'volt_mint_rate'],
+         columns_1=['ampere_mint_rate'],
          columns_2=['investmint_max_period'],
-         ylabel_1='Mint Rate',
+         ylabel_1='A Mint Rate',
          ylabel_2='Investmint Maximum Period, days',
          ypercent_1=True,
          type_1='line',
          figsize=figsize)
 
 
-def minted_volt_ampere_plot(df: pd.DataFrame, title: str = 'AMPERE and VOLT Minted Amount',
-                            figsize: tuple = FIGSIZE):
+def volt_supply_plot(df: pd.DataFrame, title: str = 'V Supply', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['volt_minted_amount', 'ampere_minted_amount'],
-         ylabel_1='AMPERE | VOLT',
+         columns_1=['volt_supply'],
+         ylabel_1='V Supply, millions',
+         columns_2=['volt_minted_amount'],
+         ylabel_2='Minted V, millions',
+         figsize=figsize)
+
+
+def volt_mint_rate_plot(df: pd.DataFrame, title: str = 'V Halving Cycles',
+                        figsize: tuple = FIGSIZE):
+    plot(df=df,
+         title=title,
+         columns_1=['volt_mint_rate'],
+         columns_2=['investmint_max_period'],
+         ylabel_1='V Mint Rate',
+         ylabel_2='Investmint Maximum Period, days',
+         ypercent_1=True,
          type_1='line',
          figsize=figsize)
 
 
 def gpu_memory_usage_plot(df: pd.DataFrame, title: str = 'GPU Memory Usage', figsize: tuple = FIGSIZE):
-    df[rename_column('gpu_memory_usage_gb')] = df[rename_column('gpu_memory_usage')] / 1e9
     plot(df=df,
          title=title,
-         columns_1=['cyberlinks_count'],
-         columns_2=['gpu_memory_usage_gb'],
-         ylabel_1='cyberLinks Count',
-         ylabel_2='GPU Memory Usage, GB',
+         columns_1=['gpu_memory_usage'],
+         ylabel_1='GPU Memory Usage, GB',
          type_1='line',
          figsize=figsize)
