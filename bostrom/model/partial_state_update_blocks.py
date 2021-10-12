@@ -1,7 +1,7 @@
-from utils.policies import p_boot_inflation_rate_change, p_timestep_provision_boot, p_boot_frozen_supply, \
+from model.policies import p_boot_inflation_rate_change, p_timestep_provision_boot, p_boot_frozen_supply, \
     p_boot_bonded_supply, p_boot_claimed_supply, p_agents_count, p_capitalization_per_agent, p_cyberlinks_per_day, \
     p_ampere_minted_amount, p_volt_minted_amount, p_volt_released, p_ampere_released
-from utils.state_update_functions import s_boot_supply, s_timestep_provision_boot, s_boot_claimed_supply, \
+from model.state_update_functions import s_boot_supply, s_timestep_provision_boot, s_boot_claimed_supply, \
     s_boot_inflation_rate, s_boot_frozen_supply, s_boot_bonded_supply, s_boot_liquid_supply, \
     s_boot_to_distribution_supply, s_hydrogen_supply, s_agents_count, s_capitalization_per_agent, \
     s_capitalization_in_eth, s_gboot_price, s_validator_revenue_gboot, s_cyberlinks_count, s_cyberlinks_per_day, \
