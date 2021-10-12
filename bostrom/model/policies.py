@@ -77,10 +77,7 @@ def p_hydrogen_liquid_supply_delta(params, substep, state_history, previous_stat
     boot_bonded_share = previous_state['boot_bonded_supply'] / previous_state['boot_supply']
     boot_bonded_supply_delta = (params['boot_bonded_share_target'] - boot_bonded_share) * previous_state[
         'boot_supply'] * params['bonding_speed_coeff']
-    if previous_state['timestep'] % 90 == 0:
-        hydrogen_liquid_supply_delta = 0.2 * boot_bonded_supply_delta
-    else:
-        hydrogen_liquid_supply_delta = 0
+    hydrogen_liquid_supply_delta = 0.2 * boot_bonded_supply_delta
     return {'hydrogen_liquid_supply_delta': math.floor(hydrogen_liquid_supply_delta)}
 
 
