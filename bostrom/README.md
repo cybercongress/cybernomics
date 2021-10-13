@@ -119,8 +119,6 @@ where:
 
 The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of BOOT tokens.
 
-We need to define `boot_claimed_supply` function.
-
 The `boot_claimed_supply` function has two phases:
 
 - before `days_for_gift_activation`
@@ -158,17 +156,14 @@ if `t` >= `days_for_gift_activation`:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} \Delta boot\_frozen\_supply = boot\_to\_distribution\_supply_{t-1} \cdot 0.1"></p>
 
-
 Assumptions:
+
 - agents (`agents_count_at_activation`) will claim our gift. After that the gift will be activated
-- it will take `days_for_gift_activation` since genesis before the gift claiming process will be completed 
+- it will take `days_for_gift_activation` since genesis before the gift claiming process will be completed
 - agents on the moment of gift activation will claim share of the gift (`claimed_at_activation_share`)
-- claim process can be prolonged on `days_for_gift_full_claim` in case if `agents_count_at_activation` will not reach 
-- the target goal by `days_for_gift_activation`.
+- claim process can be prolonged on `days_for_gift_full_claim` in case if `agents_count_at_activation` will not reach
+- the target goal by `days_for_gift_activation`
 - `liquid_boot_supply_share` - is share of BOOT supply that will be in circulation from the network launch
-
-After the modeling of claim dynamics, we can set baselines for adoption ("understanding network effects" chapter).
-
 
 ### Simulation Parameters
 
@@ -178,14 +173,12 @@ After the modeling of claim dynamics, we can set baselines for adoption ("unders
 - `agents_count_at_activation` `(10'000, 50'000, 100'000)`
 - `liquid_boot_supply_share` `(0.25)`
 
-
 ## Understanding Network Effects
 
 ### Agents Growth
-To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active agent dynamics
-([excel spreadsheet online](https://needfordata-my.sharepoint.com/:x:/g/personal/max_needfordata_ru/EZWCgmE-VOBEsGJTg8lslpYBP2LQoBFdMC9LgXleJ3Dj_Q?e=PwmaIh)).
-We calculated [ethereum active agents](eth_active_agents.ipynb) as addresses with a balance more than 0.01 ETH (the
-balance sufficient to complete at least 1 transaction).
+
+To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active agent dynamics ([excel spreadsheet online](https://needfordata-my.sharepoint.com/:x:/g/personal/max_needfordata_ru/EZWCgmE-VOBEsGJTg8lslpYBP2LQoBFdMC9LgXleJ3Dj_Q?e=PwmaIh)).
+We calculated [ethereum active agents](eth_active_agents.ipynb) as addresses with a balance more than 0.01 ETH (the balance sufficient to complete at least 1 transaction).
 
 ![Dynamics of Ethereum Agents](images/EthAgentsDynamics.png)
 
@@ -193,8 +186,7 @@ We have combined 2 trendlines and derived the following formula of agents count 
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 2 \cdot days^{2} %2B 100 \cdot days %2B 8700"></p>
 
-Assuming that there are much more crypto-agents now than it was at the time of ETH launch, we adjusted the formula with 
-coefficients to expect more rapid growth.
+Assuming that there are much more crypto-agents now than there was at the time of ETH launch, we adjusted the formula with coefficients to expect more rapid growth.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation"></p>
 
@@ -202,9 +194,7 @@ coefficients to expect more rapid growth.
 
 ### Capitalization Dynamics
 
-We decided to model total `capitalization_in_eth` through `capitalization_per_agent` metric derived from ETH 
-capitalization in BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had 
-a lot of fluctuations).
+We decided to model total `capitalization_in_eth` through `capitalization_per_agent` metric derived from ETH capitalization in BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had a lot of fluctuations).
 
 ![Ethereum Capitalization per Active Agent in BTC](images/EthCapPerAgentActiveInBTC1.png)
 
@@ -212,9 +202,8 @@ We derived such formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent\_eth\_network = 60\,000 \cdot agents\_count^{-0.7}"></p>
 
-
 We assumed that dynamics of capitalization of BOOT token in ETH will resemble ETH token dynamics in BTC prices.
-We adjusted the formula that our first day `capitalization_per_agent` will be equal to 1 ETH
+We adjusted the formula that our first day `capitalization_per_agent` will be equal to 32 ETH
 (`start_capitalization_per_agent`).
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}"></p>
@@ -226,24 +215,21 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 - `agents_count_at_activation` `(100000)`
 - `start_capitalization_per_agent` `(32)`
 
+## Capitalization and Price
 
-## Capitalization and Price 
+`capitalization_in_eth` in ETH is defined by formula:
 
-`capitalization_in_eth` in ETH is defined by formula: 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_in\_eth = agents\_count \cdot capitalization\_per\_agent"></p>
 
 `gboot_price` Giga BOOT price in ETH is defined by formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gboot\_price = \frac{capitalization\_in\_eth}{boot\_supply}"></p>
 
-
 ![Validators Revenue](images/validators_revenue.png)
-
 
 ## Predicting V Demand
 
-VOLT are natural tokens. Each volt enables its holder to produce cyberlink in exchange of it. To simulate cyberlinks 
-usage we have derived base estimate of `cyberlinks_per_day` formula from ETH data:
+VOLT are natural tokens. Each VOLT enables its holder to produce 1 cyberlink daily. To simulate cyberlinks usage we have derived base estimate of `cyberlinks_per_day` formula from ETH data:
 
 ![ETH Data](images/EthAgentsCountActive_vs_EthTransPerAgent.png)
 
@@ -251,16 +237,15 @@ We derived such formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}transactions\_per\_agent = 9 \cdot agents\_count^{-0.3}"></p>
 
-And we adjusted such formula with adding a number of `extra_links` and `guaranteed_links`. 
+And we adjusted such formula with adding a number of `extra_links` and `guaranteed_links`.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
 
-`extra_links` count depends on UX specifics, such as name setting, following (proportion of agents) and extra:
+`extra_links` count depends on UX specifics, such as setting the name of agent, following (proportion of agents) and extra:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, setting name, following, extra )"> 
 
-Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely
-on this demand also adding `guaranteed_links` count.
+Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely on this demand also adding `guaranteed_links` count.
 
 ![cyberLinks Forecast](images/cyberlinks_forecast.png)
 
@@ -269,11 +254,9 @@ on this demand also adding `guaranteed_links` count.
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
 
-
 ## Adjusting A and V Supply
 
-To model minting properties of VOLT for the planning of GPU storage and maximization of VOLT price. 
-As AMPERE are resource tokens, and they do not have natural measure we decide to model AMPERE supply equal to VOLT. 
+To model minting properties of VOLT for the planning of GPU storage and maximization of VOLT price. As AMPERE are resource tokens, and they do not have natural measure we decide to model AMPERE supply equal to VOLT. 
 
 System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1GBoot) for 1 day yelds 1 VOLT. 
 
@@ -287,10 +270,9 @@ And it is limited by system setting of `investmint_max_period`, that has dynamic
 Where `horizont_period_init` (period in timesteps equal to 3 months) is the period before first `investmint_max_period` 
 raise.
 
-According to this formula current `investmint_max_period` will be set to [3, 6, 12 ... ] months. 
+According to this formula current `investmint_max_period` will be set to [3, 6, 12 ... ] months.
 
 - `ampere_base_halving_period`, `volt_base_halving_period` - time period to decrease mint_rate variable.
-
 
 ### Simulation Parameters
 
@@ -300,13 +282,11 @@ Parameters to define for VOLT and A:
 ![A Halving Cycles](images/a_halving_cycles.png)
 ![V Halving Cycles](images/v_halving_cycles.png)
 
-
 ## A and V Minting
 
 AMPERE are minted according to the following formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_period}{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate}\rfloor"></p>
-
 
 VOLT are minted according to the following formula:
 
@@ -319,8 +299,8 @@ VOLT are minted according to the following formula:
 ![A Supply](images/a_supply.png)
 ![V Supply](images/v_supply.png)
 
-
 ### Simulation Parameters
+
 - `ampere_base_investmint_amount`  `(100_000_000)`
 - `volt_base_investmint_amount`  `(100_000_000)`
 - `investmint_max_period_init` `(timesteps_per_year / 12)`  
@@ -328,7 +308,6 @@ VOLT are minted according to the following formula:
 - `volt_base_investmint_period`  `(timesteps_per_year / 12)`
 - `ampere_base_halving_period` `(12_000_000 * 6.4)`
 - `volt_base_halving_period` `(12_000_000 * 6.4)`
-
 
 ## Mint Rate of A and V
 
