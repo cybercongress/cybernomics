@@ -1,4 +1,5 @@
 import math
+import pandas as pd
 
 
 def s_boot_supply(params, substep, state_history, previous_state, policy_input):
@@ -25,7 +26,7 @@ def s_boot_bonded_supply(params, substep, state_history, previous_state, policy_
 
 
 def s_hydrogen_supply(params, substep, state_history, previous_state, policy_input):
-    hydrogen_supply = previous_state['hydrogen_supply'] + policy_input['boot_bonded_supply_delta']
+    hydrogen_supply = previous_state['hydrogen_supply'] + policy_input['hydrogen_supply_delta']
     return 'hydrogen_supply', hydrogen_supply
 
 
@@ -80,7 +81,6 @@ def s_agents_count(params, substep, state_history, previous_state, policy_input)
 
 
 def s_capitalization_per_agent(params, substep, state_history, previous_state, policy_input):
-    # capitalization_per_agent = params['start_capitalization_per_agent'] * math.pow(params['agents_count_at_activation'], 0.7) * math.pow(previous_state['agents_count'], -0.7)
     capitalization_per_agent = previous_state['capitalization_per_agent'] + policy_input['capitalization_per_agent_delta']
     return 'capitalization_per_agent', capitalization_per_agent
 
@@ -95,8 +95,6 @@ def s_gboot_price(params, substep, state_history, previous_state, policy_input):
 
 def s_validator_revenue_gboot(params, substep, state_history, previous_state, policy_input):
     validator_revenue_gboot = previous_state['timestep_provision_boot'] / 1_000_000_000 * params['validator_commission'] / params['max_validator_count']
-    if validator_revenue_gboot == 0:
-        validator_revenue_gboot = 0.3
     return 'validator_revenue_gboot', validator_revenue_gboot
 
 
@@ -112,20 +110,20 @@ def s_cyberlinks_per_day(params, substep, state_history, previous_state, policy_
 
 def s_ampere_mint_rate(params, substep, state_history, previous_state, policy_input):
     ampere_mint_rate = params['ampere_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] / params['ampere_base_halving_period'])))
-    if ampere_mint_rate < 0.01:
-        ampere_mint_rate = 0.01
+    if ampere_mint_rate < params['ampere_mint_rate_min']:
+        ampere_mint_rate = params['ampere_mint_rate_min']
     return 'ampere_mint_rate', ampere_mint_rate
 
 
 def s_volt_mint_rate(params, substep, state_history, previous_state, policy_input):
     volt_mint_rate = params['volt_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] / params['volt_base_halving_period'])))
-    if volt_mint_rate < 0.01:
-        volt_mint_rate = 0.01
+    if volt_mint_rate < params['volt_mint_rate_min']:
+        volt_mint_rate = params['volt_mint_rate_min']
     return 'volt_mint_rate', volt_mint_rate
 
 
 def s_investmint_max_period(params, substep, state_history, previous_state, policy_input):
-    investmint_max_period = params['investmint_max_period_init'] * math.ceil(previous_state['timestep'] / params['horizont_period_init'])
+    investmint_max_period = params['investmint_max_period_init'] * math.ceil((previous_state['timestep'] + 1)/ params['horizont_period_init'])
     return 'investmint_max_period', investmint_max_period
 
 
