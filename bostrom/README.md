@@ -42,56 +42,44 @@ into the hardware infrastructure.
 
 ## Time 
 
-We model Bostrom Network simulation as a (discrete) sequence of events in time. We define the `timestep` variable 
-(syn `t`) as integer number of time steps since the network launch. `timestep` is used in formulas and definitions 
-across this specification and defined as:
+We model Bostrom Network simulation as a (discrete) sequence of events in time. We define the `timestep` variable (syn `t`) as integer number of time steps since the network launch. `timestep` is used in formulas and definitions across this specification and defined as:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \lfloor{time\_from\_launch\_in\_years \cdot timesteps\_per\_year}\rfloor"></p>
 
 where `time_from_launch_in_years` is time from the system launch expressed in years (float data type).
 
-
 ### Simulation Parameters
 
 - `timesteps_per_year` `(365)`
 
+## BOOT Supply
 
-## BOOT Supply 
-
-The BOOT supply on each `timestep` defines as the BOOT supply on the previous `timestep` plus provision on the current 
-timestep:
+The BOOT supply on each `timestep` defines as the BOOT supply on the previous `timestep` plus provision on the current timestep:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision\_boot_t"></p>
 
-The `timestep_provision_boot` variable is described in the [BOOT inflation](#boot-inflation) subsection.
+The `timestep_provision_boot` variable is described in the [BOOT minting, inflation](#boot-minting-inflation) subsection.
 
+### BOOT minting, inflation
 
-### BOOT Inflation
+The minting mechanism of Bostrom network corresponds to the minting mechanism of [Cosmos network](https://docs.cosmos.network/master/modules/mint/03_begin_block.html).
 
 The minting mechanism was designed to:
 
 - allow for a flexible inflation rate determined by market demand targeting a particular bonded-stake ratio
 - effect a balance between market liquidity and staked supply
 
-In order to best determine the appropriate market rate for inflation rewards, a moving change rate is used. The moving 
-change rate mechanism ensures that if the % bonded is either over or under the goal %-bonded, the inflation rate will 
-adjust to further incentivize or disincentivize being bonded, respectively. Setting the goal %-bonded at less than 100% 
-encourages the network to maintain some non-staked tokens which should help provide some liquidity.
+In order to best determine the appropriate market rate for inflation rewards, a moving change rate is used. The moving change rate mechanism ensures that if the `boot_bonded_share` is either over or under the `boot_bonded_share_target`, the inflation rate will adjust to further incentivize or disincentivize being bonded, respectively. Setting the `boot_bonded_share_target` at less than 100% encourages the network to maintain some non-staked tokens which should help provide some liquidity.
 
 It can be broken down in the following way:
 
-- If the inflation rate is below the `boot_bonded_share_target` the inflation rate will increase until a maximum value 
-- (`boot_inflation_rate_max`) is reached
-- If the `boot_bonded_share_target` (0.70 in bostrom network) is maintained, then the inflation rate will stay constant
-- If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a minimum 
-- value (`boot_inflation_rate_min`) is reached
+- If the inflation rate is below the `boot_bonded_share_target` the inflation rate will increase until a maximum value - (`boot_inflation_rate_max`) is reached
+- If the `boot_bonded_share_target` (`0.80` in bostrom network) is maintained, then the inflation rate will stay constant
+- If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a minimum - value (`boot_inflation_rate_min`) is reached
 
-The target annual inflation rate is recalculated each `timestep`. The inflation is also subject to a rate change 
-(positive or negative) depending on the distance from the desired ratio (0.70). The maximum possible rate change is 
-defined to be `boot_inflation_rate_change` per year, however the annual inflation is capped as between 
-`boot_inflation_rate_min` and `boot_inflation_rate_max`.
+In this model the target annual inflation rate is recalculated each `timestep` (in network it is recalculated each block). The inflation is also subject to a rate change (positive or negative) depending on the distance from the desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change` per year, however the annual inflation is capped as between `boot_inflation_rate_min` and `boot_inflation_rate_max`. In case of inflation is higher than `boot_inflation_rate_max` param, the inflation sets as `boot_inflation_rate_max`. In case if inflation lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation_rate_min`.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply_{t-1}}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change\_annual_t = \frac{1 - \frac{boot\_bonded\_share_{t-1}}{boot\_bonded\_share\_target}}{boot\_inflation\_rate\_change\_annual}"></p>
 
@@ -101,28 +89,19 @@ defined to be `boot_inflation_rate_change` per year, however the annual inflatio
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision\_boot_t = \frac{boot\_supply_{t-1} \cdot boot\_inflation\_rate_{t}}{timesteps\_per\_year}"></p>
 
-
-<!-- <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{timesteps\_per\_year}}\rfloor}}"></p> -->
-
-In case of inflation is higher than `boot_inflation_rate_max` param, the inflation sets as `boot_inflation_rate_max`.
-In case if inflation lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation_rate_min`.
-
 ![BOOT Supply and Inflation Rate](images/boot_supply.png)
-
 
 ### Simulation Parameters
 
 - `boot_supply_init` `(1e15)` (it is in init values, not a param)
 - `boot_inflation_rate_max`  `(0.20)`
 - `boot_inflation_rate_min`  `(0.05)`
-- `boot_bonded_share_target` `(0.70)` 
-- `boot_inflation_rate_change_annual`  `(0.07)` 
-
+- `boot_bonded_share_target` `(0.70)`
+- `boot_inflation_rate_change_annual`  `(0.07)`
 
 ## Modeling Bonded BOOT Amount (H Supply)
 
-Agents will delegate `boot_bonding_share` (70%) of `boot_liquid_supply` to heroes, and Hydrogen will be minted in the 
-corresponding amount.
+Agents will delegate `boot_bonding_share` (70%) of `boot_liquid_supply` to heroes, and they will mint  corresponding amount off Hydrogen.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_supply_t = boot\_bonded\_supply_{t-1} %2B \Delta boot\_bonded\_supply"></p>
 
@@ -136,20 +115,18 @@ where:
 
 - `boot_bonding_share` `(0.7)`
 
-
 ## Gift Claim Dynamics (Total refactoring of this section is needed)
- 
-The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of BOOT tokens. Further we need to model how this gifts can be claimed. 
+
+The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of BOOT tokens.
 
 We need to define `boot_claimed_supply` function.
 
 The `boot_claimed_supply` function has two phases:
+
 - before `days_for_gift_activation`
 - after `days_for_gift_activation`
 
-It's excepted that `claimed_at_activation_share` * `boot_gift_amount_init` amount of BOOTs will be reached in 
-`days_for_gift_activation`. After that, (1 - `claimed_at_activation_share`) * `boot_gift_amount_init` should be 
-claimed in `days_for_gift_full_claim`. 
+It's excepted that `claimed_at_activation_share` * `boot_gift_amount_init` amount of BOOTs will be reached in `days_for_gift_activation`. After that, (1 - `claimed_at_activation_share`) * `boot_gift_amount_init` should be claimed in `days_for_gift_full_claim`.
 
 Therefore the `boot_claimed_supply` function can be defined as liniar function with condition:
 
@@ -163,11 +140,9 @@ if `t` >= `days_for_gift_activation`:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_claimed\_supply = \frac{(1 - claimed\_at\_activation\_share) \cdot boot\_gift\_amount\_init}{days\_for\_gift\_full\_claim}"></p>
 
-
 #### `boot_to_distribution_supply`
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} boot\_to\_distribution\_supply_t = boot\_to\_distribution\_supply_{t-1} %2B \Delta boot\_claimed\_supply %2B \Delta boot\_frozen\_supply"></p>
-
 
 #### `boot_frozen_supply` Definition
 
