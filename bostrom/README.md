@@ -107,6 +107,8 @@ defined to be `boot_inflation_rate_change` per year, however the annual inflatio
 In case of inflation is higher than `boot_inflation_rate_max` param, the inflation sets as `boot_inflation_rate_max`.
 In case if inflation lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation_rate_min`.
 
+![BOOT Supply and Inflation Rate](images/boot_supply.png)
+
 
 ### Simulation Parameters
 
@@ -117,7 +119,7 @@ In case if inflation lower than `boot_inflation_rate_min` param the inflation se
 - `boot_inflation_rate_change_annual`  `(0.07)` 
 
 
-## Modeling Bonded BOOT Amount (H)
+## Modeling Bonded BOOT Amount (H Supply)
 
 Agents will delegate `boot_bonding_share` (70%) of `boot_liquid_supply` to heroes, and Hydrogen will be minted in the 
 corresponding amount.
@@ -128,6 +130,7 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_bonded\_supply = boot\_liquid\_supply_{t-1} \cdot boot\_bonding\_share"></p>
 
+![H Supply](images/h_supply.png)
 
 ### Simulation Parameters
 
@@ -220,6 +223,7 @@ coefficients to expect more rapid growth.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation"></p>
 
+![Neurons Forecast](images/neurons_forecast.png)
 
 ### Capitalization Dynamics
 
@@ -240,11 +244,12 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}"></p>
 
+![BOOT Capitalization](images/boot_capitalization.png)
 
 ### Simulation Parameters
 
 - `agents_count_at_activation` `(100000)`
-- `start_capitalization_per_agent` `(1)`
+- `start_capitalization_per_agent` `(32)`
 
 
 ## Capitalization and Price 
@@ -255,6 +260,9 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 `gboot_price` Giga BOOT price in ETH is defined by formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gboot\_price = \frac{capitalization\_in\_eth}{boot\_supply}"></p>
+
+
+![Validators Revenue](images/validators_revenue.png)
 
 
 ## Predicting V Demand
@@ -279,6 +287,7 @@ And we adjusted such formula with adding a number of `extra_links` and `guarante
 Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely
 on this demand also adding `guaranteed_links` count.
 
+![cyberLinks Forecast](images/cyberlinks_forecast.png)
 
 ### Simulation Parameters
 
@@ -313,6 +322,9 @@ According to this formula current `investmint_max_period` will be set to [3, 6, 
 Parameters to define for VOLT and A:
 - `horizont_period_init` `(90)`
 
+![A Halving Cycles](images/a_halving_cycles.png)
+![V Halving Cycles](images/v_halving_cycles.png)
+
 
 ## A and V Minting
 
@@ -328,6 +340,9 @@ VOLT are minted according to the following formula:
 `ampere_volt_ratio` - the ratio between AMPERE and VOLT tokens supply. 
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}ampere\_volt\_ratio = \frac{ampere\_minted\_amount}{volt\_minted\_amount}"></p>
+
+![A Supply](images/a_supply.png)
+![V Supply](images/v_supply.png)
 
 
 ### Simulation Parameters
@@ -385,8 +400,9 @@ According to stress testing measurements on testnet we derived formula of GPU me
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage=40 \cdot cyberlinks\_count %2B 40 \cdot ampere\_minted\_amount" ></p>
 
-[The results of modeling](#gpu-usage)
 
+![Transactions per seconds](images/transactions_per_second.png)
+![GPU Memory and Time Usage](images/memory_and_time_usage.png)
 
 ## Bonding and Unbonding (Need to discuss. Probably deprecated)
 
@@ -574,31 +590,8 @@ where:
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{horizont\_period\_init}}\rfloor}}"></p>  
 
 
-## Simulation Results
+## Conclusions
 
-### [BOOT and H Supply](#boot-supply)
 ![BOOT Supply and Inflation Rate](images/boot_supply.png)
-![H Supply](images/h_supply.png)
-
-### [Neurons growth](#agents-growth)
-![Neurons Forecast](images/neurons_forecast.png)
-
-### [BOOT Capitalization](#capitalization-dynamics)
-![BOOT Capitalization](images/boot_capitalization.png)
 ![Validators Revenue](images/validators_revenue.png)
-
-### [cyberLinks](#predicting-volts-demand)
-![cyberLinks per day](images/demand_and_supply_of_cyberlinks.png)
-![cyberLinks Forecast](images/cyberlinks_forecast.png)
-
-### [V Supply](#ampere-and-volt-minting)
-![VOLT Supply](images/v_supply.png)
-![V Halving Cycles](images/v_halving_cycles.png)
-
-### [A Supply](#ampere-and-volt-minting)
-![A Supply](images/a_supply.png)
-![A Halving Cycles](images/a_halving_cycles.png)
-
-### [GPU Usage](#planing-gpu-memory-usage)
-![Transactions per seconds](images/transactions_per_second.png)
-![GPU Memory and Time Usage](images/memory_and_time_usage.png)
+![Demand and Supply of cyberLinks](images/demand_and_supply_of_cyberlinks.png)
