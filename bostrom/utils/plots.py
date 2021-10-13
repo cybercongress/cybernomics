@@ -39,6 +39,7 @@ def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
     df['boot_frozen_supply'] = df['boot_frozen_supply'] / 1e12
     df['boot_bonded_supply'] = df['boot_bonded_supply'] / 1e12
     df['hydrogen_supply'] = df['hydrogen_supply'] / 1e12
+    df['hydrogen_liquid_supply'] = df['hydrogen_liquid_supply'] / 1e12
     df['ampere_supply'] = df['ampere_supply'] / 1e6
     df['ampere_minted_amount'] = df['ampere_minted_amount'] / 1e6
     df['volt_supply'] = df['volt_supply'] / 1e6
@@ -126,10 +127,16 @@ def boot_supply_plot(df: pd.DataFrame, title: str = 'BOOT Supply', figsize: tupl
          figsize=figsize)
 
 
-def hydrogen_supply_plot(df: pd.DataFrame, title: str = 'H Supply', figsize: tuple = FIGSIZE):
+def hydrogen_supply_plot(df: pd.DataFrame, a_v_ratio: float = 1, title: str = 'H Supply', figsize: tuple = FIGSIZE):
+    df[rename_column('hydrogen_investminted_for_ampere')] = \
+        (df[rename_column('hydrogen_supply')] - df[rename_column('hydrogen_liquid_supply')]) * \
+        a_v_ratio / (1 + a_v_ratio)
+    df[rename_column('hydrogen_investminted_for_volt')] = \
+        (df[rename_column('hydrogen_supply')] - df[rename_column('hydrogen_liquid_supply')]) * \
+        1 / (1 + a_v_ratio)
     plot(df=df,
          title=title,
-         columns_1=['hydrogen_supply'],
+         columns_1=['hydrogen_liquid_supply', 'hydrogen_investminted_for_ampere', 'hydrogen_investminted_for_volt'],
          ylabel_1='H Supply, trillions',
          figsize=figsize)
 
