@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator, FuncFormatter
+from matplotlib import axes
 
 IMAGES_PATH = './images/'
 FIGSIZE = (16, 5)
@@ -23,10 +24,12 @@ def rename_column(column: str) -> str:
                 replace('Volt', 'V'). \
                 replace('Eth', 'ETH'). \
                 replace('Gpu', 'GPU'). \
+                replace('Cpu', 'CPU'). \
                 replace('Gb', 'GB'). \
                 replace('Of ', 'of '). \
                 replace('In ', 'in '). \
                 replace('To ', 'to '). \
+                replace('Second', 'second'). \
                 replace('Per ', 'per ')
 
 
@@ -55,6 +58,25 @@ def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
     return df.rename(columns=rename_columns_dict)
 
 
+def set_axis(ax: axes, ylabel: str, ylogscale: bool, ymin: float, ymax:float, ymax_value: float,
+             ypercent: bool, legend_loc: str) -> axes:
+    ax.spines['top'].set_visible(False)
+    ax.set(ylabel=ylabel)
+    ax.set_ylim(top=ymax)
+    legend = ax.legend(loc=legend_loc)
+    legend.get_frame().set_facecolor('#FFFFFF')
+    if not ylogscale:
+        ax.set_ylim(bottom=ymin, top=ymax)
+        ax.yaxis.set_major_locator(plt.MaxNLocator(6))
+        if ymax_value > 1000:
+            ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
+        if ypercent:
+            ticks_loc = ax.get_yticks()
+            ax.yaxis.set_major_locator(FixedLocator(ticks_loc))
+            ax.set_yticklabels(['{:,.0%}'.format(x) for x in ticks_loc])
+    return ax
+
+
 def plot(df: pd.DataFrame, title: str,
          columns_1: list,
          ylabel_1: str, ylabel_2: str = '',
@@ -63,6 +85,7 @@ def plot(df: pd.DataFrame, title: str,
          columns_2=None,
          type_1: str = 'area',
          ymin_1: float = 0, ymin_2: float = 0,
+         ymax_1=None, ymax_2=None,
          figsize: tuple = FIGSIZE):
     columns_1 = list(map(rename_column, columns_1))
     plt.rcParams["figure.figsize"] = figsize
@@ -73,38 +96,18 @@ def plot(df: pd.DataFrame, title: str,
         ax1 = df.plot.area(y=columns_1, linewidth=0, colormap='winter', xticks=XTICKS, grid=True)
     else:
         ax1 = df.plot(y=columns_1, xticks=XTICKS, grid=True, style={columns_1[0]: 'r'}, logy=ylogscale_1)
-    ax1.set(xlabel=XLABEL, ylabel=ylabel_1)
+    ax1.set(xlabel=XLABEL)
     ax1.set_title(title, size=16, fontweight='bold')
-    ax1.spines['top'].set_visible(False)
-    legend_1 = ax1.legend(loc='upper left')
-    legend_1.get_frame().set_facecolor('#FFFFFF')
-    if not ylogscale_1:
-        ax1.set_ylim(bottom=ymin_1)
-        ax1.yaxis.set_major_locator(plt.MaxNLocator(6))
-        if df[columns_1].max().max() > 1000:
-            ax1.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
-        if ypercent_1:
-            ticks_loc = ax1.get_yticks()
-            ax1.yaxis.set_major_locator(FixedLocator(ticks_loc))
-            ax1.set_yticklabels(['{:,.0%}'.format(x) for x in ticks_loc])
+    ax1 = set_axis(ax=ax1, ylabel=ylabel_1, ylogscale=ylogscale_1, ymin=ymin_1, ymax=ymax_1,
+                   ymax_value=df[columns_1].max().max(), ypercent=ypercent_1, legend_loc='upper left')
     if ylabel_2:
         columns_2 = list(map(rename_column, columns_2))
         ax2 = ax1.twinx()
-        ax2.spines['right'].set_position(('axes', 1.0))
-        ax2.set(ylabel=ylabel_2)
         df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True, logy=ylogscale_2)
-        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_position(('axes', 1.0))
         ax2.grid(None)
-        ax2.legend(loc='upper right')
-        if not ylogscale_2:
-            ax2.set_ylim(bottom=ymin_2)
-            ax2.yaxis.set_major_locator(plt.MaxNLocator(6))
-            if df[columns_2].max().max() > 1000:
-                ax2.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: format(int(x), ',')))
-            if ypercent_2:
-                ticks_loc = ax2.get_yticks()
-                ax2.yaxis.set_major_locator(FixedLocator(ticks_loc))
-                ax2.set_yticklabels(['{:,.1%}'.format(x) for x in ticks_loc])
+        ax2 = set_axis(ax=ax2, ylabel=ylabel_2, ylogscale=ylogscale_2, ymin=ymin_2, ymax=ymax_2,
+                       ymax_value=df[columns_2].max().max(), ypercent=ypercent_2, legend_loc='upper right')
     else:
         ax1.spines['right'].set_visible(False)
     plt.xlim(XLIM)
@@ -197,8 +200,7 @@ def ampere_supply_plot(df: pd.DataFrame, title: str = 'A Supply', figsize: tuple
          figsize=figsize)
 
 
-def ampere_mint_rate_plot(df: pd.DataFrame, title: str = 'A Halving Cycles',
-                          figsize: tuple = FIGSIZE):
+def ampere_mint_rate_plot(df: pd.DataFrame, title: str = 'A Halving Cycles', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
          columns_1=['ampere_mint_rate'],
@@ -220,8 +222,7 @@ def volt_supply_plot(df: pd.DataFrame, title: str = 'V Supply', figsize: tuple =
          figsize=figsize)
 
 
-def volt_mint_rate_plot(df: pd.DataFrame, title: str = 'V Halving Cycles',
-                        figsize: tuple = FIGSIZE):
+def volt_mint_rate_plot(df: pd.DataFrame, title: str = 'V Halving Cycles', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
          columns_1=['volt_mint_rate'],
@@ -233,11 +234,24 @@ def volt_mint_rate_plot(df: pd.DataFrame, title: str = 'V Halving Cycles',
          figsize=figsize)
 
 
-def gpu_memory_usage_plot(df: pd.DataFrame, title: str = 'GPU Memory Usage', figsize: tuple = FIGSIZE):
+def tps_plot(df: pd.DataFrame, title: str = 'Transactions per second', figsize: tuple = FIGSIZE):
+    df['Transactions per second'] = df[rename_column('cyberlinks_per_day')] / 24 / 3_600 * 1_000_000
     plot(df=df,
          title=title,
-         columns_1=['gpu_memory_usage'],
-         ylabel_1='GPU Memory Usage, GB',
+         columns_1=['Transactions per second'],
+         ylabel_1='Transactions per second',
+         figsize=figsize)
+
+
+def gpu_memory_usage_plot(df: pd.DataFrame, title: str = 'Memory and Time Usage', figsize: tuple = FIGSIZE):
+    plot(df=df,
+         title=title,
+         columns_1=['gpu_memory_usage', 'cpu_memory_usage'],
+         columns_2=['gpu_time_usage', 'cpu_time_usage'],
+         ylabel_1='Memory Usage, GB',
+         ylabel_2='Time Usage, seconds',
          ylogscale_1=True,
+         ylogscale_2=True,
+         ymax_2=1.1 * df[[rename_column('gpu_time_usage'), rename_column('cpu_time_usage')]].max().max(),
          type_1='line',
          figsize=figsize)

@@ -600,4 +600,5 @@ where:
 ![A Halving Cycles](images/a_halving_cycles.png)
 
 ### [GPU Usage](#planing-gpu-memory-usage)
-![GPU Memory Usage](images/gpu_memory_usage.png)
+![Transactions per seconds](images/transactions_per_second.png)
+![GPU Memory and Time Usage](images/memory_and_time_usage.png)
