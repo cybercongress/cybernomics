@@ -55,10 +55,8 @@ def prepare_df(df: pd.DataFrame, a_v_ratio: float = 0.5, growth_rate_period: int
     df['cyberlink_daily_growth_rate'] = df['cyberlinks_count'].pct_change(periods=growth_rate_period)
 
     df['transactions_per_second'] = df['cyberlinks_per_day'] / 24 / 3_600 * 1e6
-    df['hydrogen_investminted_for_ampere'] = \
-        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * a_v_ratio
-    df['hydrogen_investminted_for_volt'] = \
-        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * (1 - a_v_ratio)
+    df['hydrogen_investminted_for_ampere'] = (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * a_v_ratio
+    df['hydrogen_investminted_for_volt'] = (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * (1 - a_v_ratio)
     df['validator_revenue,_eth'] = df['validator_revenue_gboot'] * df['gboot_price']
 
     rename_columns_dict = {item: rename_column(item) for item in df.columns
@@ -169,7 +167,7 @@ def capitalization_plot(df: pd.DataFrame, title: str = 'BOOT Capitalization',
          title=title,
          columns_1=['capitalization_per_agent'],
          columns_2=['capitalization_in_eth'],
-         ylabel_1='BOOT Capitalization per Agent, ETH',
+         ylabel_1='BOOT Capitalization per Neuron, ETH',
          ylabel_2='BOOT Capitalization, ETH',
          ylogscale_1=True,
          type_1='line',
