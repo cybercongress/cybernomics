@@ -111,7 +111,7 @@ def plot(df: pd.DataFrame, title: str,
     plt.rcParams["legend.facecolor"] = '#FFFFFF'
     plt.rcParams["legend.edgecolor"] = '#FFFFFF'
     if type_1 == 'area':
-        ax1 = df.plot.area(y=columns_1, xticks=XTICKS, grid=True, style=color_style, linewidth=0,  alpha=0.6)
+        ax1 = df.plot.area(y=columns_1, xticks=XTICKS, grid=True, style=color_style, linewidth=0,  alpha=0.7)
     else:
         ax1 = df.plot.line(y=columns_1, xticks=XTICKS, grid=True, style=color_style, logy=ylogscale_1)
     ax1.set(xlabel=XLABEL)
