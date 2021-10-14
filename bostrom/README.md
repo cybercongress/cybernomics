@@ -265,9 +265,9 @@ understanding and priorities of maximisation his benefits.
 
 And it is limited by system setting of `investmint_max_period`, that has dynamic formula written below. 
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_period\_init \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizont\_period\_init}}\rceil}\rceil}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizon\_period\_init \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizon\_period\_init}}\rceil}\rceil}"></p>
 
-Where `horizont_period_init` (period in timesteps equal to 3 months) is the period before first `investmint_max_period` 
+Where `horizon_period_init` (period in timesteps equal to 3 months) is the period before first `investmint_max_period` 
 raise.
 
 According to this formula current `investmint_max_period` will be set to [3, 6, 12 ... ] months.
@@ -277,7 +277,7 @@ According to this formula current `investmint_max_period` will be set to [3, 6, 
 ### Simulation Parameters
 
 Parameters to define for VOLT and A:
-- `horizont_period_init` `(90)`
+- `horizon_period_init` `(90)`
 
 ![A Halving Cycles](images/a_halving_cycles.png)
 ![V Halving Cycles](images/v_halving_cycles.png)
@@ -403,7 +403,7 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 - `start_capitalization_per_agent` `(1)`
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
-- `horizont_period_init` `(90)`
+- `horizon_period_init` `(90)`
 - `ampere_volt_ratio` `(1)`  
 - `ampere_base_investmint_amount`  `(100_000_000)`
 - `volt_base_investmint_amount`  `(100_000_000)`
@@ -432,7 +432,7 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = \frac{volt\_mint\_rate\_init}{2^{\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizont\_period\_init \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizont\_period\_init}}\rceil}\rceil}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizon\_period\_init \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizon\_period\_init}}\rceil}\rceil}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage=40 \cdot cyberlinks\_count %2B 40 \cdot ampere\_minted\_amount" ></p>
 
@@ -490,7 +490,7 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 - `cyberlinks_count` - number of cyberlinks
 - `agents_count` - the amount of the active agents
 - `capitalization_per_agent` - the value of agent in ETH
-- `horizont_period_init` - the period before first `investmint_max_period` raise
+- `horizon_period_init` - the period before first `investmint_max_period` raise
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate_t = boot\_inflation\_rate_{t-1} %2B {\Delta boot\_inflation\_rate}"></p>
 
@@ -541,7 +541,7 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_{t} = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply_{t-1}}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{horizont\_period\_init}}\rfloor}}"></p>  
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{horizon\_period\_init}}\rfloor}}"></p>  
 
 
 ## Conclusions
