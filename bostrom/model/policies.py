@@ -116,23 +116,3 @@ def p_hydrogen_liquid_supply_delta(params, substep, state_history, previous_stat
         'boot_supply'] * params['bonding_speed_coeff']
     hydrogen_liquid_supply_delta = params['hydrogen_liquid_ratio'] * boot_bonded_supply_delta
     return {'hydrogen_liquid_supply_delta': math.floor(hydrogen_liquid_supply_delta)}
-
-
-def p_volt_released(params, substep, state_history, previous_state):
-    if previous_state['timestep'] % 90 == 89:
-        volt_released = math.floor(
-            (0.4 * previous_state['boot_bonded_supply'] / params['volt_base_investmint_amount']) * \
-            (89 / params['volt_base_investmint_period']) * previous_state['volt_mint_rate'])
-    else:
-        volt_released = 0
-    return {'volt_released': math.floor(volt_released)}
-
-
-def p_ampere_released(params, substep, state_history, previous_state):
-    if previous_state['timestep'] % 90 == 89:
-        ampere_released = \
-            math.floor((0.4 * previous_state['boot_bonded_supply'] / params['ampere_base_investmint_amount']) * \
-                       (89 / params['ampere_base_investmint_period']) * previous_state['ampere_mint_rate'])
-    else:
-        ampere_released = 0
-    return {'ampere_released': math.floor(ampere_released)}

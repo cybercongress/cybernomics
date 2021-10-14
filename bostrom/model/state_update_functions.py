@@ -35,16 +35,6 @@ def s_hydrogen_liquid_supply(params, substep, state_history, previous_state, pol
     return 'hydrogen_liquid_supply', hydrogen_liquid_supply
 
 
-def s_volt_liquid_supply(params, substep, state_history, previous_state, policy_input):
-    volt_liquid_supply = previous_state['volt_liquid_supply'] + policy_input['volt_released']
-    return 'volt_liquid_supply', volt_liquid_supply
-
-
-def s_ampere_liquid_supply(params, substep, state_history, previous_state, policy_input):
-    ampere_liquid_supply = previous_state['ampere_liquid_supply'] + policy_input['ampere_released']
-    return 'ampere_liquid_supply', ampere_liquid_supply
-
-
 def s_boot_claimed_supply(params, substep, state_history, previous_state, policy_input):
     boot_claimed_supply = previous_state['boot_claimed_supply'] + policy_input['boot_claimed_supply_delta']
     if boot_claimed_supply > params['boot_gift_amount_init']:
