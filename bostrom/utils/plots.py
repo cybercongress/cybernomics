@@ -35,7 +35,7 @@ def rename_column(column: str) -> str:
                 replace('Per ', 'per ')
 
 
-def prepare_df(df: pd.DataFrame, a_v_ratio: float = 1, growth_rate_period: int = 1) -> pd.DataFrame:
+def prepare_df(df: pd.DataFrame, a_v_ratio: float = 0.5, growth_rate_period: int = 1) -> pd.DataFrame:
 
     df['boot_liquid_supply'] = df['boot_liquid_supply'] / 1e12
     df['boot_frozen_supply'] = df['boot_frozen_supply'] / 1e12
@@ -56,9 +56,9 @@ def prepare_df(df: pd.DataFrame, a_v_ratio: float = 1, growth_rate_period: int =
 
     df['transactions_per_second'] = df['cyberlinks_per_day'] / 24 / 3_600 * 1e6
     df['hydrogen_investminted_for_ampere'] = \
-        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * a_v_ratio / (1 + a_v_ratio)
+        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * a_v_ratio
     df['hydrogen_investminted_for_volt'] = \
-        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * 1 / (1 + a_v_ratio)
+        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * (1 - a_v_ratio)
     df['validator_revenue,_eth'] = df['validator_revenue_gboot'] * df['gboot_price']
 
     rename_columns_dict = {item: rename_column(item) for item in df.columns
