@@ -22,14 +22,14 @@ def p_timestep_provision_boot(params, substep, state_history, previous_state):
 
 def p_boot_bonded_supply(params, substep, state_history, previous_state):
     boot_bonded_share = previous_state['boot_bonded_supply'] / previous_state['boot_supply']
-    boot_bonded_supply_delta = (params['boot_bonded_share_target'] - boot_bonded_share) * \
+    boot_bonded_supply_delta = (params['boot_bonded_share_limit'] - boot_bonded_share) * \
                                previous_state['boot_supply'] * params['bonding_speed_coeff']
     return {'boot_bonded_supply_delta': math.floor(boot_bonded_supply_delta)}
 
 
 def p_hydrogen_supply(params, substep, state_history, previous_state):
     boot_bonded_share = previous_state['boot_bonded_supply'] / previous_state['boot_supply']
-    hydrogen_supply_delta = (params['boot_bonded_share_target'] - boot_bonded_share) * previous_state[
+    hydrogen_supply_delta = (params['boot_bonded_share_limit'] - boot_bonded_share) * previous_state[
         'boot_supply'] * params['bonding_speed_coeff']
     return {'hydrogen_supply_delta': math.floor(hydrogen_supply_delta)}
 
@@ -75,7 +75,7 @@ def p_cyberlinks_per_day(params, substep, state_history, previous_state):
 
 def p_ampere_minted_amount(params, substep, state_history, previous_state):
     boot_bonded_share = previous_state['boot_bonded_supply'] / previous_state['boot_supply']
-    hydrogen_supply_delta = (params['boot_bonded_share_target'] - boot_bonded_share) * previous_state[
+    hydrogen_supply_delta = (params['boot_bonded_share_limit'] - boot_bonded_share) * previous_state[
         'boot_supply'] * params['bonding_speed_coeff']
     hydrogen_supply_delta *= (1 - params['hydrogen_liquid_ratio'])
     if previous_state['timestep'] in ampere_hydrogen.keys():
@@ -94,7 +94,7 @@ def p_ampere_minted_amount(params, substep, state_history, previous_state):
 
 def p_volt_minted_amount(params, substep, state_history, previous_state):
     boot_bonded_share = previous_state['boot_bonded_supply'] / previous_state['boot_supply']
-    hydrogen_supply_delta = (params['boot_bonded_share_target'] - boot_bonded_share) * previous_state[
+    hydrogen_supply_delta = (params['boot_bonded_share_limit'] - boot_bonded_share) * previous_state[
         'boot_supply'] * params['bonding_speed_coeff']
     hydrogen_supply_delta *= (1 - params['hydrogen_liquid_ratio'])
     if previous_state['timestep'] in volt_hydrogen.keys():
@@ -112,7 +112,7 @@ def p_volt_minted_amount(params, substep, state_history, previous_state):
 
 def p_hydrogen_liquid_supply_delta(params, substep, state_history, previous_state):
     boot_bonded_share = previous_state['boot_bonded_supply'] / previous_state['boot_supply']
-    boot_bonded_supply_delta = (params['boot_bonded_share_target'] - boot_bonded_share) * previous_state[
+    boot_bonded_supply_delta = (params['boot_bonded_share_limit'] - boot_bonded_share) * previous_state[
         'boot_supply'] * params['bonding_speed_coeff']
     hydrogen_liquid_supply_delta = params['hydrogen_liquid_ratio'] * boot_bonded_supply_delta
     return {'hydrogen_liquid_supply_delta': math.floor(hydrogen_liquid_supply_delta)}
