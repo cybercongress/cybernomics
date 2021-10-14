@@ -1,4 +1,5 @@
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator, FuncFormatter
 from matplotlib import axes
@@ -27,13 +28,14 @@ def rename_column(column: str) -> str:
                 replace('Cpu', 'CPU'). \
                 replace('Gb', 'GB'). \
                 replace('Of ', 'of '). \
+                replace('For ', 'for '). \
                 replace('In ', 'in '). \
                 replace('To ', 'to '). \
                 replace('Second', 'second'). \
                 replace('Per ', 'per ')
 
 
-def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
+def prepare_df(df: pd.DataFrame, a_v_ratio: float = 1, growth_rate_period: int = 1) -> pd.DataFrame:
 
     df['boot_liquid_supply'] = df['boot_liquid_supply'] / 1e12
     df['boot_frozen_supply'] = df['boot_frozen_supply'] / 1e12
@@ -49,14 +51,27 @@ def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
     df['agents_count'] = df['agents_count'] / 1e6
     df['gpu_memory_usage'] = df['gpu_memory_usage'] / 1e9
 
-    growth_rate_period = 1
-    df['agents_count_growth_rate'] = df['agents_count'].pct_change(periods=growth_rate_period)
-    df['cyberlink_count_growth_rate'] = df['cyberlinks_count'].pct_change(periods=growth_rate_period)
+    df['agents_daily_growth_rate'] = df['agents_count'].pct_change(periods=growth_rate_period)
+    df['cyberlink_daily_growth_rate'] = df['cyberlinks_count'].pct_change(periods=growth_rate_period)
+
+    df['transactions_per_second'] = df['cyberlinks_per_day'] / 24 / 3_600 * 1e6
+    df['hydrogen_investminted_for_ampere'] = \
+        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * a_v_ratio / (1 + a_v_ratio)
+    df['hydrogen_investminted_for_volt'] = \
+        (df['hydrogen_supply'] - df['hydrogen_liquid_supply']) * 1 / (1 + a_v_ratio)
+    df['validator_revenue,_eth'] = df['validator_revenue_gboot'] * df['gboot_price']
 
     rename_columns_dict = {item: rename_column(item) for item in df.columns
                            if item not in ('simulation', 'subset', 'run', 'substep', 'timestep')}
     df.rename(columns=rename_columns_dict)
     return df.rename(columns=rename_columns_dict)
+
+
+def get_colors(df: pd.DataFrame, sns_style: str = 'tab10'):
+    columns = [column for column in df.columns.sort_values()
+               if column not in ('simulation', 'subset', 'run', 'substep', 'timestep')]
+    colors = list(sns.color_palette(palette=sns_style, n_colors=len(columns)).as_hex())
+    return {column: color for column, color in zip(columns, colors)}
 
 
 def set_axis(ax: axes, ylabel: str, ylogscale: bool, ymin: float, ymax:float, ymax_value: float,
@@ -66,6 +81,7 @@ def set_axis(ax: axes, ylabel: str, ylogscale: bool, ymin: float, ymax:float, ym
     ax.set_ylim(top=ymax)
     legend = ax.legend(loc=legend_loc)
     legend.get_frame().set_facecolor('#FFFFFF')
+    legend.get_frame().set_alpha(0.5)
     if not ylogscale:
         ax.set_ylim(bottom=ymin, top=ymax)
         ax.yaxis.set_major_locator(plt.MaxNLocator(6))
@@ -89,14 +105,15 @@ def plot(df: pd.DataFrame, title: str,
          ymax_1=None, ymax_2=None,
          figsize: tuple = FIGSIZE):
     columns_1 = list(map(rename_column, columns_1))
+    color_style = get_colors(df)
     plt.rcParams["figure.figsize"] = figsize
     plt.rcParams["figure.facecolor"] = '#FFFFFF'
     plt.rcParams["legend.facecolor"] = '#FFFFFF'
     plt.rcParams["legend.edgecolor"] = '#FFFFFF'
     if type_1 == 'area':
-        ax1 = df.plot.area(y=columns_1, linewidth=0, colormap='winter', xticks=XTICKS, grid=True)
+        ax1 = df.plot.area(y=columns_1, xticks=XTICKS, grid=True, style=color_style, linewidth=0,  alpha=0.6)
     else:
-        ax1 = df.plot(y=columns_1, xticks=XTICKS, grid=True, style={columns_1[0]: 'r'}, logy=ylogscale_1)
+        ax1 = df.plot.line(y=columns_1, xticks=XTICKS, grid=True, style=color_style, logy=ylogscale_1)
     ax1.set(xlabel=XLABEL)
     ax1.set_title(title, size=16, fontweight='bold')
     ax1 = set_axis(ax=ax1, ylabel=ylabel_1, ylogscale=ylogscale_1, ymin=ymin_1, ymax=ymax_1,
@@ -104,7 +121,7 @@ def plot(df: pd.DataFrame, title: str,
     if ylabel_2:
         columns_2 = list(map(rename_column, columns_2))
         ax2 = ax1.twinx()
-        df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True, logy=ylogscale_2)
+        df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True, style=color_style, logy=ylogscale_2)
         ax2.spines['right'].set_position(('axes', 1.0))
         ax2.grid(None)
         ax2 = set_axis(ax=ax2, ylabel=ylabel_2, ylogscale=ylogscale_2, ymin=ymin_2, ymax=ymax_2,
@@ -127,13 +144,7 @@ def boot_supply_plot(df: pd.DataFrame, title: str = 'BOOT Supply', figsize: tupl
          figsize=figsize)
 
 
-def hydrogen_supply_plot(df: pd.DataFrame, a_v_ratio: float = 1, title: str = 'H Supply', figsize: tuple = FIGSIZE):
-    df[rename_column('hydrogen_investminted_for_ampere')] = \
-        (df[rename_column('hydrogen_supply')] - df[rename_column('hydrogen_liquid_supply')]) * \
-        a_v_ratio / (1 + a_v_ratio)
-    df[rename_column('hydrogen_investminted_for_volt')] = \
-        (df[rename_column('hydrogen_supply')] - df[rename_column('hydrogen_liquid_supply')]) * \
-        1 / (1 + a_v_ratio)
+def hydrogen_supply_plot(df: pd.DataFrame, title: str = 'H Supply', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
          columns_1=['hydrogen_liquid_supply', 'hydrogen_investminted_for_ampere', 'hydrogen_investminted_for_volt'],
@@ -145,7 +156,7 @@ def agents_count_plot(df: pd.DataFrame, title: str = 'Neurons Forecast', figsize
     plot(df=df,
          title=title,
          columns_1=['agents_count'],
-         columns_2=['agents_count_growth_rate'],
+         columns_2=['agents_daily_growth_rate'],
          ylabel_1='Neurons Amount, millions',
          ylabel_2='Neurons Daily Growth Rate',
          ylogscale_2=True,
@@ -160,13 +171,12 @@ def capitalization_plot(df: pd.DataFrame, title: str = 'BOOT Capitalization',
          columns_2=['capitalization_in_eth'],
          ylabel_1='BOOT Capitalization per Agent, ETH',
          ylabel_2='BOOT Capitalization, ETH',
+         ylogscale_1=True,
          type_1='line',
          figsize=figsize)
 
 
 def gboot_price_plot(df: pd.DataFrame, title: str = 'Validators Revenue', figsize: tuple = FIGSIZE):
-    df[rename_column('validator_revenue,_eth')] = \
-        df[rename_column('validator_revenue_gboot')] * df[rename_column('gboot_price')]
     plot(df=df,
          title=title,
          columns_1=['gboot_price'],
@@ -190,7 +200,7 @@ def cyberlinks_count_plot(df: pd.DataFrame, title: str = 'cyberLinks Forecast', 
     plot(df=df,
          title=title,
          columns_1=['cyberlinks_count'],
-         columns_2=['cyberlink_count_growth_rate'],
+         columns_2=['cyberlink_daily_growth_rate'],
          ylabel_1='cyberLinks Amount, billions',
          ylabel_2='cyberLinks Daily Growth Rate',
          ylogscale_2=True,
@@ -242,7 +252,6 @@ def volt_mint_rate_plot(df: pd.DataFrame, title: str = 'V Halving Cycles', figsi
 
 
 def tps_plot(df: pd.DataFrame, title: str = 'Transactions per second', figsize: tuple = FIGSIZE):
-    df['Transactions per second'] = df[rename_column('cyberlinks_per_day')] / 24 / 3_600 * 1_000_000
     plot(df=df,
          title=title,
          columns_1=['Transactions per second'],
