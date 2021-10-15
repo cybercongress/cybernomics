@@ -284,11 +284,11 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 
 `capitalization_in_eth` in ETH is defined by formula:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_in\_eth = agents\_count \cdot capitalization\_per\_agent"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_in\_eth_{t} = agents\_count_{t} \cdot capitalization\_per\_agent_{t}"></p>
 
 `gboot_price` Giga BOOT price in ETH is defined by formula:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gboot\_price = \frac{capitalization\_in\_eth}{boot\_supply}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gboot\_price_t = \frac{capitalization\_in\_eth_t}{boot\_supply_t \cdot 1e9}"></p>
 
 ![Validators Revenue](images/validators_revenue.png)
 
