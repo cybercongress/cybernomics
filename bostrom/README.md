@@ -264,16 +264,21 @@ We derived such formula:
 
 We assumed that dynamics of capitalization of BOOT token in ETH will resemble ETH token dynamics in BTC prices.
 We adjusted the formula that our first day `capitalization_per_agent` will be equal to 32 ETH
-(`start_capitalization_per_agent`).
+(`capitalization_per_agent`).
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}"></p>
 
 ![BOOT Capitalization](images/boot_capitalization.png)
 
+### Initial Values
+
+- `capitalization_per_agent` `(32)`
+- `agents_count` `(750)`
+
 ### Simulation Parameters
 
 - `agents_count_at_activation` `(100000)`
-- `start_capitalization_per_agent` `(32)`
+
 
 ## Capitalization and Price
 
@@ -341,6 +346,7 @@ According to this formula current `investmint_max_period` will be set to [3, 6, 
 ### Simulation Parameters
 
 Parameters to define for A and V:
+
 - `horizon_period_init` `(90)`
 
 ![A Halving Cycles](images/a_halving_cycles.png)
@@ -464,7 +470,7 @@ commission (`validator_commission`)  equals 10% and that there are 92 validators
 - `agents_count_at_activation` `(10'000, 50'000, 100'000)`
 - `liquid_boot_supply_share` `(0.25)`
 - `agents_count_at_activation` `(100000)`
-- `start_capitalization_per_agent` `(1)`
+- `capitalization_per_agent` `(1)`
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
 - `horizon_period_init` `(90)`
@@ -591,7 +597,7 @@ where the rate of change (<img src="https://render.githubusercontent.com/render/
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta cyberlinks\_count} = \frac{6.3}{agents\_count^{0.3}} %2B extra\_links %2B guaranteed\_links" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta capitalization\_per\_agent} = - \frac{start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7}}{agents\_count^{1.7}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta capitalization\_per\_agent} = - \frac{start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7}}{agents\_count^{1.7}} \cdot 0.9"></p>
 
 where:
 
