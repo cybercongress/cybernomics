@@ -153,7 +153,7 @@ The one share of minted Hydrogen tokens stays in the liquid state, another one u
 - `bonding_speed_coeff` `(0.01)`
 - `ampere_volt_ratio` `(0.5)`
 
-## Gift Claim Dynamics (Total refactoring of this section is needed)
+## Gift Claim Dynamics
 
 The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of BOOT tokens.
 
@@ -213,15 +213,20 @@ Assumptions:
 - agents on the moment of gift activation will claim share of the gift (`claimed_at_activation_share`)
 - claim process can be prolonged on `days_for_gift_full_claim` in case if `agents_count_at_activation` will not reach
 - the target goal by `days_for_gift_activation`
-- `liquid_boot_supply_share` - is share of BOOT supply that will be in circulation from the network launch
+
+### Initial Values
+
+- `boot_frozen_supply` `(700e12)`
+- `boot_claimed_supply` `(0)`
+- `boot_to_distribution_supply` `(0)`
 
 ### Simulation Parameters
 
-- `days_for_gift_activation` `(100, 150)`
-- `claimed_at_activation_share` `(1, 0.5)`
-- `days_for_gift_full_claim` `(0, 360)`
+- `days_for_gift_activation` `(30)`
+- `claimed_at_activation_share` `(0.85)`
+- `days_for_gift_full_claim` `(150)`
 - `agents_count_at_activation` `(10'000, 50'000, 100'000)`
-- `liquid_boot_supply_share` `(0.25)`
+- `boot_gift_amount_init` `(700e12)`
 
 ## Understanding Network Effects
 
