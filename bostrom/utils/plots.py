@@ -8,7 +8,7 @@ IMAGES_PATH = './images/'
 FIGSIZE = (16, 5)
 XTICKS = range(0, 4015, 365)
 XLIM = (0, 3650)
-XLABEL = 'timestep(days)'
+XLABEL = 'timestep (days)'
 
 
 def rename_column(column: str) -> str:
@@ -65,7 +65,7 @@ def prepare_df(df: pd.DataFrame, a_v_ratio: float = 0.5, growth_rate_period: int
     return df.rename(columns=rename_columns_dict)
 
 
-def get_colors(df: pd.DataFrame, sns_style: str = 'tab10'):
+def get_colors(df: pd.DataFrame, sns_style: str = 'dark'):
     columns = [column for column in df.columns.sort_values()
                if column not in ('simulation', 'subset', 'run', 'substep', 'timestep')]
     colors = list(sns.color_palette(palette=sns_style, n_colors=len(columns)).as_hex())

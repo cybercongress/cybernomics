@@ -31,18 +31,20 @@ jupyter notebook
 
 ## Goals
 
-To optimize parameters for launching Bostrom.
+To optimize parameters for launching Bostrom Network.
 
-An idea is to model the value of BOOT through the understanding of established network effects in Ethereum.
+An idea is to model the value of BOOT token through the understanding of established network effects in Ethereum.
 Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for 
-cyberlinks based on address growth we can adjust the supply of cyberlinks accounting for computing capability and so 
-that VOLT price could grow. The given model also allows defining inflation parameters of BOOT to optimize investments 
-into the hardware infrastructure.
+cyberLinks based on address growth we can adjust the supply of cyberLinks accounting for computing capability and so 
+that Volt (V) token price could grow. The given model also allows defining inflation parameters of BOOT to optimize 
+investments into the hardware infrastructure.
 
 
 ## Time 
 
-We model Bostrom Network simulation as a (discrete) sequence of events in time. We define the `timestep` variable (syn `t`) as integer number of time steps since the network launch. `timestep` is used in formulas and definitions across this specification and defined as:
+We model Bostrom Network simulation as a (discrete) sequence of events in time. We define the `timestep` variable 
+(syn `t`) as integer number of time steps since the network launch. `timestep` is used in formulas and definitions 
+across this specification and defined as:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \lfloor{time\_from\_launch\_in\_years \cdot timesteps\_per\_year}\rfloor"></p>
 
@@ -54,30 +56,44 @@ where `time_from_launch_in_years` is time from the system launch expressed in ye
 
 ## BOOT Supply
 
-The BOOT supply on each `timestep` defines as the BOOT supply on the previous `timestep` plus provision on the current timestep:
+The BOOT supply on each `timestep` defines as the BOOT supply on the previous `timestep` plus provision on the current 
+timestep:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision\_boot_t"></p>
 
 The `timestep_provision_boot` variable is described in the [BOOT minting, inflation](#boot-minting-inflation) subsection.
 
-### BOOT minting, inflation
+### BOOT Minting and Inflation
 
-The minting mechanism of Bostrom network corresponds to the minting mechanism of [Cosmos network](https://docs.cosmos.network/master/modules/mint/03_begin_block.html).
+The minting mechanism of Bostrom Network corresponds to the minting mechanism of 
+[Cosmos Network](https://docs.cosmos.network/master/modules/mint/03_begin_block.html).
 
 The minting mechanism was designed to:
 
 - allow for a flexible inflation rate determined by market demand targeting a particular bonded-stake ratio
 - effect a balance between market liquidity and staked supply
 
-In order to best determine the appropriate market rate for inflation rewards, a moving change rate is used. The moving change rate mechanism ensures that if the `boot_bonded_share` is either over or under the `boot_bonded_share_target`, the inflation rate will adjust to further incentivize or disincentivize being bonded, respectively. Setting the `boot_bonded_share_target` at less than 100% encourages the network to maintain some non-staked tokens which should help provide some liquidity.
+In order to best determine the appropriate market rate for inflation rewards, a moving change rate is used. The moving 
+change rate mechanism ensures that if the `boot_bonded_share` is either over or under the `boot_bonded_share_target`, 
+the inflation rate will adjust to further incentivize or disincentivize being bonded, respectively. Setting 
+the `boot_bonded_share_target` at less than 100% encourages the network to maintain some non-staked tokens which 
+should help provide some liquidity.
 
 It can be broken down in the following way:
 
-- If the inflation rate is below the `boot_bonded_share_target` the inflation rate will increase until a maximum value - (`boot_inflation_rate_max`) is reached
-- If the `boot_bonded_share_target` (`0.80` in bostrom network) is maintained, then the inflation rate will stay constant
-- If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a minimum - value (`boot_inflation_rate_min`) is reached
+- If the inflation rate is below the `boot_bonded_share_target` the inflation rate will increase until a maximum 
+value - (`boot_inflation_rate_max`) is reached
+- If the `boot_bonded_share_target` (`0.80` in bostrom network) is maintained, then the inflation rate will stay 
+constant
+- If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a minimum - 
+value (`boot_inflation_rate_min`) is reached
 
-In this model the target annual inflation rate is recalculated each `timestep` (in network it is recalculated each block). The inflation is also subject to a rate change (positive or negative) depending on the distance from the desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change` per year, however the annual inflation is capped as between `boot_inflation_rate_min` and `boot_inflation_rate_max`. In case of inflation is higher than `boot_inflation_rate_max` param, the inflation sets as `boot_inflation_rate_max`. In case if inflation lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation_rate_min`.
+In this model the target annual inflation rate is recalculated each `timestep` (in network it is recalculated each 
+block). The inflation is also subject to a rate change (positive or negative) depending on the distance from the 
+desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change` per year, however the 
+annual inflation is capped as between `boot_inflation_rate_min` and `boot_inflation_rate_max`. In case of inflation is 
+higher than `boot_inflation_rate_max` param, the inflation sets as `boot_inflation_rate_max`. In case if inflation 
+lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation_rate_min`.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply_{t-1}}"></p>
 
@@ -94,14 +110,15 @@ In this model the target annual inflation rate is recalculated each `timestep` (
 ### Simulation Parameters
 
 - `boot_supply_init` `(1e15)` (it is in init values, not a param)
-- `boot_inflation_rate_max`  `(0.20)`
-- `boot_inflation_rate_min`  `(0.05)`
-- `boot_bonded_share_target` `(0.70)`
-- `boot_inflation_rate_change_annual`  `(0.07)`
+- `boot_inflation_rate_max`  `(0.15)`
+- `boot_inflation_rate_min`  `(0.03)`
+- `boot_bonded_share_target` `(0.80)`
+- `boot_inflation_rate_change_annual`  `(0.20)`
 
 ## Modeling Bonded BOOT Amount (H Supply)
 
-Agents will delegate `boot_bonding_share` (70%) of `boot_liquid_supply` to heroes, and they will mint  corresponding amount off Hydrogen.
+Agents will delegate `boot_bonding_share` (80%) of `boot_liquid_supply` to heroes, and they will mint  corresponding 
+amount off Hydrogen.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_supply_t = boot\_bonded\_supply_{t-1} %2B \Delta boot\_bonded\_supply"></p>
 
@@ -113,7 +130,8 @@ where:
 
 ### Simulation Parameters
 
-- `boot_bonding_share` `(0.7)`
+- `boot_bonding_share` `(0.8)`
+- `hydrogen_liquid_ratio` `(0.2)`
 
 ## Gift Claim Dynamics (Total refactoring of this section is needed)
 
@@ -124,9 +142,11 @@ The `boot_claimed_supply` function has two phases:
 - before `days_for_gift_activation`
 - after `days_for_gift_activation`
 
-It's excepted that `claimed_at_activation_share` * `boot_gift_amount_init` amount of BOOTs will be reached in `days_for_gift_activation`. After that, (1 - `claimed_at_activation_share`) * `boot_gift_amount_init` should be claimed in `days_for_gift_full_claim`.
+It's excepted that `claimed_at_activation_share` * `boot_gift_amount_init` amount of BOOTs will be reached in 
+`days_for_gift_activation`. After that, (1 - `claimed_at_activation_share`) * `boot_gift_amount_init` should be claimed 
+in `days_for_gift_full_claim`.
 
-Therefore the `boot_claimed_supply` function can be defined as liniar function with condition:
+Therefore, the `boot_claimed_supply` function can be defined as linear function with condition:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_claimed\_supply_t = boot\_claimed\_supply_{t-1} %2B \Delta boot\_claimed\_supply"></p>
 
@@ -177,16 +197,19 @@ Assumptions:
 
 ### Agents Growth
 
-To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active agent dynamics ([excel spreadsheet online](https://needfordata-my.sharepoint.com/:x:/g/personal/max_needfordata_ru/EZWCgmE-VOBEsGJTg8lslpYBP2LQoBFdMC9LgXleJ3Dj_Q?e=PwmaIh)).
-We calculated [ethereum active agents](eth_active_agents.ipynb) as addresses with a balance more than 0.01 ETH (the balance sufficient to complete at least 1 transaction).
+To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active agent dynamics 
+([excel spreadsheet online](https://needfordata-my.sharepoint.com/:x:/g/personal/max_needfordata_ru/EZWCgmE-VOBEsGJTg8lslpYBP2LQoBFdMC9LgXleJ3Dj_Q?e=PwmaIh)).
+We calculated [ethereum active agents](eth_active_agents.ipynb) as addresses with a balance more than 0.01 ETH (the 
+balance sufficient to complete at least 1 transaction).
 
 ![Dynamics of Ethereum Agents](images/EthAgentsDynamics.png)
 
-We have combined 2 trendlines and derived the following formula of agents count by days from ETH dynamics.
+We have combined 2 trend lines and derived the following formula of agents counting by days from ETH dynamics.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 2 \cdot days^{2} %2B 100 \cdot days %2B 8700"></p>
 
-Assuming that there are much more crypto-agents now than there was at the time of ETH launch, we adjusted the formula with coefficients to expect more rapid growth.
+Assuming that there are much more crypto-agents now than there was at the time of ETH launch, we adjusted the formula 
+with coefficients to expect more rapid growth.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation"></p>
 
@@ -194,7 +217,9 @@ Assuming that there are much more crypto-agents now than there was at the time o
 
 ### Capitalization Dynamics
 
-We decided to model total `capitalization_in_eth` through `capitalization_per_agent` metric derived from ETH capitalization in BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had a lot of fluctuations).
+We decided to model total `capitalization_in_eth` through `capitalization_per_agent` metric derived from ETH 
+capitalization in BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had 
+a lot of fluctuations).
 
 ![Ethereum Capitalization per Active Agent in BTC](images/EthCapPerAgentActiveInBTC1.png)
 
@@ -229,7 +254,8 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 
 ## Predicting V Demand
 
-VOLT are natural tokens. Each VOLT enables its holder to produce 1 cyberlink daily. To simulate cyberlinks usage we have derived base estimate of `cyberlinks_per_day` formula from ETH data:
+V are natural tokens. Each V enables its holder to produce 1 cyberlink daily. To simulate cyberlinks usage we 
+have derived base estimate of `cyberlinks_per_day` formula from ETH data:
 
 ![ETH Data](images/EthAgentsCountActive_vs_EthTransPerAgent.png)
 
@@ -241,11 +267,13 @@ And we adjusted such formula with adding a number of `extra_links` and `guarante
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
 
-`extra_links` count depends on UX specifics, such as setting the name of agent, following (proportion of agents) and extra:
+`extra_links` count depends on UX specifics, such as setting the name of agent, following (proportion of agents) and 
+extra:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, setting name, following, extra )"> 
 
-Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely on this demand also adding `guaranteed_links` count.
+Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely on 
+this demand also adding `guaranteed_links` count.
 
 ![cyberLinks Forecast](images/cyberlinks_forecast.png)
 
@@ -256,11 +284,12 @@ Also, the founding team envisions some basic stuff to cyberlink such as naming s
 
 ## Adjusting A and V Supply
 
-To model minting properties of VOLT for the planning of GPU storage and maximization of VOLT price. As AMPERE are resource tokens, and they do not have natural measure we decide to model AMPERE supply equal to VOLT. 
+To model minting properties of V for the planning of GPU storage and maximization of V price. As Ampere (A) are 
+resource tokens, and they do not have natural measure we decide to model A supply equal to V. 
 
-System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1GBoot) for 1 day yelds 1 VOLT. 
+System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1 GBOOT) for 1 day yields 1 V. 
 
-`investmint_period` - is period of investminiting H token for selected agent. It is chosen by agent according to his 
+`investmint_period` - is period of investminting H token for selected agent. It is chosen by agent according to his 
 understanding and priorities of maximisation his benefits. 
 
 And it is limited by system setting of `investmint_max_period`, that has dynamic formula written below. 
@@ -276,7 +305,7 @@ According to this formula current `investmint_max_period` will be set to [3, 6, 
 
 ### Simulation Parameters
 
-Parameters to define for VOLT and A:
+Parameters to define for A and V:
 - `horizon_period_init` `(90)`
 
 ![A Halving Cycles](images/a_halving_cycles.png)
@@ -284,15 +313,15 @@ Parameters to define for VOLT and A:
 
 ## A and V Minting
 
-AMPERE are minted according to the following formula:
+A are minted according to the following formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_period}{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate}\rfloor"></p>
 
-VOLT are minted according to the following formula:
+V are minted according to the following formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p>
 
-`ampere_volt_ratio` - the ratio between AMPERE and VOLT tokens supply. 
+`ampere_volt_ratio` - the ratio between A and V tokens supply. 
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}ampere\_volt\_ratio = \frac{ampere\_minted\_amount}{volt\_minted\_amount}"></p>
 
@@ -311,14 +340,14 @@ VOLT are minted according to the following formula:
 
 ## Mint Rate of A and V
 
-Mint rate is multiple coefficient for minting AMPERE tokens
+Mint rate is multiple coefficient for minting A tokens
 
 It is halving every `ampere_base_halving_period`
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = \frac{ampere\_mint\_rate\_init}{2^{\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}}"></p>
 
 
-Mint rate is multiple coefficient for minting Volt tokens
+Mint rate is multiple coefficient for minting V tokens
 
 It is halving every `volt_base_halving_period`
 
@@ -328,7 +357,7 @@ It is halving every `volt_base_halving_period`
 ### Assumptions
 
 1. All agents lock tokens for the maximum available period defined in params for simulating
-2. All agents mint maximum Ampere and Volt tokens in 50/50 ratio
+2. All agents mint maximum A and V tokens in 50/50 ratio
 
 
 ### Simulation Parameters
@@ -369,7 +398,7 @@ be unlocked in the unlock timeframe.
 
 ## Investments into Infrastructure
 
-Target goal of simulation is to estimate revenue of 1 validator in ETH Equvivalent, given that all validators have 
+Target goal of simulation is to estimate revenue of 1 validator in ETH Equivalent, given that all validators have 
 commission (`validator_commission`)  equals to 10% and that there are 92 validators (`max_validator_count`). 
 
 `validator_revenue_gboot` is defined by formula:
@@ -475,7 +504,7 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 ### Differential Equations
 
 - `boot_liquid_supply` - liquid network token amount
-- `boot_bonded_supply` - bonded (staked) network token (HYDROGEN) amount
+- `boot_bonded_supply` - bonded (staked) network token amount (H Supply)
 - `boot_frozen_supply` - not claimed (frozen) network token amount
 - `bonding_speed` - the amount of months to bond all liquid boots
 - `unbonding_speed` - the amount of months to unbond all bonded boots
@@ -483,10 +512,10 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 - `boot_supply` - total network tokens supply
 - `boot_inflation_rate_change_annual` - maximum annual inflation rate change
 - `timestep_provision_boot` - `timestep` token provision
-- `ampere_supply` - Ampere resource token amount
-- `volt_supply` - volt token amount
-- `ampere_mint_rate` - mint rate for AMPERE token minting
-- `volt_mint_rate` - mint rate for volt token minting
+- `ampere_supply` - A resource token amount
+- `volt_supply` - V token amount
+- `ampere_mint_rate` - mint rate for A token minting
+- `volt_mint_rate` - mint rate for V token minting
 - `cyberlinks_count` - number of cyberlinks
 - `agents_count` - the amount of the active agents
 - `capitalization_per_agent` - the value of agent in ETH

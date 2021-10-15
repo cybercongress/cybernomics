@@ -11,8 +11,6 @@ from model.state_update_functions import s_boot_supply, s_timestep_provision_boo
     s_cpu_memory_usage, s_cpu_time_usage, s_gpu_time_usage, s_hydrogen_liquid_supply
 
 
-
-
 partial_state_update_blocks = [
     {
         'policies': {
