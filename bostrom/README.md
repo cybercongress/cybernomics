@@ -202,7 +202,7 @@ To model agents' growth dynamics of the Bostrom network, we did a regression ana
 We calculated [ethereum active agents](eth_active_agents.ipynb) as addresses with a balance more than 0.01 ETH (the 
 balance sufficient to complete at least 1 transaction).
 
-![Dynamics of Ethereum Agents](images/EthAgentsDynamics.png)
+![Dynamics of Ethereum Agents](images/eth_active_addresses_regression.png)
 
 We have combined 2 trend lines and derived the following formula of agents counting by days from ETH dynamics.
 
@@ -221,7 +221,7 @@ We decided to model total `capitalization_in_eth` through `capitalization_per_ag
 capitalization in BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had 
 a lot of fluctuations).
 
-![Ethereum Capitalization per Active Agent in BTC](images/EthCapPerAgentActiveInBTC1.png)
+![Ethereum Capitalization per Active Agent in BTC](images/eth_cap_per_active_address_in_btc_regression.png)
 
 We derived such formula:
 
@@ -257,7 +257,7 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 V are natural tokens. Each V enables its holder to produce 1 cyberlink daily. To simulate cyberlinks usage we 
 have derived base estimate of `cyberlinks_per_day` formula from ETH data:
 
-![ETH Data](images/EthAgentsCountActive_vs_EthTransPerAgent.png)
+![ETH Data](images/eth_transactions_per_active_address_regression.png)
 
 We derived such formula:
 
