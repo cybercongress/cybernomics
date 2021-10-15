@@ -377,10 +377,6 @@ raise.
 - `volt_mint_rate_init` `(1)`
 - `ampere_mint_rate_min` `(0.01)`
 - `volt_mint_rate_min` `(0.01)`
-- `ampere_base_investmint_amount` `(100,000,000)`
-- `volt_base_investmint_amount` `(1,000,000,000)`
-- `ampere_base_investmint_period` `(30)`
-- `volt_base_investmint_period` `(30)`
 - `investmint_max_period_init` `(547)`
 - `horizon_period_init` `(547)`
 
@@ -420,6 +416,10 @@ We assume that `investmint_period_share` * `investmint_max_period` is an average
 
 - `investmint_period_share` `(0.8)`
 - `ampere_volt_ratio` `(0.5)`
+- `ampere_base_investmint_amount` `(100,000,000)`
+- `volt_base_investmint_amount` `(1,000,000,000)`
+- `ampere_base_investmint_period` `(30)`
+- `volt_base_investmint_period` `(30)`
 
 
 
@@ -437,32 +437,54 @@ We had stress testing on testnet to measure resource usage.
 | TPS         |         10 |           248 |          6,146.39 |
 
 
-According to stress testing measurements on testnet we derived formula of GPU memory usage:
+According to stress testing measurements on testnet we derived formulas of GPU memory usage, CPU memory usage, GPU time usage and GPU time usage:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage=40 \cdot cyberlinks\_count %2B 40 \cdot ampere\_minted\_amount" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage_t=40 \cdot cyberlinks\_count_{t-1} %2B 40 \cdot particles_{t-1}" ></p>
+
+where:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}particles_{t-1}=cyberlinks\_count_{t-1} \cdot particle\_per\_link" ></p>
+
+The `particle_per_link` parameter defines amount of particles per cyberlink
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.19001 \cdot 1 \cdot 10^{-6} \cdot cyberlinks\_count_{t-1}" ></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.47919 \cdot 1 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=8.67717 \cdot 1 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
 
 
 ![Transactions per seconds](images/transactions_per_second.png)
 ![GPU Memory and Time Usage](images/memory_and_time_usage.png)
 
-## Bonding and Unbonding (Need to discuss. Probably deprecated)
+### Initial Values
 
-The vesting function is defined as the amount of locking tokens in the time unit assumed by all liquid tokens must be
-locked in the lock timeframe.
+- `gpu_memory_usage` `(0)`
+- `cpu_memory_usage` `(0)`
+- `cpu_time_usage` `(0)`
+- `gpu_time_usage` `(0)`
 
-The unvesting function is defined as the amount of unlocking tokens in the time unit assumed by all locked tokens must
-be unlocked in the unlock timeframe.
+
+### Simulation Parameters
+
+- `particle_per_link` `(0.1)`
 
 
 ## Investments into Infrastructure
 
 Target goal of simulation is to estimate revenue of 1 validator in ETH Equivalent, given that all validators have
-commission (`validator_commission`)  equals 10% and that there are 92 validators (`max_validator_count`).
+commission (`validator_commission`)  equals `validator_commission` and that there are `max_validator_count` validators.
 
 `validator_revenue_gboot` is defined by formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue\_gboot = \frac{timestep\_provision\_boot \cdot validator\_commission \cdot gboot\_price}{ max\_validator\_count} "></p>
 
+### Initial Values
+
+- `gpu_memory_usage` `(0)`
+- `cpu_memory_usage` `(0)`
+- `cpu_time_usage` `(0)`
+- `gpu_time_usage` `(0)`
 
 ### Simulation parameters
 
