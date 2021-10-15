@@ -61,8 +61,7 @@ timestep:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision\_boot_t"></p>
 
-The `timestep_provision_boot` variable is described in the [BOOT Minting and Inflation](#boot-minting-and-inflation) 
-subsection.
+The `timestep_provision_boot` variable is described in the [BOOT minting, inflation](#boot-minting-inflation) subsection.
 
 ### BOOT Minting and Inflation
 
@@ -119,7 +118,7 @@ lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation
 ## Modeling Bonded BOOT Amount (H Supply)
 
 Agents will delegate `boot_bonding_share` (80%) of `boot_liquid_supply` to heroes, and they will mint  corresponding 
-amount off Hydrogen (H).
+amount off Hydrogen.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_supply_t = boot\_bonded\_supply_{t-1} %2B \Delta boot\_bonded\_supply"></p>
 
@@ -196,7 +195,7 @@ Assumptions:
 
 ## Understanding Network Effects
 
-### Agents (Neurons) Growth
+### Agents Growth
 
 To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active agent dynamics 
 ([excel spreadsheet online](https://needfordata-my.sharepoint.com/:x:/g/personal/max_needfordata_ru/EZWCgmE-VOBEsGJTg8lslpYBP2LQoBFdMC9LgXleJ3Dj_Q?e=PwmaIh)).
@@ -209,7 +208,7 @@ We have combined 2 trend lines and derived the following formula of agents count
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 2 \cdot days^{2} %2B 100 \cdot days %2B 8700"></p>
 
-Assuming that there are much more agents (neurons) now than there was at the time of ETH launch, we adjusted the formula 
+Assuming that there are much more crypto-agents now than there was at the time of ETH launch, we adjusted the formula 
 with coefficients to expect more rapid growth.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation"></p>
@@ -288,9 +287,9 @@ this demand also adding `guaranteed_links` count.
 To model minting properties of V for the planning of GPU storage and maximization of V price. As Ampere (A) are 
 resource tokens, and they do not have natural measure we decide to model A supply equal to V. 
 
-System designed in the way that investminted 1 GH (1 Giga H is equal to 1 GBOOT) for 1 day yields 1 V. 
+System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1 GBOOT) for 1 day yields 1 V. 
 
-`investmint_period` - is period of investminting H token for selected neuron. It is chosen by neuron according to his 
+`investmint_period` - is period of investminting H token for selected agent. It is chosen by agent according to his 
 understanding and priorities of maximisation his benefits. 
 
 And it is limited by system setting of `investmint_max_period`, that has dynamic formula written below. 
@@ -357,8 +356,8 @@ It is halving every `volt_base_halving_period`
 
 ### Assumptions
 
-1. All neurons lock tokens for the maximum available period defined in params for simulating
-2. All neurons mint maximum A and V tokens in 50/50 ratio
+1. All agents lock tokens for the maximum available period defined in params for simulating
+2. All agents mint maximum A and V tokens in 50/50 ratio
 
 
 ### Simulation Parameters
@@ -518,8 +517,8 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 - `ampere_mint_rate` - mint rate for A token minting
 - `volt_mint_rate` - mint rate for V token minting
 - `cyberlinks_count` - number of cyberlinks
-- `agents_count` - the amount of the active neurons
-- `capitalization_per_agent` - the value of neuron in ETH
+- `agents_count` - the amount of the active agents
+- `capitalization_per_agent` - the value of agent in ETH
 - `horizon_period_init` - the period before first `investmint_max_period` raise
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate_t = boot\_inflation\_rate_{t-1} %2B {\Delta boot\_inflation\_rate}"></p>
