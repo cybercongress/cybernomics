@@ -351,6 +351,11 @@ raise.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = \frac{volt\_mint\_rate\_init}{2^{\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}}"></p>
 
+`ampere_mint_rate`, `volt_mint_rate` are limited by - `ampere_mint_rate_min`, `volt_mint_rate_min` parameters.
+
+![A Halving Cycles](images/a_halving_cycles.png)
+![V Halving Cycles](images/v_halving_cycles.png)
+
 
 ### Initial Values
 
@@ -373,10 +378,6 @@ raise.
 - `volt_base_investmint_period` `(30)`
 - `investmint_max_period_init` `(547)`
 - `horizon_period_init` `(547)`
-- `investmint_period_share` `(0.8)`
-
-![A Halving Cycles](images/a_halving_cycles.png)
-![V Halving Cycles](images/v_halving_cycles.png)
 
 ## A and V Minting
 
@@ -404,7 +405,7 @@ V are minted according to the following formula:
 - `volt_base_investmint_period`  `(timesteps_per_year / 12)`
 - `ampere_base_halving_period` `(12_000_000 * 6.4)`
 - `volt_base_halving_period` `(12_000_000 * 6.4)`
-
+- `investmint_period_share` `(0.8)`
 
 
 ### Assumptions
