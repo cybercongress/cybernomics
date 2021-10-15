@@ -303,9 +303,9 @@ We derived such formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}transactions\_per\_agent = 9 \cdot agents\_count^{-0.3}"></p>
 
-And we adjusted such a formula by adding a number of `extra_links` and `guaranteed_links`.
+And we adjusted such a formula buy multiplication coefficient (`cyberlinks_trasactions_coeff`) because we expect that neurons in BOSTROM network will be more active than agents in ETH. Also we adjusted such formula by adding a number of `extra_links` and `guaranteed_links`.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = cyberlinks\_trasactions\_coeff \cdot 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
 
 `extra_links` count depends on UX specifics, such as setting the name of agent, following (proportion of agents) and
 extra:
@@ -319,6 +319,7 @@ this demand also adding `guaranteed_links` count.
 
 ### Simulation Parameters
 
+- `cyberlinks_trasactions_coeff` `(15)`
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
 
