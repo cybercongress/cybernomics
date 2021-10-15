@@ -50,9 +50,12 @@ across this specification and defined as:
 
 where `time_from_launch_in_years` is time from the system launch expressed in years (float data type).
 
+For purposes of modeling we use `timestep` equal to 1 day. The simulation period is equal to 10 years (`sim_period` `10`) .
+
 ### Simulation Parameters
 
 - `timesteps_per_year` `(365)`
+- `sim_period` `(10)`
 
 ## BOOT Supply
 
@@ -61,7 +64,7 @@ timestep:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision\_boot_t"></p>
 
-The `timestep_provision_boot` variable is described in the [BOOT minting, inflation](#boot-minting-inflation) subsection.
+The `timestep_provision_boot` variable is described in the [BOOT minting and inflation](#boot-minting-and-inflation) subsection.
 
 ### BOOT Minting and Inflation
 
@@ -90,41 +93,49 @@ value (`boot_inflation_rate_min`) is reached
 
 In this model the target annual inflation rate is recalculated each `timestep` (in network it is recalculated each 
 block). The inflation is also subject to a rate change (positive or negative) depending on the distance from the 
-desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change` per year, however the 
+desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change_annual` per year, however the 
 annual inflation is capped as between `boot_inflation_rate_min` and `boot_inflation_rate_max`. In case of inflation is 
 higher than `boot_inflation_rate_max` param, the inflation sets as `boot_inflation_rate_max`. In case if inflation 
 lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation_rate_min`.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply_{t-1}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_{t-1} = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply_{t-1}}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change\_annual_t = \frac{1 - \frac{boot\_bonded\_share_{t-1}}{boot\_bonded\_share\_target}}{boot\_inflation\_rate\_change\_annual}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change = \frac {({1 - \frac{boot\_bonded\_share_{t-1}}{boot\_bonded\_share\_target}}) \cdot{boot\_inflation\_rate\_change\_annual}}{timesteps\_per\_year}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate\_change_t = \frac{boot\_inflation\_rate\_change\_annual_t}{timesteps\_per\_year}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate_t = boot\_inflation\_rate_{t-1} + %2B boot\_inflation\_rate\_change"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision\_boot_t = \frac{boot\_supply_{t-1} \cdot boot\_inflation\_rate_{t}}{timesteps\_per\_year}"></p>
 
+
 ![BOOT Supply and Inflation Rate](images/boot_supply.png)
+
+### Initial Values
+
+- `boot_supply` `(1e15)` 
+- `boot_inflation_rate` `(0.05)`
 
 ### Simulation Parameters
 
-- `boot_supply_init` `(1e15)` (it is in init values, not a param)
 - `boot_inflation_rate_max`  `(0.15)`
 - `boot_inflation_rate_min`  `(0.03)`
 - `boot_bonded_share_target` `(0.80)`
-- `boot_inflation_rate_change_annual`  `(0.20)`
+- `boot_inflation_rate_change_annual_annual`  `(0.20)`
+
+
 
 ## Modeling Bonded BOOT Amount (H Supply)
 
-Agents will delegate `boot_bonding_share` (80%) of `boot_liquid_supply` to heroes, and they will mint  corresponding 
-amount off Hydrogen.
+Agents will delegate liquid BOOT to heroes, and they will mint  corresponding 
+amount of Hydrogen.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_supply_t = boot\_bonded\_supply_{t-1} %2B \Delta boot\_bonded\_supply"></p>
 
 where:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_bonded\_supply = boot\_liquid\_supply_{t-1} \cdot boot\_bonding\_share"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_bonded\_supply = (boot\_bonded\_share\_limit - boot\_bonded\_share_{t-1}) \cdot boot\_supply_{t-1} \cdot bonding\_speed\_coeff"></p>
+
+For modeling puproses we model agents bonding behaviour using parameters boot_bonding_share_limit (0.85) и bonding_speed_coeff (0.01), where boot_bonding_share_limit is ratio between `boot_bonded_supply` and `boot_supply` which agents tend to have. And `bonding_speed_coeff` is speed of bonding every timestep. 
 
 ![H Supply](images/h_supply.png)
 
@@ -132,6 +143,8 @@ where:
 
 - `boot_bonding_share` `(0.8)`
 - `hydrogen_liquid_ratio` `(0.2)`
+- `boot_bonding_share_limit` `(0.85)`
+- `bonding_speed_coeff` `(0.01)`
 
 ## Gift Claim Dynamics (Total refactoring of this section is needed)
 
@@ -421,7 +434,7 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 - `boot_inflation_rate_max`  `(0.20)`
 - `boot_inflation_rate_min`  `(0.05)`
 - `boot_bonded_share_target` `(0.70)` 
-- `boot_inflation_rate_change_annual`  `(0.07)` 
+- `boot_inflation_rate_change_annual_annual`  `(0.07)` 
 - `boot_bonded_share_current` `(0.7)`
 - `days_for_gift_activation` `(100, 150)`
 - `claimed_at_activation_share` `(1, 0.5)`
@@ -510,7 +523,7 @@ commission (`validator_commission`)  equals to 10% and that there are 92 validat
 - `unbonding_speed` - the amount of months to unbond all bonded boots
 - `boot_inflation_rate` - inflation on timesep
 - `boot_supply` - total network tokens supply
-- `boot_inflation_rate_change_annual` - maximum annual inflation rate change
+- `boot_inflation_rate_change_annual_annual` - maximum annual inflation rate change
 - `timestep_provision_boot` - `timestep` token provision
 - `ampere_supply` - A resource token amount
 - `volt_supply` - V token amount
