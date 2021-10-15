@@ -134,6 +134,11 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_bonded\_supply = (boot\_bonded\_share\_limit - boot\_bonded\_share_{t-1}) \cdot boot\_supply_{t-1} \cdot bonding\_speed\_coeff"></p>
 
+As a reminder:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta hydrogen\_supply = \Delta boot\_bonded\_supply"></p>
+
+
 For modeling purposes we model agents bonding behaviour using parameters boot_bonding_share_limit (0.85) и bonding_speed_coeff (0.01), where boot_bonding_share_limit is ratio between `boot_bonded_supply` and `boot_supply` which agents tend to have. And `bonding_speed_coeff` is the speed of bonding every timestep.
 
 The one share of minted Hydrogen tokens stays in the liquid state, another one used for minting resource tokens (A and V). `hydrogen_liquid_ratio` parameter is used in the current model which describes the token share allocated to liquid Hydrogen. The rest tokens are used for minting A and V in `hydrogen_liquid_ratio`.  
@@ -383,40 +388,39 @@ raise.
 
 A are minted according to the following formula:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_period}{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate}\rfloor"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount} = \lfloor{\frac{hydrogen\_investmint\_amount}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_period}{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate}\rfloor"></p>
 
 V are minted according to the following formula:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_investmint\_amount}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p>
 
-`ampere_volt_ratio` - the ratio between A and V tokens supply.
+In the model it is implemented as:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}ampere\_volt\_ratio = \frac{ampere\_minted\_amount}{volt\_minted\_amount}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}hydrogen\_for\_investminting = (\Delta hydrogen\_supply \cdot (1 - hydrogen\_liquid\_ratio)) %2B released\_hydrogen"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}hydrogen\_for\_ampere\_investminting = hydrogen\_for\_investminting \cdot ampere\_volt\_ratio"></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}hydrogen\_for\_volt\_investminting = hydrogen\_for\_investminting \cdot (1-ampere\_volt\_ratio)"></p>
+
+So we can rephrase formulas as:
+A are minted according to the following formula:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount_{t}} = \lfloor{\frac{hydrogen\_for\_ampere\_investminting_{t-1}}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_max\_period_{t-1} \cdot investmint\_period\_share }{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate_{t-1}}\rfloor"></p>
+
+V are minted according to the following formula:
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount_{t}} = \lfloor{\frac{hydrogen\_for\_volt\_investminting_{t-1}}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_max\_period_{t-1} \cdot investmint\_period\_share }{volt\_base\_investmint\_period} \cdot volt\_mint\_rate_{t-1}}\rfloor"></p>
+
+We assume that `investmint_period_share` * `investmint_max_period` is an average period for investminting per neuron. 
 
 ![A Supply](images/a_supply.png)
 ![V Supply](images/v_supply.png)
 
 ### Simulation Parameters
 
-- `ampere_base_investmint_amount`  `(100_000_000)`
-- `volt_base_investmint_amount`  `(100_000_000)`
-- `investmint_max_period_init` `(timesteps_per_year / 12)` 
-- `ampere_base_investmint_period`  `(timesteps_per_year / 12)`
-- `volt_base_investmint_period`  `(timesteps_per_year / 12)`
-- `ampere_base_halving_period` `(12_000_000 * 6.4)`
-- `volt_base_halving_period` `(12_000_000 * 6.4)`
 - `investmint_period_share` `(0.8)`
+- `ampere_volt_ratio` `(0.5)`
 
-
-### Assumptions
-
-1. All agents lock tokens for the maximum available period defined in params for simulating
-2. All agents mint maximum A and V tokens in 50/50 ratio
-
-
-### Simulation Parameters
-- `ampere_mint_rate_init` `(1)`
-- `volt_mint_rate_init` `(1)`
 
 
 ## Planing GPU Memory Usage
