@@ -49,8 +49,10 @@ def p_boot_claimed_supply(params, substep, state_history, previous_state):
 def p_boot_frozen_supply(params, substep, state_history, previous_state):
     if previous_state['timestep'] < params['days_for_gift_activation']:
         boot_frozen_supply_delta = 0
-    else:
+    elif previous_state['timestep'] == params['days_for_gift_activation']:
         boot_frozen_supply_delta = previous_state['boot_to_distribution_supply'] * 0.1
+    else:
+        boot_frozen_supply_delta = previous_state['boot_to_distribution_supply'] * 0.01
     return {'boot_frozen_supply_delta': -boot_frozen_supply_delta}
 
 
