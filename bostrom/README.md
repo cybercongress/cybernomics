@@ -328,27 +328,52 @@ this demand also adding `guaranteed_links` count.
 To model minting properties of V for the planning of GPU storage and maximization of V price. As Ampere (A) are
 resource tokens, and they do not have natural measure we decide to model A supply equal to V.
 
-System designed in the way that investminted 1 GH (1 Giga Hydrogen is equal to 1 GBOOT) for 1 day yields 1 V.
+System designed in the way that investminted `volt_base_investmint_amount` for `volt_base_investmint_period` yields 1 V.
 
-`investmint_period` - is period of investminting H token for selected agent. It is chosen by agent according to his
+System designed in the way that investminted `ampere_base_investmint_amount` for `ampere_base_investmint_period` yields 1 A.
+
+`ampere_base_investmint_period`, `volt_base_investmint_period` - are periods of investminting H token for selected token current agent. It is chosen by agent according to his
 understanding and priorities of maximising his benefits.
 
 And it is limited by the system setting of `investmint_max_period`, which has the dynamic formula written below.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizon\_period\_init \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizon\_period\_init}}\rceil}\rceil}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizon\_period\_init \cdot {\lceil{\frac{timestep}{horizon\_period\_init}}\rceil}"></p>
 
-Where `horizon_period_init` (period in timesteps equal to 3 months) is the period before first `investmint_max_period`
+Where `horizon_period_init` is the period before first `investmint_max_period`
 raise.
 
-According to this formula current `investmint_max_period` will be set to [3, 6, 12 ... ] months.
+`ampere_base_halving_period`, `volt_base_halving_period` - time period to decrease mint_rate variable.
 
-- `ampere_base_halving_period`, `volt_base_halving_period` - time period to decrease mint_rate variable.
+`ampere_mint_rate`, `volt_mint_rate` are coefficents that regulate amount of minted resource tokens A and V. They are set at the beginning and further this coeffients are halved each `ampere_base_halving_period`, `volt_base_halving_period` accordingly.
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = \frac{ampere\_mint\_rate\_init}{2^{\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}}"></p>
+
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = \frac{volt\_mint\_rate\_init}{2^{\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}}"></p>
+
+
+### Initial Values
+
+- `ampere_mint_rate` `(1)`
+- `volt_mint_rate` `(1)`
+- `investmint_max_period` `(547)`
+
 
 ### Simulation Parameters
 
-Parameters to define for A and V:
-
-- `horizon_period_init` `(90)`
+- `ampere_base_halving_period` `(547)`
+- `volt_base_halving_period` `(547)`
+- `ampere_mint_rate_init` `(1)`
+- `volt_mint_rate_init` `(1)`
+- `ampere_mint_rate_min` `(0.01)`
+- `volt_mint_rate_min` `(0.01)`
+- `ampere_base_investmint_amount` `(100,000,000)`
+- `volt_base_investmint_amount` `(1,000,000,000)`
+- `ampere_base_investmint_period` `(30)`
+- `volt_base_investmint_period` `(30)`
+- `investmint_max_period_init` `(547)`
+- `horizon_period_init` `(547)`
+- `investmint_period_share` `(0.8)`
 
 ![A Halving Cycles](images/a_halving_cycles.png)
 ![V Halving Cycles](images/v_halving_cycles.png)
@@ -380,20 +405,6 @@ V are minted according to the following formula:
 - `ampere_base_halving_period` `(12_000_000 * 6.4)`
 - `volt_base_halving_period` `(12_000_000 * 6.4)`
 
-## Mint Rate of A and V
-
-Mint rate is multiple coefficient for minting A tokens
-
-It is halving every `ampere_base_halving_period`
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = \frac{ampere\_mint\_rate\_init}{2^{\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}}"></p>
-
-
-Mint rate is multiple coefficient for minting V tokens
-
-It is halving every `volt_base_halving_period`
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = \frac{volt\_mint\_rate\_init}{2^{\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}}"></p>
 
 
 ### Assumptions
