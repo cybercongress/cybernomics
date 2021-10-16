@@ -1,0 +1,8 @@
+pandas>=0.25.3
+plotly>=4.14.3
+jupyter>=1.0.0
+cadCAD>=0.4.23
+google-cloud-bigquery
+google-cloud-bigquery-storage
+seaborn
+matplotlib~=3.3.4
