@@ -5,27 +5,22 @@
 
 0. Install Python3 if you have no
 1. Go to `bostrom_simulation` folder
-```bash
-cd bostrom
-```
+    ```bash
+    cd bostrom
+    ```
 2. Install requirements via pip3
-```bash
-pip3 install -r requirements.txt
-```
+    ```bash
+    pip3 install -r requirements.txt
+    ```
 3. Run
-```bash
-jupyter notebook
-```
+    ```bash
+    jupyter notebook
+    ```
 4. The notebook server should be running at `http://127.0.0.1:8888`
-
 5. Open [`simulation.ipynb`](simulation.ipynb)
-
 6. Fill `Initial state` and `Params for simulating` sections
-
 7. On the top bar `Kernel` -> `Restart & Run All`
-
 8. The simulation time depends on the simulation period you have set, f.e. for 7 years it approximately 1 hour
-
 9. Look at the results and conclude.
 
 
@@ -33,24 +28,25 @@ jupyter notebook
 
 To optimize parameters for launching the Bostrom Network.
 
-An idea is to model the value of BOOT token through the understanding of established network effects in Ethereum.
-Then we can forecast claim dynamics and address growth based on approximated network effects. Assuming some demand for
-cyberLinks based on address growth we can adjust the supply of cyberLinks accounting for computing capability and so
-that Volt (V) token price could grow. The given model also allows defining inflation parameters of BOOT to optimize
-investments into the hardware infrastructure.
+We model the value of the BOOT token through the understanding of established network effects in Ethereum.
+Further, we forecast gift claim dynamics and address growth based on approximated network effects. Assuming some
+demand for cyberLinks based on address growth we adjust the supply of cyberLinks accounting for computing
+capability and the growth of Volt (V) token price. The given model also allows defining inflation parameters of
+BOOT to optimize investments into the hardware infrastructure.
 
 
 ## Time
 
 We model Bostrom Network simulation as a (discrete) sequence of events in time. We define the `timestep` variable
-(syn `t`) as integer number of time steps since the network launch. `timestep` is used in formulas and definitions
-across this specification and defined as:
+(syn `t`) as an integer number of time steps since the network launch. `timestep` is used in formulas and
+definitions across this specification and defined as:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \lfloor{time\_from\_launch\_in\_years \cdot timesteps\_per\_year}\rfloor"></p>
 
 where `time_from_launch_in_years` is time from the system launch expressed in years (float data type).
 
-For purposes of modeling we use `timestep` equal to 1 day. The simulation period is equal to 10 years (`sim_period` `10`) .
+For purposes of modeling we use `timestep` equal to 1 day. The simulation period is equal to 10 years
+(`sim_period` `10`) .
 
 ### Simulation Parameters
 
@@ -59,16 +55,17 @@ For purposes of modeling we use `timestep` equal to 1 day. The simulation period
 
 ## BOOT Supply
 
-The BOOT supply on each `timestep` defines as the BOOT supply on the previous `timestep` plus provision on the current
-timestep:
+The BOOT supply on each `timestep` defines as the BOOT supply on the previous `timestep` plus provision on the
+current timestep:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision\_boot_t"></p>
 
-The `timestep_provision_boot` variable is described in the [BOOT minting and inflation](#boot-minting-and-inflation) subsection.
+The `timestep_provision_boot` variable is described in the
+[BOOT minting and inflation](#boot-minting-and-inflation) subsection.
 
 ### BOOT Minting and Inflation
 
-The minting mechanism of Bostrom Network corresponds to the minting mechanism of
+The minting mechanism of the Bostrom Network corresponds to the minting mechanism of the
 [Cosmos Network](https://docs.cosmos.network/master/modules/mint/03_begin_block.html).
 
 The minting mechanism was designed to:
@@ -76,27 +73,28 @@ The minting mechanism was designed to:
 - allow for a flexible inflation rate determined by market demand targeting a particular bonded-stake ratio
 - effect a balance between market liquidity and staked supply
 
-In order to best determine the appropriate market rate for inflation rewards, a moving change rate is used. The moving
-change rate mechanism ensures that if the `boot_bonded_share` is either over or under the `boot_bonded_share_target`,
-the inflation rate will adjust to further incentivize or disincentivize being bonded, respectively. Setting
-the `boot_bonded_share_target` at less than 100% encourages the network to maintain some non-staked tokens which
-should help provide some liquidity.
+In order to best determine the appropriate market rate for inflation rewards, a moving change rate is used. The
+moving change rate mechanism ensures that if the `boot_bonded_share` is either over or under the
+`boot_bonded_share_target`, the inflation rate will adjust to further incentivize or disincentivize being bonded,
+respectively. Setting the `boot_bonded_share_target` at less than 100% encourages the network to maintain some
+non-staked tokens which should help provide some liquidity.
 
 It can be broken down in the following way:
 
 - If the inflation rate is below the `boot_bonded_share_target` the inflation rate will increase until a maximum
-value - (`boot_inflation_rate_max`) is reached
+  value - (`boot_inflation_rate_max`) is reached
 - If the `boot_bonded_share_target` (`0.80` in bostrom network) is maintained, then the inflation rate will stay
-constant
-- If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a minimum -
-value (`boot_inflation_rate_min`) is reached
+  constant
+- If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a
+  minimum - value (`boot_inflation_rate_min`) is reached
 
-In this model the target annual inflation rate is recalculated each `timestep` (in network it is recalculated each
-block). The inflation is also subject to a rate change (positive or negative) depending on the distance from the
-desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change_annual` per year, however the
-annual inflation is capped as between `boot_inflation_rate_min` and `boot_inflation_rate_max`. In case of inflation is
-higher than `boot_inflation_rate_max` param, the inflation sets as `boot_inflation_rate_max`. In case if inflation
-lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation_rate_min`.
+In this model the target annual inflation rate is recalculated each `timestep` (in the network it is recalculated
+each block). The inflation is also subject to a rate change (positive or negative) depending on the distance from
+the desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change_annual` per
+year, however, the annual inflation is capped as between `boot_inflation_rate_min` and `boot_inflation_rate_max`.
+In case of inflation is higher than the `boot_inflation_rate_max` param, the inflation sets as
+`boot_inflation_rate_max`. In case of inflation lower than `boot_inflation_rate_min` param the inflation sets as
+`boot_inflation_rate_min`.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_{t-1} = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply_{t-1}}"></p>
 
@@ -128,24 +126,23 @@ lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation
 
 Agents (neurons) will delegate liquid BOOT to heroes, and they will mint corresponding amounts of Hydrogen (H).
 
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta hydrogen\_supply = \Delta boot\_bonded\_supply"></p>
+
+We model `boot_bonded_supply` using the next formula:
+
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_supply_t = boot\_bonded\_supply_{t-1} %2B \Delta boot\_bonded\_supply"></p>
 
 where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta boot\_bonded\_supply = (boot\_bonded\_share\_limit - boot\_bonded\_share_{t-1}) \cdot boot\_supply_{t-1} \cdot bonding\_speed\_coeff"></p>
 
-As a reminder:
+We model neurons bonding behavior using parameters `boot_bonding_share_limit` `(0.85)` and `bonding_speed_coeff`
+`(0.01)`, where `boot_bonding_share_limit` is the ratio between `boot_bonded_supply` and `boot_supply` which
+neurons tend to have. And `bonding_speed_coeff` is the speed of bonding every timestep.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta hydrogen\_supply = \Delta boot\_bonded\_supply"></p>
-
-
-For modeling purposes we model neurons bonding behaviour using parameters `boot_bonding_share_limit` `(0.85)` and 
-`bonding_speed_coeff` `(0.01)`, where boot_bonding_share_limit is ratio between `boot_bonded_supply` and `boot_supply` 
-which neurons tend to have. And `bonding_speed_coeff` is the speed of bonding every timestep.
-
-The one share of minted H tokens stays in the liquid state, another one used for minting resource tokens (A and V). 
-`hydrogen_liquid_ratio` parameter is used in the current model which describes the token share allocated to liquid 
-H. The rest tokens are used for minting A and V in `hydrogen_liquid_ratio`.  
+The one share of minted H tokens stays in the liquid state, another one is used for minting resource tokens (A
+and V). `hydrogen_liquid_ratio` parameter is used in the current model which describes the token share allocated
+to liquid H. The rest tokens are used for minting A and V in `hydrogen_liquid_ratio`.  
 
 ![H Supply](images/h_supply.png)
 
@@ -164,7 +161,7 @@ H. The rest tokens are used for minting A and V in `hydrogen_liquid_ratio`.
 
 ## Gift Claim Dynamics
 
-The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research 
+The addresses for gifts are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research 
 [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of 
 BOOT tokens.
 
@@ -204,7 +201,7 @@ In case where tokens have already been claimed but not transferred they change t
 
 ### `boot_frozen_supply`
 
-The `boot_frozen_supply` is defined as tokens amount on the gift contract balance. 
+The `boot_frozen_supply` is defined as the token amount on the gift contract balance. 
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} boot\_frozen\_supply_t = boot\_frozen\_supply_{t-1} %2B \Delta boot\_frozen\_supply"></p>
 
@@ -315,7 +312,7 @@ We derived such formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}transactions\_per\_agent = 9 \cdot agents\_count^{-0.3}"></p>
 
-And we adjusted such a formula buy multiplication coefficient (`cyberlinks_trasactions_coeff`) because we expect that neurons in BOSTROM network will be more active than agents in ETH. Also we adjusted such formula by adding a number of `extra_links` and `guaranteed_links`.
+And we adjusted such a formula by multiplication coefficient (`cyberlinks_trasactions_coeff`) because we expect that neurons in the BOSTROM network will be more active than agents in ETH. Also we adjusted such a formula by adding a number of `extra_links` and `guaranteed_links`.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = cyberlinks\_trasactions\_coeff \cdot 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
 
@@ -325,7 +322,7 @@ extra:
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, setting name, following, extra )">
 
 Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely on
-this demand also adding `guaranteed_links` count.
+this demand too. Now we left `guaranteed_links` count equal to 0 but it can be changed in future.
 
 ![cyberLinks Forecast](images/cyberlinks_forecast.png)
 
@@ -702,5 +699,6 @@ where:
 ![BOOT Supply and Inflation Rate](images/boot_supply.png)
 ![Validators Revenue](images/validators_revenue.png)
 ![Demand and Supply of cyberLinks](images/demand_and_supply_of_cyberlinks.png)
+
 
 
