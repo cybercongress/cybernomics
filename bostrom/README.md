@@ -126,7 +126,7 @@ lower than `boot_inflation_rate_min` param the inflation sets as `boot_inflation
 
 ## Modeling Bonded BOOT Amount (H Supply)
 
-Agents will delegate liquid BOOT to heroes, and they will mint corresponding amounts of Hydrogen.
+Agents (neurons) will delegate liquid BOOT to heroes, and they will mint corresponding amounts of Hydrogen (H).
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_supply_t = boot\_bonded\_supply_{t-1} %2B \Delta boot\_bonded\_supply"></p>
 
@@ -139,9 +139,13 @@ As a reminder:
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}\Delta hydrogen\_supply = \Delta boot\_bonded\_supply"></p>
 
 
-For modeling purposes we model agents bonding behaviour using parameters boot_bonding_share_limit (0.85) и bonding_speed_coeff (0.01), where boot_bonding_share_limit is ratio between `boot_bonded_supply` and `boot_supply` which agents tend to have. And `bonding_speed_coeff` is the speed of bonding every timestep.
+For modeling purposes we model neurons bonding behaviour using parameters `boot_bonding_share_limit` `(0.85)` and 
+`bonding_speed_coeff` `(0.01)`, where boot_bonding_share_limit is ratio between `boot_bonded_supply` and `boot_supply` 
+which neurons tend to have. And `bonding_speed_coeff` is the speed of bonding every timestep.
 
-The one share of minted Hydrogen tokens stays in the liquid state, another one used for minting resource tokens (A and V). `hydrogen_liquid_ratio` parameter is used in the current model which describes the token share allocated to liquid Hydrogen. The rest tokens are used for minting A and V in `hydrogen_liquid_ratio`.  
+The one share of minted H tokens stays in the liquid state, another one used for minting resource tokens (A and V). 
+`hydrogen_liquid_ratio` parameter is used in the current model which describes the token share allocated to liquid 
+H. The rest tokens are used for minting A and V in `hydrogen_liquid_ratio`.  
 
 ![H Supply](images/h_supply.png)
 
@@ -160,7 +164,9 @@ The one share of minted Hydrogen tokens stays in the liquid state, another one u
 
 ## Gift Claim Dynamics
 
-The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of BOOT tokens.
+The addresses for gift are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research 
+[concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first) 6M addresses for distribution of 70% of 
+BOOT tokens.
 
 The `boot_claimed_supply` function has two phases:
 
@@ -190,7 +196,8 @@ if `t` > `days_for_gift_activation`:
 
 ### `boot_to_distribution_supply`
 
-In case where tokens have already been claimed but not transferred they change their state to “to_distribution” state (ready to be transferred to agents). 
+In case where tokens have already been claimed but not transferred they change their state to “to_distribution” state 
+(ready to be transferred to neurons). 
 
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} boot\_to\_distribution\_supply_t = boot\_to\_distribution\_supply_{t-1} %2B \Delta boot\_claimed\_supply %2B \Delta boot\_frozen\_supply"></p>
@@ -213,9 +220,9 @@ if `t` >= `days_for_gift_activation`:
 
 Assumptions:
 
-- agents (`agents_count_at_activation`) will claim our gift. After that the gift will be activated
+- neurons (`agents_count_at_activation`) will claim our gift. After that the gift will be activated
 - it will take `days_for_gift_activation` since genesis before the gift claiming process will be completed
-- agents on the moment of gift activation will claim share of the gift (`claimed_at_activation_share`)
+- neurons on the moment of gift activation will claim share of the gift (`claimed_at_activation_share`)
 - claim process can be prolonged on `days_for_gift_full_claim` in case if `agents_count_at_activation` will not reach
 - the target goal by `days_for_gift_activation`
 
@@ -235,16 +242,16 @@ Assumptions:
 
 ## Understanding Network Effects
 
-### Agents Growth
+### Agents (Neurons) Growth
 
-To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active agent dynamics
+To model agents' growth dynamics of the Bostrom network, we did a regression analysis on ETH active addresses dynamics
 ([excel spreadsheet online](https://needfordata-my.sharepoint.com/:x:/g/personal/max_needfordata_ru/EZWCgmE-VOBEsGJTg8lslpYBP2LQoBFdMC9LgXleJ3Dj_Q?e=PwmaIh)).
-We calculated [ethereum active agents](eth_active_agents.ipynb) as addresses with a balance more than 0.01 ETH (the
+We calculated [ethereum active addresses](eth_active_agents.ipynb) as addresses with a balance more than 0.01 ETH (the
 balance sufficient to complete at least 1 transaction).
 
-![Dynamics of Ethereum Agents](images/eth_active_addresses_regression.png)
+![Dynamics of Ethereum Addresses](images/eth_active_addresses_regression.png)
 
-We have combined 2 trend lines and derived the following formula of agents counting by days from ETH dynamics.
+We have combined 2 trend lines and derived the following formula of addresses counting by days from ETH dynamics.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 2 \cdot days^{2} %2B 100 \cdot days %2B 8700"></p>
 
@@ -261,7 +268,7 @@ We decided to model total `capitalization_in_eth` through `capitalization_per_ag
 capitalization in BTC (from 100 day from start till 2160 days of network, as before 100 days ETH price in BTC had
 a lot of fluctuations).
 
-![Ethereum Capitalization per Active Agent in BTC](images/eth_cap_per_active_address_in_btc_regression.png)
+![Ethereum Capitalization per Active Addresses in BTC](images/eth_cap_per_active_address_in_btc_regression.png)
 
 We derived such formula:
 
@@ -282,7 +289,7 @@ We adjusted the formula that our first day `capitalization_per_agent` will be eq
 
 ### Simulation Parameters
 
-- `agents_count_at_activation` `(100000)`
+- `agents_count_at_activation` `(100'000)`
 
 
 ## Capitalization and Price
@@ -312,7 +319,7 @@ And we adjusted such a formula buy multiplication coefficient (`cyberlinks_trasa
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = cyberlinks\_trasactions\_coeff \cdot 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
 
-`extra_links` count depends on UX specifics, such as setting the name of agent, following (proportion of agents) and
+`extra_links` count depends on UX specifics, such as setting the name of a neuron, following (proportion of neurons) and
 extra:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, setting name, following, extra )">
@@ -337,8 +344,8 @@ System designed in the way that investminted `volt_base_investmint_amount` for `
 
 System designed in the way that investminted `ampere_base_investmint_amount` for `ampere_base_investmint_period` yields 1 A.
 
-`ampere_base_investmint_period`, `volt_base_investmint_period` - are periods of investminting H token for selected token current agent. It is chosen by agent according to his
-understanding and priorities of maximising his benefits.
+`ampere_base_investmint_period`, `volt_base_investmint_period` - are periods of investminting H token for selected 
+token current neuron. It is chosen by neuron according to his understanding and priorities of maximising his benefits.
 
 And it is limited by the system setting of `investmint_max_period`, which has the dynamic formula written below.
 
@@ -349,7 +356,9 @@ raise.
 
 `ampere_base_halving_period`, `volt_base_halving_period` - time period to decrease mint_rate variable.
 
-`ampere_mint_rate`, `volt_mint_rate` are coefficents that regulate amount of minted resource tokens A and V. They are set at the beginning and further this coeffients are halved each `ampere_base_halving_period`, `volt_base_halving_period` accordingly.
+`ampere_mint_rate`, `volt_mint_rate` are coefficients that regulate amount of minted resource tokens A and V. They are 
+set at the beginning and further these coefficients are halved each `ampere_base_halving_period`, 
+`volt_base_halving_period` accordingly.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = \frac{ampere\_mint\_rate\_init}{2^{\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}}"></p>
 
@@ -416,8 +425,8 @@ We assume that `investmint_period_share` * `investmint_max_period` is an average
 
 - `investmint_period_share` `(0.8)`
 - `ampere_volt_ratio` `(0.5)`
-- `ampere_base_investmint_amount` `(100,000,000)`
-- `volt_base_investmint_amount` `(1,000,000,000)`
+- `ampere_base_investmint_amount` `(100'000'000)`
+- `volt_base_investmint_amount` `(1'000'000'000)`
 - `ampere_base_investmint_period` `(30)`
 - `volt_base_investmint_period` `(30)`
 
@@ -429,15 +438,16 @@ We had stress testing on testnet to measure resource usage.
 
 |             |        Now |      1B links |        100B links |
 | :---------- | ---------: | ------------: | ----------------: |
-| Cyberlinks  | 40,335,720 | 1,000,000,000 | 1,000,000,000,000 |
+| Cyberlinks  | 40'335'720 | 1'000'000'000 | 1'000'000'000'000 |
 | CPU TIME, s |       0.10 |             2 |               248 |
-| CPU RAM, gb |         48 |         1,183 |           118,257 |
+| CPU RAM, gb |         48 |         1'183 |           118'257 |
 | GPU RAM, gb |          2 |            46 |             4,562 |
-| GPU TIME, s |         35 |           868 |            86,772 |
-| TPS         |         10 |           248 |          6,146.39 |
+| GPU TIME, s |         35 |           868 |            86'772 |
+| TPS         |         10 |           248 |          6'146.39 |
 
 
-According to stress testing measurements on testnet we derived formulas of GPU memory usage, CPU memory usage, GPU time usage and GPU time usage:
+According to stress testing measurements on testnet we derived formulas of GPU memory usage, CPU memory usage, GPU 
+time usage and GPU time usage:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage_t=40 \cdot cyberlinks\_count_{t-1} %2B 40 \cdot particles_{t-1}" ></p>
 
@@ -479,12 +489,6 @@ commission (`validator_commission`)  equals `validator_commission` and that ther
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue\_gboot = \frac{timestep\_provision\_boot \cdot validator\_commission \cdot gboot\_price}{ max\_validator\_count} "></p>
 
-### Initial Values
-
-- `gpu_memory_usage` `(0)`
-- `cpu_memory_usage` `(0)`
-- `cpu_time_usage` `(0)`
-- `gpu_time_usage` `(0)`
 
 ### Simulation parameters
 
@@ -494,35 +498,77 @@ commission (`validator_commission`)  equals `validator_commission` and that ther
 
 ## Mathematical Specification
 
+### Initial Values
+
+- `boot_supply` `(1e15)`
+- `boot_inflation_rate` `(0.05)`
+
+- `boot_bonded_supply` `(10e12)`
+- `hydrogen_supply` `(10e12)`
+
+- `boot_frozen_supply` `(700e12)`
+- `boot_claimed_supply` `(0)`
+- `boot_to_distribution_supply` `(0)`
+
+- `capitalization_per_agent` `(32)`
+- `agents_count` `(750)`
+
+- `ampere_mint_rate` `(1)`
+- `volt_mint_rate` `(1)`
+- `investmint_max_period` `(547)`
+
+- `gpu_memory_usage` `(0)`
+- `cpu_memory_usage` `(0)`
+- `cpu_time_usage` `(0)`
+- `gpu_time_usage` `(0)`
+
 ### Summary of simulation parameters
 
+
 - `timesteps_per_year` `(365)`
-- `boot_supply_init` `(1e15)`
-- `boot_inflation_rate_max`  `(0.20)`
-- `boot_inflation_rate_min`  `(0.05)`
-- `boot_bonded_share_target` `(0.70)`
-- `boot_inflation_rate_change_annual_annual`  `(0.07)`
-- `boot_bonded_share_current` `(0.7)`
-- `days_for_gift_activation` `(100, 150)`
-- `claimed_at_activation_share` `(1, 0.5)`
-- `days_for_gift_full_claim` `(0, 360)`
+- `sim_period` `(10)`
+
+- `boot_inflation_rate_max`  `(0.15)`
+- `boot_inflation_rate_min`  `(0.03)`
+- `boot_bonded_share_target` `(0.80)`
+- `boot_inflation_rate_change_annual_annual`  `(0.20)`
+
+- `boot_bonding_share` `(0.8)`
+- `hydrogen_liquid_ratio` `(0.2)`
+- `boot_bonding_share_limit` `(0.85)`
+- `bonding_speed_coeff` `(0.01)`
+- `ampere_volt_ratio` `(0.5)`
+
+- `days_for_gift_activation` `(30)`
+- `claimed_at_activation_share` `(0.85)`
+- `days_for_gift_full_claim` `(150)`
 - `agents_count_at_activation` `(10'000, 50'000, 100'000)`
-- `liquid_boot_supply_share` `(0.25)`
-- `agents_count_at_activation` `(100000)`
-- `capitalization_per_agent` `(1)`
+- `boot_gift_amount_init` `(700e12)`
+
+- `agents_count_at_activation` `(100'000)`
+
+- `cyberlinks_trasactions_coeff` `(15)`
 - `extra_links` `(0)`
 - `guaranteed_links` `(0)`
-- `horizon_period_init` `(90)`
-- `ampere_volt_ratio` `(1)` 
-- `ampere_base_investmint_amount`  `(100_000_000)`
-- `volt_base_investmint_amount`  `(100_000_000)`
-- `investmint_max_period_init` `(timesteps_per_year / 12)` 
-- `ampere_base_investmint_period`  `(timesteps_per_year / 12)`
-- `volt_base_investmint_period`  `(timesteps_per_year / 12)`
-- `ampere_base_halving_period` `(12_000_000 * 6.4)`
-- `volt_base_halving_period` `(12_000_000 * 6.4)`
+
+- `ampere_base_halving_period` `(547)`
+- `volt_base_halving_period` `(547)`
 - `ampere_mint_rate_init` `(1)`
 - `volt_mint_rate_init` `(1)`
+- `ampere_mint_rate_min` `(0.01)`
+- `volt_mint_rate_min` `(0.01)`
+- `investmint_max_period_init` `(547)`
+- `horizon_period_init` `(547)`
+
+- `investmint_period_share` `(0.8)`
+- `ampere_volt_ratio` `(0.5)`
+- `ampere_base_investmint_amount` `(100'000'000)`
+- `volt_base_investmint_amount` `(1'000'000'000)`
+- `ampere_base_investmint_period` `(30)`
+- `volt_base_investmint_period` `(30)`
+
+- `particle_per_link` `(0.1)`
+
 - `validator_commission` `(0.1)`
 - `max_validator_count` `(92)`
 
@@ -597,8 +643,8 @@ commission (`validator_commission`)  equals `validator_commission` and that ther
 - `ampere_mint_rate` - mint rate for A token minting
 - `volt_mint_rate` - mint rate for V token minting
 - `cyberlinks_count` - number of cyberlinks
-- `agents_count` - the amount of the active agents
-- `capitalization_per_agent` - the value of agent in ETH
+- `agents_count` - the amount of the active neurons
+- `capitalization_per_agent` - the value of neuron in ETH
 - `horizon_period_init` - the period before first `investmint_max_period` raise
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_inflation\_rate_t = boot\_inflation\_rate_{t-1} %2B {\Delta boot\_inflation\_rate}"></p>
