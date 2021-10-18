@@ -415,12 +415,14 @@ So we can rephrase formulas as:
 
 We assume that `investmint_period_share` * `investmint_max_period` is an average period for investminting per neuron. 
 
+`investmint_period_share` has stohastic function representation with u = 0.5, sigma = 0.1.
+
 ![A Supply](images/a_supply.png)
 ![V Supply](images/v_supply.png)
 
 ### Simulation Parameters
 
-- `investmint_period_share` `(0.8)`
+- `investmint_period_share` `(N(0.5, 0.01))`
 - `ampere_volt_ratio` `(0.5)`
 - `ampere_base_investmint_amount` `(100'000'000)`
 - `volt_base_investmint_amount` `(1'000'000'000)`
@@ -433,37 +435,35 @@ We assume that `investmint_period_share` * `investmint_max_period` is an average
 
 We had stress testing on the testnet to measure resources usage.
 
-|             |        Now |      1B links |        100B links |
-| :---------- | ---------: | ------------: | ----------------: |
-| Cyberlinks  | 40'335'720 | 1'000'000'000 |   100'000'000'000 |
-| TPS         |         10 |            50 |               730 |
-| GPU RAM, gb |          2 |            46 |             4'562 |
-| GPU TIME, s |         35 |           900 |            90'000 |
-| CPU RAM, gb |         48 |         1'200 |           120'000 |
-| CPU TIME, s |       0.10 |             2 |               250 |
+|             | Bostrom Testnet 4 |      1B links |      100B links |
+| :---------- | ----------------: | ------------: | --------------: |
+| Cyberlinks  |        40'335'720 | 1'000'000'000 | 100'000'000'000 |
+| TPS         |                10 |            50 |             730 |
+| GPU RAM, gb |                 2 |            46 |           4'562 |
+| GPU TIME, s |                35 |           900 |          90'000 |
+| CPU RAM, gb |                48 |  z       1'200 |         120'000 |
+| CPU TIME, s |              0.10 |             2 |             250 |
 
 The number of transactions per second is the main indicator of the load on the system. We have chosen to calculate this indicator taking into account only the number of cyberlinks. 
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}transactions\_per\_second=\frac{cyberlinks\_per\_day}{24 \cdot 3600} " ></p>
 
 According to stress testing measurements on testnet we derived formulas for GPU memory usage, CPU memory usage,
-GPU time usage and GPU time usage:
+GPU time usage and CPU time usage:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage_t=40 \cdot cyberlinks\_count_{t-1} %2B 40 \cdot particles_{t-1}" ></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.2 \cdot 10^{3} \cdot cyberlinks\_count_{t-1}" ></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.5 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
+
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=9 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
 
 where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}particles_{t-1}=cyberlinks\_count_{t-1} \cdot particle\_per\_link" ></p>
 
 The `particle_per_link` parameter defines amount of particles per cyberlink.
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.2 \cdot 10^{-6} \cdot cyberlinks\_count_{t-1}" ></p>
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.5 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=9 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
-
-
 
 
 ![Transactions per seconds](images/transactions_per_second.png)
@@ -484,7 +484,7 @@ The `particle_per_link` parameter defines amount of particles per cyberlink.
 
 ## Investments into Infrastructure
 
-Target goal of simulation is to estimate revenue of 1 validator in ETH Equivalent, given that all validators have
+Further we can estimate revenue of 1 validator in ETH Equivalent, given that all validators have
 commission (`validator_commission`) equals `validator_commission` and that there are `max_validator_count`
 validators.
 
@@ -525,7 +525,7 @@ validators.
 - `cpu_time_usage` `(0)`
 - `gpu_time_usage` `(0)`
 
-### Summary of simulation parameters
+### Summary of Simulation Parameters
 
 
 - `timesteps_per_year` `(365)`
@@ -561,7 +561,7 @@ validators.
 - `investmint_max_period_init` `(547)`
 - `horizon_period_init` `(547)`
 
-- `investmint_period_share` `(0.8)`
+- `investmint_period_share` `(N(0.5, 0.01))`
 - `ampere_volt_ratio` `(0.5)`
 - `ampere_base_investmint_amount` `(100'000'000)`
 - `volt_base_investmint_amount` `(1'000'000'000)`
