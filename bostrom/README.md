@@ -262,7 +262,7 @@ formula with coefficients to expect more rapid growth.
 ### Capitalization Dynamics
 
 We decided to model total `capitalization_in_eth` through `capitalization_per_agent` metric derived from ETH
-capitalization in BTC (from 100-th day from start till 2160 days of the network, as on the first 100 days ETH
+capitalization in BTC (from the 100-th day from start till 2160 days of the network, as on the first 100 days ETH
 price in BTC had a lot of fluctuations).
 
 ![Ethereum Capitalization per Active Addresses in BTC](images/eth_cap_per_active_address_in_btc_regression.png)
@@ -271,11 +271,11 @@ We derived such formula:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent\_eth\_network = 60\,000 \cdot agents\_count^{-0.7}"></p>
 
-We assumed that the dynamics of capitalization of BOOT token in ETH will resemble ETH token dynamics in BTC
-prices. We adjusted the formula that our first-day `capitalization_per_agent` will be equal to 32 ETH
-(`capitalization_per_agent`).
+We assumed that the dynamics of capitalization of BOOT token in ETH will resemble ETH token capitalization
+dynamics in BTC prices. We adjusted the formula that our first-day `capitalization_per_agent` will be equal to 32
+ETH (`capitalization_per_agent`).
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot  agents\_count^{-0.7}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot agents\_count^{-0.7}"></p>
 
 ![BOOT Capitalization](images/boot_capitalization.png)
 
@@ -342,9 +342,9 @@ yields 1 V.
 System designed in the way that investminted `ampere_base_investmint_amount` for `ampere_base_investmint_period`
 yields 1 A.
 
-`ampere_base_investmint_period`, `volt_base_investmint_period` - are periods of investminting H token for
-selected token (A or V) by current neuron. These periods are chosen by neurons according to their understanding
-and priorities of maximizing their benefits.
+`ampere_base_investmint_period`, `volt_base_investmint_period` - are periods of investminting H token for the
+selected token (A or V) by the current neuron. These periods are chosen by neurons themselves according to their
+understanding and priorities of maximizing their benefits.
 
 `ampere_base_investmint_period`, `volt_base_investmint_period` are limited by the `investmint_max_period` system
 setting, which has the dynamic formula written below.
@@ -433,19 +433,22 @@ We assume that `investmint_period_share` * `investmint_max_period` is an average
 
 ## Planing GPU Memory Usage
 
-We had stress testing on the testnet to measure resource usage.
+We had stress testing on the testnet to measure resources usage.
 
 |             |        Now |      1B links |        100B links |
 | :---------- | ---------: | ------------: | ----------------: |
-| Cyberlinks  | 40'335'720 | 1'000'000'000 | 1'000'000'000'000 |
+| Cyberlinks  | 40'335'720 | 1'000'000'000 |   100'000'000'000 |
+| TPS         |         10 |            50 |               730 |
 | CPU TIME, s |       0.10 |             2 |               248 |
 | CPU RAM, gb |         48 |         1'183 |           118'257 |
-| GPU RAM, gb |          2 |            46 |             4,562 |
+| GPU RAM, gb |          2 |            46 |             4'562 |
 | GPU TIME, s |         35 |           868 |            86'772 |
-| TPS         |         10 |           248 |          6'146.39 |
 
+The number of transactions per second is the main indicator of the load on the system. We have chosen to calculate this indicator taking into account only the number of cyberlinks. 
 
-According to stress testing measurements on testnet we derived formulas of GPU memory usage, CPU memory usage,
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}transactions\_per\_second=\frac{cyberlinks\_per\_day}{24 \cdot 3600} " ></p>
+
+According to stress testing measurements on testnet we derived formulas for GPU memory usage, CPU memory usage,
 GPU time usage and GPU time usage:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage_t=40 \cdot cyberlinks\_count_{t-1} %2B 40 \cdot particles_{t-1}" ></p>
@@ -454,13 +457,15 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}particles_{t-1}=cyberlinks\_count_{t-1} \cdot particle\_per\_link" ></p>
 
-The `particle_per_link` parameter defines amount of particles per cyberlink
+The `particle_per_link` parameter defines amount of particles per cyberlink.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.19001 \cdot 1 \cdot 10^{-6} \cdot cyberlinks\_count_{t-1}" ></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.47919 \cdot 1 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=8.67717 \cdot 1 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
+
+
 
 
 ![Transactions per seconds](images/transactions_per_second.png)
@@ -542,7 +547,7 @@ validators.
 - `days_for_gift_activation` `(30)`
 - `claimed_at_activation_share` `(0.85)`
 - `days_for_gift_full_claim` `(150)`
-- `agents_count_at_activation` `(10'000, 50'000, 100'000)`
+- `agents_count_at_activation` `(100'000)`
 - `boot_gift_amount_init` `(700e12)`
 
 - `agents_count_at_activation` `(100'000)`
