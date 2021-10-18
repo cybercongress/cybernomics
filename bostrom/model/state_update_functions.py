@@ -102,16 +102,16 @@ def s_cyberlinks_per_day(params, substep, state_history, previous_state, policy_
 
 
 def s_ampere_mint_rate(params, substep, state_history, previous_state, policy_input):
-    ampere_mint_rate = params['ampere_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] /
-                                                                                 params['ampere_base_halving_period'])))
+    ampere_mint_rate = 1 / math.pow(2, (math.floor(previous_state['timestep'] /
+                                                   params['ampere_base_halving_period'])))
     if ampere_mint_rate < params['ampere_mint_rate_min']:
         ampere_mint_rate = params['ampere_mint_rate_min']
     return 'ampere_mint_rate', ampere_mint_rate
 
 
 def s_volt_mint_rate(params, substep, state_history, previous_state, policy_input):
-    volt_mint_rate = params['volt_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] /
-                                                                             params['volt_base_halving_period'])))
+    volt_mint_rate = 1 / math.pow(2, (math.floor(previous_state['timestep'] /
+                                                 params['volt_base_halving_period'])))
     if volt_mint_rate < params['volt_mint_rate_min']:
         volt_mint_rate = params['volt_mint_rate_min']
     return 'volt_mint_rate', volt_mint_rate
