@@ -7,7 +7,7 @@ from model.state_update_functions import s_boot_supply, s_timestep_provision_boo
     s_boot_to_distribution_supply, s_hydrogen_supply, s_agents_count, s_capitalization_per_agent, \
     s_capitalization_in_eth, s_gboot_price, s_validator_revenue_gboot, s_cyberlinks_count, s_cyberlinks_per_day, \
     s_ampere_supply, s_volt_supply, s_volt_mint_rate, s_ampere_mint_rate, s_investmint_max_period, s_gpu_memory_usage, \
-    s_ampere_volt_ratio, s_volt_minted_amount, s_ampere_minted_amount, \
+    s_volt_minted_amount, s_ampere_minted_amount, \
     s_cpu_memory_usage, s_cpu_time_usage, s_gpu_time_usage, s_hydrogen_liquid_supply
 
 
@@ -54,7 +54,6 @@ partial_state_update_blocks = [
             'cpu_memory_usage': s_cpu_memory_usage,
             'cpu_time_usage': s_cpu_time_usage,
             'gpu_time_usage': s_gpu_time_usage,
-            'ampere_volt_ratio': s_ampere_volt_ratio,
             'volt_minted_amount': s_volt_minted_amount,
             'ampere_minted_amount': s_ampere_minted_amount
         }

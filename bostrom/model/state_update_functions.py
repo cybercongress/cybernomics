@@ -156,12 +156,6 @@ def s_gpu_time_usage(params, substep, state_history, previous_state, policy_inpu
     return 'gpu_time_usage', gpu_time_usage
 
 
-def s_ampere_volt_ratio(params, substep, state_history, previous_state, policy_input):
-    if previous_state['volt_supply'] == 0:
-        return 'ampere_volt_ratio', 1
-    return 'ampere_volt_ratio', previous_state['ampere_supply'] / previous_state['volt_supply']
-
-
 def s_volt_minted_amount(params, substep, state_history, previous_state, policy_input):
     return 'volt_minted_amount', policy_input['volt_minted_amount']
 
