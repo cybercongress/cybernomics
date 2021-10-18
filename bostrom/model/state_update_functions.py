@@ -142,7 +142,7 @@ def s_gpu_memory_usage(params, substep, state_history, previous_state, policy_in
 
 
 def s_cpu_memory_usage(params, substep, state_history, previous_state, policy_input):
-    cpu_memory_usage = 1.19001 * (10 ** (-6)) * previous_state['cyberlinks_count']
+    cpu_memory_usage = 1.19001 * (10 ** (9)) * previous_state['cyberlinks_count']
     return 'cpu_memory_usage', cpu_memory_usage
 
 
