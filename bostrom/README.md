@@ -316,7 +316,7 @@ And we adjusted such a formula by multiplication coefficient (`cyberlinks_trasac
 that neurons in the BOSTROM network will be more active than agents in ETH. Also, we adjusted such a formula by
 adding a number of `extra_links` and `guaranteed_links`.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = cyberlinks\_trasactions\_coe\ff \cdot 9 \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = 9 \cdot cyberlinks\_trasactions\_coeff \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
 
 `extra_links` count depends on UX specifics, such as setting the name of a neuron, following (proportion of
 neurons) and extra:
@@ -435,14 +435,14 @@ We assume that `investmint_period_share` * `investmint_max_period` is an average
 
 We had stress testing on the testnet to measure resources usage.
 
-|             | Bostrom Testnet 4 |      1B links |      100B links |
-| :---------- | ----------------: | ------------: | --------------: |
-| Cyberlinks  |        40'335'720 | 1'000'000'000 | 100'000'000'000 |
-| TPS         |                10 |            50 |             730 |
-| GPU RAM, gb |                 2 |            46 |           4'562 |
-| GPU TIME, s |                35 |           900 |          90'000 |
-| CPU RAM, gb |                48 |  z       1'200 |         120'000 |
-| CPU TIME, s |              0.10 |             2 |             250 |
+|                   | Bostrom Testnet 4 |      1B links |      100B links |
+| :---------------- | ----------------: | ------------: | --------------: |
+| Cyberlinks        |        40'335'720 | 1'000'000'000 | 100'000'000'000 |
+| TPS               |                10 |            50 |             730 |
+| GPU RAM Usage, GB |                 2 |            46 |           4'562 |
+| GPU Time Usage, s |                35 |           900 |          90'000 |
+| CPU RAM Usage, GB |                48 |         1'200 |         120'000 |
+| CPU Time Usage, s |              0.10 |             2 |             250 |
 
 The number of transactions per second is the main indicator of the load on the system. We have chosen to calculate this indicator taking into account only the number of cyberlinks. 
 
@@ -679,11 +679,11 @@ where the rate of change (<img src="https://render.githubusercontent.com/render/
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta volt\_supply} = \lfloor{\frac{\frac{1}{2} \cdot \Delta boot\_bonded\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_max\_period_t}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate_{t}}\rfloor"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta agents\_count} = 18 \cdot t %2B 100"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta agents\_count_{t}} = 18 \cdot t %2B 100"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta cyberlinks\_count} = \frac{6.3}{agents\_count^{0.3}} %2B extra\_links %2B guaranteed\_links" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta cyberlinks\_count_{t}} = 9 \cdot cyberlinks\_transaction\_coeff \cdot agents\_count_{t-1}^{-0.3} %2B extra\_links %2B guaranteed\_links" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta capitalization\_per\_agent} = - \frac{start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7}}{agents\_count^{1.7}} \cdot 0.9"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{\Delta capitalization\_per\_agent_{t}} = 2990 \cdot (-0.7) \cdot agents\_count_{t-1}^{-1.7} \cdot \Delta agents\_count_{t-1}"></p>
 
 where:
 
