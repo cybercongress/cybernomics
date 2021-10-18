@@ -359,10 +359,10 @@ Where `horizon_period_init` is the period before first `investmint_max_period` r
 They are set at the beginning and further these coefficients are halved each `ampere_base_halving_period`,
 `volt_base_halving_period` accordingly.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = \frac{ampere\_mint\_rate\_init}{2^{\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}"></p>
 
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = \frac{volt\_mint\_rate\_init}{2^{\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}"></p>
 
 `ampere_mint_rate`, `volt_mint_rate` are limited by - `ampere_mint_rate_min`, `volt_mint_rate_min` parameters.
 
@@ -384,8 +384,6 @@ As Ampere (A) are resource tokens, and they do not have natural measures we deci
 
 - `ampere_base_halving_period` `(547)`
 - `volt_base_halving_period` `(547)`
-- `ampere_mint_rate_init` `(1)`
-- `volt_mint_rate_init` `(1)`
 - `ampere_mint_rate_min` `(0.01)`
 - `volt_mint_rate_min` `(0.01)`
 - `investmint_max_period_init` `(547)`
@@ -439,10 +437,10 @@ We had stress testing on the testnet to measure resources usage.
 | :---------- | ---------: | ------------: | ----------------: |
 | Cyberlinks  | 40'335'720 | 1'000'000'000 |   100'000'000'000 |
 | TPS         |         10 |            50 |               730 |
-| CPU TIME, s |       0.10 |             2 |               248 |
-| CPU RAM, gb |         48 |         1'183 |           118'257 |
 | GPU RAM, gb |          2 |            46 |             4'562 |
-| GPU TIME, s |         35 |           868 |            86'772 |
+| GPU TIME, s |         35 |           900 |            90'000 |
+| CPU RAM, gb |         48 |         1'200 |           120'000 |
+| CPU TIME, s |       0.10 |             2 |               250 |
 
 The number of transactions per second is the main indicator of the load on the system. We have chosen to calculate this indicator taking into account only the number of cyberlinks. 
 
@@ -459,11 +457,11 @@ where:
 
 The `particle_per_link` parameter defines amount of particles per cyberlink.
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.19001 \cdot 1 \cdot 10^{-6} \cdot cyberlinks\_count_{t-1}" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.2 \cdot 10^{-6} \cdot cyberlinks\_count_{t-1}" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.47919 \cdot 1 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.5 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=8.67717 \cdot 1 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=9 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
 
 
 
@@ -558,8 +556,6 @@ validators.
 
 - `ampere_base_halving_period` `(547)`
 - `volt_base_halving_period` `(547)`
-- `ampere_mint_rate_init` `(1)`
-- `volt_mint_rate_init` `(1)`
 - `ampere_mint_rate_min` `(0.01)`
 - `volt_mint_rate_min` `(0.01)`
 - `investmint_max_period_init` `(547)`
@@ -588,9 +584,9 @@ validators.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}validator\_revenue\_gboot = \frac{timestep\_provision\_boot \cdot validator\_commission \cdot gboot\_price}{ max\_validator\_count} "></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = \frac{ampere\_mint\_rate\_init}{2^{\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{ampere\_base\_halving\_period}\rfloor}}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = \frac{volt\_mint\_rate\_init}{2^{\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{volt\_base\_halving\_period}\rfloor}}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}investmint\_max\_period = horizon\_period\_init \cdot 2^{\lceil{\log_2 \lceil{\frac{timestep %2B 1}{horizon\_period\_init}}\rceil}\rceil}"></p>
 
@@ -691,9 +687,9 @@ where the rate of change (<img src="https://render.githubusercontent.com/render/
 
 where:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = \frac{ampere\_mint\_rate\_init}{2^{\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = \frac{volt\_mint\_rate\_init}{2^{\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}}"></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision\_boot_{t} = \frac{boot\_supply_{t-1} \cdot boot\_inflation\_rate_{t-1}}{timesteps\_per\_year}"></p>
 
