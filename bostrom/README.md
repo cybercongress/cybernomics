@@ -687,15 +687,10 @@ where the rate of change (<img src="https://render.githubusercontent.com/render/
 
 where:
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{ampere\_base\_halving\_period}}\rfloor}"></p>
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_mint\_rate_t} = 2^{-\lfloor{\frac{t}{volt\_base\_halving\_period}}\rfloor}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}timestep\_provision\_boot_{t} = \frac{boot\_supply_{t-1} \cdot boot\_inflation\_rate_{t-1}}{timesteps\_per\_year}"></p>
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_{t} = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply_{t-1}}"></p>
-
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{investmint\_max\_period_t = investmint\_max\_period\_init \cdot 2^{\lfloor{\frac{t}{horizon\_period\_init}}\rfloor}}"></p> 
 
 
 ## Conclusions
@@ -703,6 +698,3 @@ where:
 ![BOOT Supply and Inflation Rate](images/boot_supply.png)
 ![Validators Revenue](images/validators_revenue.png)
 ![Demand and Supply of cyberLinks](images/demand_and_supply_of_cyberlinks.png)
-
-
-
