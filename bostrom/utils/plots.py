@@ -1,7 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FixedLocator, FuncFormatter
+from matplotlib.ticker import FixedLocator, FuncFormatter, PercentFormatter
 from matplotlib import axes
 
 IMAGES_PATH = './images/'
@@ -13,7 +13,8 @@ XLABEL = 'timestep (days)'
 
 def rename_column(column: str) -> str:
     return column. \
-                replace('cyberlinks_per_day', 'cyberlinks_demand'). \
+                replace('cyberlinks_per_day', 'daily_cyberlinks_demand'). \
+                replace('validator_revenue,_eth', 'daily_validator_revenue,_eth'). \
                 replace('_', ' ').title(). \
                 replace('Cyberlink', 'cyberLink'). \
                 replace('Count', 'Amount'). \
@@ -51,7 +52,6 @@ def prepare_df(df: pd.DataFrame, a_v_ratio: float = 0.5, growth_rate_period: int
     df['agents_count'] = df['agents_count'] / 1e6
     df['gpu_memory_usage'] = df['gpu_memory_usage'] / 1e9
     df['daily_cyberlinks_supply'] = df['volt_supply']
-    df['daily_cyberlinks_per_day'] = df['cyberlinks_per_day']
 
     df['agents_daily_growth_rate'] = df['agents_count'].pct_change(periods=growth_rate_period)
     df['cyberlink_daily_growth_rate'] = df['cyberlinks_count'].pct_change(periods=growth_rate_period)
@@ -62,16 +62,19 @@ def prepare_df(df: pd.DataFrame, a_v_ratio: float = 0.5, growth_rate_period: int
     df['validator_revenue,_eth'] = df['validator_revenue_gboot'] * df['gboot_price']
 
     rename_columns_dict = {item: rename_column(item) for item in df.columns
-                           if item not in ('simulation', 'subset', 'run', 'substep', 'timestep')}
+                           if item not in ('simulation', 'subset', 'run', 'substep', 'timestep',
+                                           'validator_revenue_gboot')}
     df.rename(columns=rename_columns_dict)
     return df.rename(columns=rename_columns_dict)
 
 
 def get_colors(df: pd.DataFrame, sns_style: str = 'dark'):
     columns = [column for column in df.columns.sort_values()
-               if column not in ('simulation', 'subset', 'run', 'substep', 'timestep')]
-    colors = list(sns.color_palette(palette=sns_style, n_colors=len(columns)).as_hex())
-    return {column: color for column, color in zip(columns, colors)}
+               if column not in ('simulation', 'subset', 'run', 'substep', 'timestep', 'validator_revenue_gboot')]
+    colors_list = list(sns.color_palette(palette=sns_style, n_colors=len(columns)).as_hex())
+    colors_dict = {column: color for column, color in zip(columns, colors_list)}
+    colors_dict['BOOT Inflation Rate'] = '#000000'
+    return colors_dict
 
 
 def set_axis(ax: axes, ylabel: str, ylogscale: bool, ymin: float, ymax:float, ymax_value: float,
@@ -79,7 +82,8 @@ def set_axis(ax: axes, ylabel: str, ylogscale: bool, ymin: float, ymax:float, ym
     ax.spines['top'].set_visible(False)
     ax.set(ylabel=ylabel)
     ax.set_ylim(top=ymax)
-    legend = ax.legend(loc=legend_loc)
+    handles, labels = ax.get_legend_handles_labels()
+    legend = ax.legend(reversed(handles), reversed(labels), loc=legend_loc)
     legend.get_frame().set_facecolor('#FFFFFF')
     legend.get_frame().set_alpha(0.6)
     if not ylogscale:
@@ -91,6 +95,9 @@ def set_axis(ax: axes, ylabel: str, ylogscale: bool, ymin: float, ymax:float, ym
             ticks_loc = ax.get_yticks()
             ax.yaxis.set_major_locator(FixedLocator(ticks_loc))
             ax.set_yticklabels(['{:,.0%}'.format(x) for x in ticks_loc])
+    else:
+        if ypercent:
+            ax.yaxis.set_major_formatter(PercentFormatter(1))
     return ax
 
 
@@ -100,7 +107,7 @@ def plot(df: pd.DataFrame, title: str,
          ypercent_1: bool = False, ypercent_2: bool = False,
          ylogscale_1: bool = False, ylogscale_2: bool = False,
          columns_2=None,
-         type_1: str = 'area',
+         type_1: str = 'area', type_2: str = 'line',
          ymin_1: float = 0, ymin_2: float = 0,
          ymax_1=None, ymax_2=None,
          figsize: tuple = FIGSIZE):
@@ -110,8 +117,8 @@ def plot(df: pd.DataFrame, title: str,
     plt.rcParams["figure.facecolor"] = '#FFFFFF'
     plt.rcParams["legend.facecolor"] = '#FFFFFF'
     plt.rcParams["legend.edgecolor"] = '#FFFFFF'
-    if type_1 == 'area':
-        ax1 = df.plot.area(y=columns_1, xticks=XTICKS, grid=True, style=color_style, linewidth=0,  alpha=0.7)
+    if type_1 == 'area' and ylogscale_1 is False:
+        ax1 = df.plot.area(y=columns_1, xticks=XTICKS, grid=True, style=color_style, linewidth=1,  alpha=0.7)
     else:
         ax1 = df.plot.line(y=columns_1, xticks=XTICKS, grid=True, style=color_style, logy=ylogscale_1)
     ax1.set(xlabel=XLABEL)
@@ -121,9 +128,11 @@ def plot(df: pd.DataFrame, title: str,
     if ylabel_2:
         columns_2 = list(map(rename_column, columns_2))
         ax2 = ax1.twinx()
-        df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=True, style=color_style, logy=ylogscale_2)
+        if type_2 == 'area' and ylogscale_2 is False:
+            df.plot.area(ax=ax2, y=columns_2, xticks=XTICKS, grid=False, style=color_style, linewidth=1, alpha=0.5)
+        else:
+            df.plot.line(ax=ax2, y=columns_2, xticks=XTICKS, grid=False, style=color_style, logy=ylogscale_2)
         ax2.spines['right'].set_position(('axes', 1.0))
-        ax2.grid(None)
         ax2 = set_axis(ax=ax2, ylabel=ylabel_2, ylogscale=ylogscale_2, ymin=ymin_2, ymax=ymax_2,
                        ymax_value=df[columns_2].max().max(), ypercent=ypercent_2, legend_loc='upper right')
     else:
@@ -155,12 +164,14 @@ def hydrogen_supply_plot(df: pd.DataFrame, title: str = 'H Supply', figsize: tup
 def agents_count_plot(df: pd.DataFrame, title: str = 'Neurons Forecast', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_2=['agents_count'],
-         type_1='line',
          columns_1=['agents_daily_growth_rate'],
-         ylabel_2='Neurons Amount, millions',
+         columns_2=['agents_count'],
          ylabel_1='Neurons Daily Growth Rate',
+         ylabel_2='Neurons Amount, millions',
+         type_1='line',
+         type_2='area',
          ylogscale_1=True,
+         ypercent_1=True,
          figsize=figsize)
 
 
@@ -174,6 +185,7 @@ def capitalization_plot(df: pd.DataFrame, title: str = 'BOOT Capitalization',
          ylabel_2='BOOT Capitalization, ETH',
          ylogscale_1=True,
          type_1='line',
+         type_2='area',
          figsize=figsize)
 
 
@@ -183,7 +195,7 @@ def gboot_price_plot(df: pd.DataFrame, title: str = 'Validators Revenue', figsiz
          columns_1=['gboot_price'],
          columns_2=['validator_revenue,_eth'],
          ylabel_1='GBOOT Price, ETH',
-         ylabel_2='Validators Revenue, ETH',
+         ylabel_2='Daily Validators Revenue, ETH',
          type_1='line',
          figsize=figsize)
 
@@ -191,7 +203,7 @@ def gboot_price_plot(df: pd.DataFrame, title: str = 'Validators Revenue', figsiz
 def cyberlinks_per_day_plot(df: pd.DataFrame, title: str = 'Demand and Supply of cyberLinks', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['daily_cyberlinks_per_day', 'daily_cyberlinks_supply'],
+         columns_1=['cyberlinks_per_day', 'daily_cyberlinks_supply'],
          ylabel_1='Daily cyberLinks Demand | Supply, millions',
          type_1='line',
          figsize=figsize)
@@ -200,22 +212,26 @@ def cyberlinks_per_day_plot(df: pd.DataFrame, title: str = 'Demand and Supply of
 def cyberlinks_count_plot(df: pd.DataFrame, title: str = 'cyberLinks Demand Forecast', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_2=['cyberlinks_count'],
          columns_1=['cyberlink_daily_growth_rate'],
-         ylabel_2='cyberLinks Amount, billions',
+         columns_2=['cyberlinks_count'],
          ylabel_1='cyberLinks Daily Growth Rate',
+         ylabel_2='cyberLinks Amount, billions',
          ylogscale_1=True,
+         ypercent_1=True,
          type_1='line',
+         type_2='area',
          figsize=figsize)
 
 
 def ampere_supply_plot(df: pd.DataFrame, title: str = 'A Supply', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['ampere_supply'],
-         ylabel_1='A Supply, millions',
-         columns_2=['ampere_minted_amount'],
-         ylabel_2='Minted A, millions',
+         columns_1=['ampere_minted_amount'],
+         columns_2=['ampere_supply'],
+         ylabel_1='Minted A, millions',
+         ylabel_2='A Supply, millions',
+         type_1='line',
+         type_2='area',
          figsize=figsize)
 
 
@@ -234,10 +250,12 @@ def ampere_mint_rate_plot(df: pd.DataFrame, title: str = 'A Halving Cycles', fig
 def volt_supply_plot(df: pd.DataFrame, title: str = 'V Supply', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['volt_supply'],
-         ylabel_1='V Supply, millions',
-         columns_2=['volt_minted_amount'],
-         ylabel_2='Minted V, millions',
+         columns_1=['volt_minted_amount'],
+         columns_2=['volt_supply'],
+         ylabel_1='Minted V, millions',
+         ylabel_2='V Supply, millions',
+         type_1='line',
+         type_2='area',
          figsize=figsize)
 
 
