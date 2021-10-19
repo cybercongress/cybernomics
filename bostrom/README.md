@@ -721,7 +721,7 @@ where:
 
 ## Conclusions
 
-1. The model allowed us to determine the parameters of inflation with a target of a 70% increase in boot supply
+1. The model allowed us to determine the parameters of inflation with a target of a 90% increase in boot supply
    relative to genesis over 10 years.
 
    ![BOOT Supply and Inflation Rate](images/boot_supply.png)
