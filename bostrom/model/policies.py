@@ -65,7 +65,7 @@ def p_agents_count(params, substep, state_history, previous_state):
 def p_capitalization_per_agent(params, substep, state_history, previous_state):
     agents_count_delta = 18 * previous_state['timestep'] + 100
     capitalization_per_agent_delta = \
-        2990 * (- 0.7) * math.pow(previous_state['agents_count'], (-1.7)) * agents_count_delta
+        3020 * (- 0.7) * math.pow(previous_state['agents_count'], (-1.7)) * agents_count_delta
     return {'capitalization_per_agent_delta': capitalization_per_agent_delta}
 
 

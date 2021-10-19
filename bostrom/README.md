@@ -328,7 +328,7 @@ neurons) and extra:
 Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely
 on this demand too. We left `guaranteed_links` count equal to 0 but it can be changed in the future.
 
-![cyberLinks Forecast](images/cyberlinks_forecast.png)
+![cyberLinks Demand Forecast](images/cyberlinks_demand_forecast.png)
 
 ### Simulation Parameters
 

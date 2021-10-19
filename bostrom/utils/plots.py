@@ -50,6 +50,8 @@ def prepare_df(df: pd.DataFrame, a_v_ratio: float = 0.5, growth_rate_period: int
     df['cyberlinks_count'] = df['cyberlinks_count'] / 1e9
     df['agents_count'] = df['agents_count'] / 1e6
     df['gpu_memory_usage'] = df['gpu_memory_usage'] / 1e9
+    df['daily_cyberlinks_supply'] = df['volt_supply']
+    df['daily_cyberlinks_per_day'] = df['cyberlinks_per_day']
 
     df['agents_daily_growth_rate'] = df['agents_count'].pct_change(periods=growth_rate_period)
     df['cyberlink_daily_growth_rate'] = df['cyberlinks_count'].pct_change(periods=growth_rate_period)
@@ -153,11 +155,12 @@ def hydrogen_supply_plot(df: pd.DataFrame, title: str = 'H Supply', figsize: tup
 def agents_count_plot(df: pd.DataFrame, title: str = 'Neurons Forecast', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['agents_count'],
-         columns_2=['agents_daily_growth_rate'],
-         ylabel_1='Neurons Amount, millions',
-         ylabel_2='Neurons Daily Growth Rate',
-         ylogscale_2=True,
+         columns_2=['agents_count'],
+         type_1='line',
+         columns_1=['agents_daily_growth_rate'],
+         ylabel_2='Neurons Amount, millions',
+         ylabel_1='Neurons Daily Growth Rate',
+         ylogscale_1=True,
          figsize=figsize)
 
 
@@ -188,20 +191,21 @@ def gboot_price_plot(df: pd.DataFrame, title: str = 'Validators Revenue', figsiz
 def cyberlinks_per_day_plot(df: pd.DataFrame, title: str = 'Demand and Supply of cyberLinks', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['cyberlinks_per_day', 'volt_supply'],
-         ylabel_1='cyberLinks Demand | VOLT Supply, millions',
+         columns_1=['daily_cyberlinks_per_day', 'daily_cyberlinks_supply'],
+         ylabel_1='Daily cyberLinks Demand | Supply, millions',
          type_1='line',
          figsize=figsize)
 
 
-def cyberlinks_count_plot(df: pd.DataFrame, title: str = 'cyberLinks Forecast', figsize: tuple = FIGSIZE):
+def cyberlinks_count_plot(df: pd.DataFrame, title: str = 'cyberLinks Demand Forecast', figsize: tuple = FIGSIZE):
     plot(df=df,
          title=title,
-         columns_1=['cyberlinks_count'],
-         columns_2=['cyberlink_daily_growth_rate'],
-         ylabel_1='cyberLinks Amount, billions',
-         ylabel_2='cyberLinks Daily Growth Rate',
-         ylogscale_2=True,
+         columns_2=['cyberlinks_count'],
+         columns_1=['cyberlink_daily_growth_rate'],
+         ylabel_2='cyberLinks Amount, billions',
+         ylabel_1='cyberLinks Daily Growth Rate',
+         ylogscale_1=True,
+         type_1='line',
          figsize=figsize)
 
 
