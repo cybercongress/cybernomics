@@ -26,7 +26,7 @@
 
 ## Goals
 
-To optimize parameters for launching the Bostrom Network.
+This model was created to optimize parameters for launching the Bostrom Network.
 
 We model the value of the BOOT token through the understanding of established network effects in Ethereum.
 Further, we forecast gift claim dynamics and address growth based on approximated network effects. Assuming some
@@ -234,7 +234,7 @@ Assumptions:
 - `days_for_gift_activation` `(30)`
 - `claimed_at_activation_share` `(0.85)`
 - `days_for_gift_full_claim` `(150)`
-- `agents_count_at_activation` `(10'000, 50'000, 100'000)`
+- `agents_count_at_activation` `(100'000)`
 - `boot_gift_amount_init` `(700e12)`
 
 ## Understanding Network Effects
@@ -319,14 +319,15 @@ adding a number of `extra_links` and `guaranteed_links`.
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cyberlinks\_per\_day = 9 \cdot cyberlinks\_trasactions\_coeff \cdot agents\_count^{-0.3} %2B extra\_links %2B guaranteed\_links"></p>
 
 
-**NOT IMPLEMENTED!!!**
 `extra_links` count depends on UX specifics, such as setting the name of a neuron, following (proportion of
 neurons) and extra:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, setting name, following, extra )">
 
 Also, the founding team envisions some basic stuff to cyberlink such as naming systems and tokens. So we can rely
-on this demand too. We left `guaranteed_links` count equal to 0 but it can be changed in the future.
+on this demand too.
+
+We left `extra_links` and `guaranteed_links` count equal to 0 but it can be changed in the future.
 
 ![cyberLinks Demand Forecast](images/cyberlinks_demand_forecast.png)
 
@@ -720,6 +721,29 @@ where:
 
 ## Conclusions
 
-![BOOT Supply and Inflation Rate](images/boot_supply.png)
-![Validators Revenue](images/validators_revenue.png)
-![Demand and Supply of cyberLinks](images/demand_and_supply_of_cyberlinks.png)
+1. The model allowed us to determine the parameters of inflation with a target of a 70% increase in boot supply
+   relative to genesis over 10 years.
+
+   ![BOOT Supply and Inflation Rate](images/boot_supply.png)
+
+1. The model made it possible to predict the monthly growth of the validator's profitability from 1 ether to 15
+   over 10 years.
+
+   ![Validators Revenue](images/validators_revenue.png)
+
+3. The model made it possible to define the parameters of investmint and halving on the basis of the assumption
+   that the demand for cyberlinks will exceed supply in 2.5 years, and therefore the need for creating сyberlinks
+   will significantly exceed the capabilities of the system and ensure the growth of V token relative to BOOT.
+   The following parameters proposed:
+
+    - `ampere_base_halving_period` `(547)`
+    - `volt_base_halving_period` `(547)`
+    - `investmint_max_period_init` `(547)`
+    - `horizon_period_init` `(547)`
+    - `ampere_mint_rate_min` `(0.01)`
+    - `volt_mint_rate_min` `(0.01)`
+
+
+   ![Demand and Supply of cyberLinks](images/demand_and_supply_of_cyberlinks.png)
+
+
