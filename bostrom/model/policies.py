@@ -1,4 +1,5 @@
 import math
+import random
 
 volt_hydrogen = {}
 ampere_hydrogen = {}
@@ -64,7 +65,7 @@ def p_agents_count(params, substep, state_history, previous_state):
 def p_capitalization_per_agent(params, substep, state_history, previous_state):
     agents_count_delta = 18 * previous_state['timestep'] + 100
     capitalization_per_agent_delta = \
-        2990 * (- 0.7) * math.pow(previous_state['agents_count'], (-1.7)) * agents_count_delta
+        3020 * (- 0.7) * math.pow(previous_state['agents_count'], (-1.7)) * agents_count_delta
     return {'capitalization_per_agent_delta': capitalization_per_agent_delta}
 
 
@@ -85,7 +86,7 @@ def p_ampere_minted_amount(params, substep, state_history, previous_state):
     else:
         released_hydrogen = 0
     hydrogen_for_minting = (params['ampere_volt_ratio'] * hydrogen_supply_delta) + released_hydrogen
-    investmint_max_period = math.floor(params['investmint_period_share'] * previous_state['investmint_max_period'])
+    investmint_max_period = math.floor(random.choice(params['investmint_period_share']) * previous_state['investmint_max_period'])
     ampere_minted_amount = \
         math.floor((hydrogen_for_minting / params['ampere_base_investmint_amount']) *
                    (investmint_max_period / params['ampere_base_investmint_period']) * previous_state[
@@ -104,7 +105,7 @@ def p_volt_minted_amount(params, substep, state_history, previous_state):
     else:
         released_hydrogen = 0
     hydrogen_for_minting = ((1 - params['ampere_volt_ratio']) * hydrogen_supply_delta) + released_hydrogen
-    investmint_max_period = math.floor(params['investmint_period_share'] * previous_state['investmint_max_period'])
+    investmint_max_period = math.floor(random.choice(params['investmint_period_share']) * previous_state['investmint_max_period'])
     volt_minted_amount = \
         math.floor((hydrogen_for_minting / params['volt_base_investmint_amount']) * \
                    (investmint_max_period / params['volt_base_investmint_period']) * previous_state['volt_mint_rate'])

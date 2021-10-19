@@ -102,16 +102,16 @@ def s_cyberlinks_per_day(params, substep, state_history, previous_state, policy_
 
 
 def s_ampere_mint_rate(params, substep, state_history, previous_state, policy_input):
-    ampere_mint_rate = params['ampere_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] /
-                                                                                 params['ampere_base_halving_period'])))
+    ampere_mint_rate = 1 / math.pow(2, (math.floor(previous_state['timestep'] /
+                                                   params['ampere_base_halving_period'])))
     if ampere_mint_rate < params['ampere_mint_rate_min']:
         ampere_mint_rate = params['ampere_mint_rate_min']
     return 'ampere_mint_rate', ampere_mint_rate
 
 
 def s_volt_mint_rate(params, substep, state_history, previous_state, policy_input):
-    volt_mint_rate = params['volt_mint_rate_init'] / math.pow(2, (math.floor(previous_state['timestep'] /
-                                                                             params['volt_base_halving_period'])))
+    volt_mint_rate = 1 / math.pow(2, (math.floor(previous_state['timestep'] /
+                                                 params['volt_base_halving_period'])))
     if volt_mint_rate < params['volt_mint_rate_min']:
         volt_mint_rate = params['volt_mint_rate_min']
     return 'volt_mint_rate', volt_mint_rate
@@ -142,24 +142,18 @@ def s_gpu_memory_usage(params, substep, state_history, previous_state, policy_in
 
 
 def s_cpu_memory_usage(params, substep, state_history, previous_state, policy_input):
-    cpu_memory_usage = 1.19001 * (10 ** (-6)) * previous_state['cyberlinks_count']
+    cpu_memory_usage = 1.2 * (10 ** 3) * previous_state['cyberlinks_count']
     return 'cpu_memory_usage', cpu_memory_usage
 
 
 def s_cpu_time_usage(params, substep, state_history, previous_state, policy_input):
-    cpu_time_usage = 2.47919 * (10 ** (-9)) * previous_state['cyberlinks_count']
+    cpu_time_usage = 2.5 * (10 ** (-9)) * previous_state['cyberlinks_count']
     return 'cpu_time_usage', cpu_time_usage
 
 
 def s_gpu_time_usage(params, substep, state_history, previous_state, policy_input):
-    gpu_time_usage = 8.67717 * (10 ** (-7)) * previous_state['cyberlinks_count']
+    gpu_time_usage = 9 * (10 ** (-7)) * previous_state['cyberlinks_count']
     return 'gpu_time_usage', gpu_time_usage
-
-
-def s_ampere_volt_ratio(params, substep, state_history, previous_state, policy_input):
-    if previous_state['volt_supply'] == 0:
-        return 'ampere_volt_ratio', 1
-    return 'ampere_volt_ratio', previous_state['ampere_supply'] / previous_state['volt_supply']
 
 
 def s_volt_minted_amount(params, substep, state_history, previous_state, policy_input):
