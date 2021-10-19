@@ -79,7 +79,7 @@ def set_axis(ax: axes, ylabel: str, ylogscale: bool, ymin: float, ymax:float, ym
     ax.set_ylim(top=ymax)
     legend = ax.legend(loc=legend_loc)
     legend.get_frame().set_facecolor('#FFFFFF')
-    legend.get_frame().set_alpha(0.5)
+    legend.get_frame().set_alpha(0.6)
     if not ylogscale:
         ax.set_ylim(bottom=ymin, top=ymax)
         ax.yaxis.set_major_locator(plt.MaxNLocator(6))
@@ -266,6 +266,6 @@ def gpu_memory_usage_plot(df: pd.DataFrame, title: str = 'Memory and Time Usage'
          ylabel_2='Time Usage, seconds',
          ylogscale_1=True,
          ylogscale_2=True,
-         ymax_2=1.1 * df[[rename_column('gpu_time_usage'), rename_column('cpu_time_usage')]].max().max(),
+         ymax_2=1.5 * df[[rename_column('gpu_time_usage'), rename_column('cpu_time_usage')]].max().max(),
          type_1='line',
          figsize=figsize)
