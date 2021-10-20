@@ -443,9 +443,9 @@ We had stress testing on the testnet to measure resources usage.
 | Cyberlinks        |        40'335'720 | 1'000'000'000 | 100'000'000'000 |
 | TPS               |                10 |            50 |             730 |
 | GPU RAM Usage, GB |                 2 |            46 |           4'562 |
-| GPU Time Usage, s |                35 |           900 |          90'000 |
+| GPU Time Usage, s |              0.25 |             6 |             620 |
 | CPU RAM Usage, GB |                48 |         1'200 |         120'000 |
-| CPU Time Usage, s |              0.10 |             2 |             250 |
+| CPU Time Usage, s |                35 |           868 |          87'000 |
 
 The number of transactions per second is the main indicator of the load on the system. We have chosen to calculate this indicator taking into account only the number of cyberlinks. 
 
@@ -458,9 +458,9 @@ GPU time usage and CPU time usage:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.2 \cdot 10^{3} \cdot cyberlinks\_count_{t-1}" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.5 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=8.7 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=9 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=6.2 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
 
 where:
 
@@ -597,9 +597,9 @@ validators.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_memory\_usage_t=1.2 \cdot 10^{3} \cdot cyberlinks\_count_{t-1}" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=2.5 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}cpu\_time\_usage_t=8.7 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=9 \cdot 10^{-7} \cdot cyberlinks\_count_{t-1}" ></p>
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_time\_usage_t=6.2 \cdot 10^{-9} \cdot cyberlinks\_count_{t-1}" ></p>
 
 where:
 
