@@ -434,9 +434,9 @@ We assume that `investmint_period_share` * `investmint_max_period` is an average
 
 
 
-## Planing GPU Memory Usage
+## GPU and CPU Usage Planning
 
-We had stress testing on the testnet to measure resources usage.
+We had stress testing on the testnet to measure resources usage, testing took place on the server `i7 9700, RAM 64GB, SSD SATA, GTX 1080 8GB`.
 
 |                   | Bostrom Testnet 4 |      1B links |      100B links |
 | :---------------- | ----------------: | ------------: | --------------: |
