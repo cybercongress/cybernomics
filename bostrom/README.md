@@ -577,7 +577,7 @@ validators.
 - `max_validator_count` `(92)`
 
 
-### Formulas used as it is:
+### Formulas used as it is
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_in\_eth_t = agents\_count_{t-1} \cdot capitalization\_per\_agent_{t-1}"></p>
 
@@ -605,10 +605,8 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}particles_{t-1}=cyberlinks\_count_{t-1} \cdot particle\_per\_link" ></p>
 
-
-### Formulas for Differential Equations: (Считаю эту секцию бесполезной! пока закомментировал)
-
-<!-- <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \frac{timesteps\_per\_year}{365}"></p>
+<!---
+### Formulas for Differential Equations
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply}"></p>
 
@@ -632,9 +630,8 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_period}{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate}\rfloor"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p> -->
-
-
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p>
+-->
 
 ### Differential Equations
 
