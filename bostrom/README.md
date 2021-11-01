@@ -1,43 +1,42 @@
-<!-- rendering hacks latex https://gist.github.com/a-rodin/fef3f543412d6e1ec5b6cf55bf197d7b#gistcomment-3523272 -->
-
 # Bostrom Network Simulation
 
 ## Usage
 
 0. Install Python3 if you have not already
-1. Go to the `bostrom_simulation` folder
+1. Clone this repository
+2. Go to the `bostrom_simulation` folder
    ```bash
    cd bostrom
    ```
-2. Install requirements via pip3
+3. Install requirements via pip3
    ```bash
    pip3 install -r requirements.txt
    ```
-3. Run
+4. Run
    ```bash
    jupyter notebook
    ```
-4. The notebook server should be running at `http://127.0.0.1:8888`
-5. Open [`simulation.ipynb`](simulation.ipynb)
-6. Fill `Initial state` and `Params for simulating` sections
-7. On the top bar `Kernel` -> `Restart & Run All`
-8. Look at the results and conclude.
+5. The notebook server should be running at `http://127.0.0.1:8888`
+6. Open [`simulation.ipynb`](simulation.ipynb)
+7. Fill `Initial state` and `Params for simulating` sections
+8. On the top bar `Kernel` -> `Restart & Run All`
+9. Look at the results and conclude
 
 ## Goals
 
 This model was created to optimize parameters for launching the Bostrom Network.
 
-We model the value of the BOOT token through the understanding of established network effects in Ethereum.
-Then we forecast gift claim dynamics and address growth based on approximated network effects. Assuming some
-demand for cyberLinks (based on address growth) we adjust the supply of cyberLinks accounting for computing
-capability and the growth of the Volt (V) token price. The given model also allows defining inflation parameters of
-BOOT to optimize investments into the hardware infrastructure.
+We model the value of the BOOT token through the understanding of established network effects in Ethereum. Then
+we forecast gift claim dynamics and address growth based on approximated network effects. Assuming some demand
+for cyberlinks (based on address growth) we adjust the supply of cyberlinks accounting for computing capability
+and the growth of the Volt (V) token price. The given model also allows defining inflation parameters of BOOT to
+optimize investments into the hardware infrastructure.
 
 ## Time
 
-We model the Bostrom Network simulation as a (discreet) sequence of events in time. We define the `timestep` variable
-(syn `t`) as an integer number of time steps starting from network launch. `timestep` is used in formulas and
-definitions across this specification and defined as:
+We model the Bostrom Network simulation as a (discreet) sequence of events in time. We define the `timestep`
+variable (syn `t`) as an integer number of time steps starting from network launch. `timestep` is used in
+formulas and definitions across this specification and defined as:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \lfloor{time\_from\_launch\_in\_years \cdot timesteps\_per\_year}\rfloor"></p>
 
@@ -58,13 +57,12 @@ current timestep:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_supply_t = boot\_supply_{t-1} %2B timestep\_provision\_boot_t"></p>
 
-The `timestep_provision_boot` variable is described in the
-[BOOT minting and inflation](#boot-minting-and-inflation) subsection.
+The `timestep_provision_boot` variable is described in the [BOOT minting and inflation](#boot-minting-and-inflation)
+subsection.
 
 ### BOOT Minting and Inflation
 
-The minting mechanism of the Bostrom Network corresponds to the minting mechanism of the
-[Cosmos Network](https://docs.cosmos.network/master/modules/mint/03_begin_block.html).
+The minting mechanism of the Bostrom Network corresponds to the minting mechanism of the [Cosmos Network](https://docs.cosmos.network/master/modules/mint/03_begin_block.html).
 
 The minting mechanism was designed to:
 
@@ -86,7 +84,7 @@ It can be broken down in the following way:
 - If the inflation rate is above the goal `boot_bonded_share_target` the inflation rate will decrease until a
   minimum - value (`boot_inflation_rate_min`) is reached
 
-In this model the target annual inflation rate is recalculated each `timestep` (in the network it is recalculated 
+In this model the target annual inflation rate is recalculated each `timestep` (in the network it is recalculated
 each block). The inflation is also subject to a rate change (positive or negative) depending on the distance from
 the desired ratio. The maximum possible rate change is defined to be `boot_inflation_rate_change_annual` per
 year, however, the annual inflation is capped as between `boot_inflation_rate_min` and `boot_inflation_rate_max`.
@@ -185,8 +183,8 @@ if `t` > `days_for_gift_activation`:
 
 ### `boot_to_distribution_supply`
 
-In the case where tokens have already been claimed but not transferred they change their state to “to_distribution”
-state (ready to be transferred to neurons).
+In the case where tokens have already been claimed but not transferred they change their state to
+“to_distribution” state (ready to be transferred to neurons).
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green} boot\_to\_distribution\_supply_t = boot\_to\_distribution\_supply_{t-1} %2B \Delta boot\_claimed\_supply %2B \Delta boot\_frozen\_supply"></p>
 
@@ -243,8 +241,8 @@ We have combined 2 trend lines and derived the following formula of addresses co
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 2 \cdot days^{2} %2B 100 \cdot days %2B 8700"></p>
 
-Assuming that there are much more crypto-agents now than there were at the time of the ETH launch, we adjusted the
-formula with coefficients to expect more rapid growth.
+Assuming that there are much more crypto-agents now than there were at the time of the ETH launch, we adjusted
+the formula with coefficients to expect more rapid growth.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}agents\_count = 9 \cdot days^2 %2B 100 \cdot days %2B agents\_count\_at\_activation"></p>
 
@@ -263,8 +261,8 @@ We derived this formula:
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent\_eth\_network = 60\,000 \cdot agents\_count^{-0.7}"></p>
 
 We assumed that the dynamics of capitalization of a BOOT token in ETH would resemble ETH token capitalization
-dynamics in BTC prices. We adjusted the formula so that our first-day `capitalization_per_agent` would be equal to 32
-ETH (`capitalization_per_agent`).
+dynamics in BTC prices. We adjusted the formula so that our first-day `capitalization_per_agent` would be equal
+to 32 ETH (`capitalization_per_agent`).
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_per\_agent = start\_capitalization\_per\_agent \cdot agents\_count\_at\_activation^{0.7} \cdot agents\_count^{-0.7}"></p>
 
@@ -293,8 +291,8 @@ ETH (`capitalization_per_agent`).
 
 ## Predicting V Demand
 
-V are natural tokens. Each V enables its holder to produce 1 cyberLink daily. To simulate cyberlink usage we
-have derived a base estimate of `cyberlinks_per_day` formula from ETH data:
+V are natural tokens. Each V enables its holder to produce 1 cyberlink daily. To simulate cyberlink usage we have
+derived a base estimate of `cyberlinks_per_day` formula from ETH data:
 
 ![ETH Data](images/eth_transactions_per_active_address_regression.png)
 
@@ -313,11 +311,12 @@ neurons) and extra:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}extra\_links ~ f( agents\_count, setting name, following, extra )">
 
-The founding team plans to cyberlink blockchain naming systems and tokens. By doing this we predict the demand on the V token will be higher.
+The founding team plans to create cyberlinks for blockchain naming systems and tokens to make them searchable. By
+doing this we predict the demand on the V token will be higher.
 
 We left `extra_links` and `guaranteed_links` count equal to 0 but it can be changed in the future.
 
-![cyberLinks Demand Forecast](images/cyberlinks_demand_forecast.png)
+![cyberlinks Demand Forecast](images/cyberlinks_demand_forecast.png)
 
 ### Simulation Parameters
 
@@ -398,7 +397,8 @@ So, we can rephrase the formulas as:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount_{t}} = \lfloor{\frac{hydrogen\_for\_volt\_investminting_{t-1}}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_max\_period_{t} \cdot investmint\_period\_share }{volt\_base\_investmint\_period} \cdot volt\_mint\_rate_{t-1}}\rfloor"></p>
 
-We assume that `investmint_period_share` \* `investmint_max_period` is an average period for investminting per neuron.
+We assume that `investmint_period_share` \* `investmint_max_period` is an average period for investminting per
+neuron.
 
 `investmint_period_share` has stochastic function representation with u = 0.5, sigma = 0.1.
 
@@ -421,7 +421,7 @@ We performed stress testing on the Testnet to measure resource usage. Testing to
 
 |                   | Bostrom Testnet 4 |      1B links |      100B links |
 | :---------------- | ----------------: | ------------: | --------------: |
-| Cyberlinks        |        40'335'720 | 1'000'000'000 | 100'000'000'000 |
+| cyberlinks        |        40'335'720 | 1'000'000'000 | 100'000'000'000 |
 | TPS               |                10 |            50 |             730 |
 | GPU RAM Usage, GB |                 2 |            46 |           4'562 |
 | GPU Time Usage, s |              0.25 |             6 |             620 |
@@ -433,8 +433,8 @@ calculate this indicator taking into account only the number of cyberlinks.
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}transactions\_per\_second=\frac{cyberlinks\_per\_day}{24 \cdot 3600} " ></p>
 
-According to stress testing measurements on the Testnet we derived formulas for GPU memory usage, CPU memory usage,
-GPU time usage and CPU time usage:
+According to stress testing measurements on the Testnet we derived formulas for GPU memory usage, CPU memory
+usage, GPU time usage and CPU time usage:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}gpu\_memory\_usage_t=40 \cdot cyberlinks\_count_{t-1} %2B 40 \cdot particles_{t-1}" ></p>
 
@@ -448,7 +448,7 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}particles_{t-1}=cyberlinks\_count_{t-1} \cdot particle\_per\_link" ></p>
 
-The `particle_per_link` parameter defines the amount of particles per Cyberlink.
+The `particle_per_link` parameter defines the amount of particles per cyberlink.
 
 ![Transactions per seconds](images/transactions_per_second.png)
 ![GPU Memory and Time Usage](images/memory_and_time_usage.png)
@@ -579,9 +579,8 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}particles_{t-1}=cyberlinks\_count_{t-1} \cdot particle\_per\_link" ></p>
 
-### Formulas for Differential Equations:
-
-<!-- <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}t = \frac{timesteps\_per\_year}{365}"></p>
+<!---
+### Formulas for Differential Equations
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}boot\_bonded\_share_t = \frac{boot\_bonded\_supply_{t-1}}{boot\_supply}"></p>
 
@@ -605,7 +604,8 @@ where:
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{ampere\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{ampere\_base\_investmint\_amount} \cdot \frac{investmint\_period}{ampere\_base\_investmint\_period} \cdot ampere\_mint\_rate}\rfloor"></p>
 
-<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p> -->
+<p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}{volt\_minted\_amount} = \lfloor{\frac{hydrogen\_supply}{volt\_base\_investmint\_amount} \cdot \frac{investmint\_period}{volt\_base\_investmint\_period} \cdot volt\_mint\_rate}\rfloor"></p>
+-->
 
 ### Differential Equations
 
@@ -701,7 +701,7 @@ where:
    ![Validators Revenue](images/validators_revenue.png)
 
 3. The model made it possible to define the parameters of investmint and halving on the basis of the assumption
-   that the demand for cyberlinks will exceed supply in 2.5 years, and therefore the need for creating Cyberlinks
+   that the demand for cyberlinks will exceed supply in 2.5 years, and therefore the need for creating cyberlinks
    will significantly exceed the capabilities of the system and ensure the growth of V token relative to BOOT.
    The following parameters are proposed:
 
@@ -712,4 +712,4 @@ where:
    - `ampere_mint_rate_min` `(0.01)`
    - `volt_mint_rate_min` `(0.01)`
 
-   ![Demand and Supply of cyberLinks](images/demand_and_supply_of_cyberlinks.png)
+   ![Demand and Supply of cyberlinks](images/demand_and_supply_of_cyberlinks.png)
