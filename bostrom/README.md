@@ -551,7 +551,7 @@ We can estimate revenue of 1 validator in the ETH Equivalent, given that all val
 - `validator_commission` `(0.1)`
 - `max_validator_count` `(92)`
 
-### Formulas used as it is:
+### Formulas used as it is
 
 <p style="text-align:center;"><img src="https://render.githubusercontent.com/render/math?math=\color{green}capitalization\_in\_eth_t = agents\_count_{t-1} \cdot capitalization\_per\_agent_{t-1}"></p>
 
