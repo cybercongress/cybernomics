@@ -154,7 +154,7 @@ to liquid H. The rest tokens are used for minting A and V in `hydrogen_liquid_ra
 ## Gift Claim Dynamics
 
 The addresses for gifts are defined in the [research](https://github.com/Snedashkovsky/cybergift). This research [concludes](https://github.com/Snedashkovsky/cybergift#prize-to-be-the-first)
-6M addresses for distribution of 70% of BOOT tokens.
+4M addresses for distribution of 70% of BOOT tokens.
 
 The `boot_claimed_supply` function has two phases:
 
